@@ -10,8 +10,18 @@ export default function Navbar() {
     <nav className="bg-white shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
-          <Link href="/" className="text-2xl font-bold text-gray-800">
-            My Blog
+
+          <Link
+            href="/"
+            className="group relative text-3xl font-extrabold text-gray-800 tracking-wide"
+          >
+            <span className="relative z-10 inline-block py-1">
+              <span className="block text-animate bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-600 bg-clip-text text-transparent">
+                RokoMasru
+              </span>
+
+              <span className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-600 w-full underline-animate"></span>
+            </span>
           </Link>
 
           {/* Desktop Menu */}

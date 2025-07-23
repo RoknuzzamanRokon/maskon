@@ -21,3 +21,45 @@ body {
 .blog-content p {
   @apply mb-4 leading-relaxed;
 } */
+
+
+@keyframes underline-slide {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  50% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  100% {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+}
+
+@keyframes text-bounce-up {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.underline-animate {
+  animation: underline-slide 1s ease-in-out 0s infinite;
+  animation-delay: 0s;
+  animation-duration: 5s;
+}
+
+.text-animate {
+  animation: text-bounce-up 0.8s ease-in-out 0s infinite;
+  animation-delay: 0s;
+  animation-duration: 5s;
+}
