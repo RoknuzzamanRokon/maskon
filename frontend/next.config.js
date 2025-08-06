@@ -2,7 +2,21 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["example.com", "localhost"],
+    domains: ["example.com", "localhost", "images.pexels.com", "pexels.com"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+        port: '',
+        pathname: '/photos/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pexels.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
 };
 
