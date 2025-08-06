@@ -10,7 +10,6 @@ export default function Navbar() {
     <nav className="bg-white shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
-
           <Link
             href="/"
             className="group relative text-3xl font-extrabold text-gray-800 tracking-wide"
@@ -33,19 +32,19 @@ export default function Navbar() {
               Blog
             </Link>
             <Link
-              href="/blog/tech"
+              href="/blog/category/tech"
               className="text-gray-600 hover:text-gray-800"
             >
               Tech
             </Link>
             <Link
-              href="/blog/food"
+              href="/blog/category/food"
               className="text-gray-600 hover:text-gray-800"
             >
               Food
             </Link>
             <Link
-              href="/blog/activity"
+              href="/blog/category/activity"
               className="text-gray-600 hover:text-gray-800"
             >
               Activity
@@ -98,19 +97,19 @@ export default function Navbar() {
               Blog
             </Link>
             <Link
-              href="/blog/tech"
+              href="/blog/category/tech"
               className="block py-2 text-gray-600 hover:text-gray-800"
             >
               Tech
             </Link>
             <Link
-              href="/blog/food"
+              href="/blog/category/food"
               className="block py-2 text-gray-600 hover:text-gray-800"
             >
               Food
             </Link>
             <Link
-              href="/blog/activity"
+              href="/blog/category/activity"
               className="block py-2 text-gray-600 hover:text-gray-800"
             >
               Activity

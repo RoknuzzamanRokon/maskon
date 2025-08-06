@@ -55,7 +55,7 @@ export default async function BlogPage() {
                 </div>
               )}
               <Link
-                href={`/blog/${post.id}`}
+                href={`/blog/post/${post.id}`}
                 className="text-blue-600 hover:underline font-medium"
               >
                 Read more →

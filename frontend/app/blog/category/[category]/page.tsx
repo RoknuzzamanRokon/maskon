@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getBlogPosts } from "../../lib/api";
+import { getBlogPosts } from "../../../lib/api";
 
 export default async function CategoryPage({
   params,
@@ -77,7 +77,7 @@ export default async function CategoryPage({
                 </div>
               )}
               <Link
-                href={`/blog/${post.id}`}
+                href={`/blog/post/${post.id}`}
                 className="text-blue-600 hover:underline font-medium"
               >
                 Read more →

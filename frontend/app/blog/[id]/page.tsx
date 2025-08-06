@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getBlogPost, getBlogPosts } from "../../lib/api";
-import { Clock, Calendar, Tag, User, ArrowLeft, Share2, BookOpen } from "lucide-react";
 
 export default async function BlogPostPage({
   params,
@@ -10,22 +9,28 @@ export default async function BlogPostPage({
 }) {
   const post = await getBlogPost(params.id);
   const relatedPosts = post ? await getBlogPosts(3, post.category) : [];
-  const filteredRelatedPosts = relatedPosts.filter((p: any) => p.id !== parseInt(params.id));
+  const filteredRelatedPosts = relatedPosts.filter(
+    (p: any) => p.id !== parseInt(params.id)
+  );
 
   if (!post) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-24 h-24 mx-auto mb-6 bg-gray-200 rounded-full flex items-center justify-center">
-            <BookOpen className="w-12 h-12 text-gray-400" />
+            <span className="text-4xl">📖</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Post Not Found</h1>
-          <p className="text-gray-600 mb-8">The blog post you're looking for doesn't exist.</p>
-          <Link 
-            href="/blog" 
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Post Not Found
+          </h1>
+          <p className="text-gray-600 mb-8">
+            The blog post you're looking for doesn't exist.
+          </p>
+          <Link
+            href="/blog"
             className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <span className="mr-2">←</span>
             Back to Blog
           </Link>
         </div>
@@ -33,11 +38,11 @@ export default async function BlogPostPage({
     );
   }
 
-  const readingTime = Math.ceil(post.content.split(' ').length / 200);
+  const readingTime = Math.ceil(post.content.split(" ").length / 200);
   const categoryColors = {
     tech: "bg-blue-100 text-blue-800 border-blue-200",
     food: "bg-green-100 text-green-800 border-green-200",
-    activity: "bg-orange-100 text-orange-800 border-orange-200"
+    activity: "bg-orange-100 text-orange-800 border-orange-200",
   };
 
   return (
@@ -50,7 +55,7 @@ export default async function BlogPostPage({
               href="/blog"
               className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <span className="mr-2">←</span>
               Back to Blog
             </Link>
 
@@ -60,23 +65,23 @@ export default async function BlogPostPage({
                   categoryColors[post.category as keyof typeof categoryColors]
                 }`}
               >
-                {post.category === 'tech' && '🚀'}
-                {post.category === 'food' && '🍕'}
-                {post.category === 'activity' && '🏃'}
+                {post.category === "tech" && "🚀"}
+                {post.category === "food" && "🍕"}
+                {post.category === "activity" && "🏃"}
                 <span className="ml-1 capitalize">{post.category}</span>
               </span>
-              
+
               <div className="flex items-center text-gray-500 text-sm">
-                <Calendar className="w-4 h-4 mr-1" />
+                <span className="mr-1">📅</span>
                 {new Date(post.created_at).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </div>
-              
+
               <div className="flex items-center text-gray-500 text-sm">
-                <Clock className="w-4 h-4 mr-1" />
+                <span className="mr-1">⏱️</span>
                 {readingTime} min read
               </div>
             </div>
@@ -92,7 +97,7 @@ export default async function BlogPostPage({
                     key={tag}
                     className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full hover:bg-gray-200 transition-colors"
                   >
-                    <Tag className="w-3 h-3 mr-1" />
+                    <span className="mr-1">#</span>
                     {tag.trim()}
                   </span>
                 ))}
@@ -102,16 +107,16 @@ export default async function BlogPostPage({
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <User className="w-6 h-6 text-white" />
+                  <span className="text-white text-xl">👤</span>
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-900">Maskon</p>
                   <p className="text-sm text-gray-500">Author</p>
                 </div>
               </div>
-              
+
               <button className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
-                <Share2 className="w-4 h-4 mr-2" />
+                <span className="mr-2">📤</span>
                 Share
               </button>
             </div>
@@ -142,15 +147,20 @@ export default async function BlogPostPage({
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-lg shadow-sm p-8 md:p-12">
             <div className="prose prose-lg max-w-none">
-              {post.content.split("\n").map((paragraph: string, index: number) => {
-                if (paragraph.trim() === '') return null;
-                
-                return (
-                  <p key={index} className="mb-6 leading-relaxed text-gray-700 text-lg">
-                    {paragraph}
-                  </p>
-                );
-              })}
+              {post.content
+                .split("\n")
+                .map((paragraph: string, index: number) => {
+                  if (paragraph.trim() === "") return null;
+
+                  return (
+                    <p
+                      key={index}
+                      className="mb-6 leading-relaxed text-gray-700 text-lg"
+                    >
+                      {paragraph}
+                    </p>
+                  );
+                })}
             </div>
           </div>
         </div>
@@ -168,7 +178,7 @@ export default async function BlogPostPage({
                 {filteredRelatedPosts.slice(0, 3).map((relatedPost: any) => (
                   <Link
                     key={relatedPost.id}
-                    href={`/blog/${relatedPost.id}`}
+                    href={`/blog/post/${relatedPost.id}`}
                     className="group bg-gray-50 rounded-lg overflow-hidden hover:shadow-md transition-all duration-200"
                   >
                     {relatedPost.image_url && (
@@ -201,14 +211,14 @@ export default async function BlogPostPage({
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto flex justify-between items-center">
             <Link
-              href={`/blog/${post.category}`}
+              href={`/blog/category/${post.category}`}
               className="inline-flex items-center px-6 py-3 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <span className="mr-2">←</span>
               More {post.category} posts
             </Link>
-            <Link 
-              href="/blog" 
+            <Link
+              href="/blog"
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               All posts

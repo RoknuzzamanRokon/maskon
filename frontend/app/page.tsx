@@ -35,21 +35,21 @@ export default async function Home() {
         </h2>
         <div className="grid md:grid-cols-3 gap-6">
           <Link
-            href="/blog/tech"
+            href="/blog/category/tech"
             className="bg-blue-100 p-6 rounded-lg hover:bg-blue-200 transition"
           >
             <h3 className="text-xl font-semibold mb-2">🚀 Tech</h3>
             <p>Latest in web development, programming, and technology</p>
           </Link>
           <Link
-            href="/blog/food"
+            href="/blog/category/food"
             className="bg-green-100 p-6 rounded-lg hover:bg-green-200 transition"
           >
             <h3 className="text-xl font-semibold mb-2">🍕 Food</h3>
             <p>Recipes, restaurant reviews, and culinary adventures</p>
           </Link>
           <Link
-            href="/blog/activity"
+            href="/blog/category/activity"
             className="bg-orange-100 p-6 rounded-lg hover:bg-orange-200 transition"
           >
             <h3 className="text-xl font-semibold mb-2">🏃 Activity</h3>
@@ -91,7 +91,7 @@ export default async function Home() {
                   {post.content.substring(0, 100)}...
                 </p>
                 <Link
-                  href={`/blog/${post.id}`}
+                  href={`/blog/post/${post.id}`}
                   className="text-blue-600 hover:underline"
                 >
                   Read more →
