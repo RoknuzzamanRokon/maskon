@@ -1,11 +1,15 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { createPost } from "../lib/api";
+import { createPost, getUserInfo, logout } from "../lib/api";
 import ImageUpload from "../components/ImageUpload";
+import ProtectedRoute from "../components/ProtectedRoute";
+import { useRouter } from "next/navigation";
 // Using emoji icons instead of lucide-react
 
-export default function AdminPage() {
+function AdminPageContent() {
+  const router = useRouter();
+  const userInfo = getUserInfo();
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -65,17 +69,36 @@ export default function AdminPage() {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-lg shadow-sm p-8">
-            <div className="flex items-center mb-8">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-2xl">📝</span>
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                  <span className="text-2xl">📝</span>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900">
+                    Admin Dashboard
+                  </h1>
+                  <p className="text-gray-600">
+                    Welcome back, {userInfo?.username}!
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Create New Post
-                </h1>
-                <p className="text-gray-600">
-                  Share your thoughts with the world
-                </p>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => router.push("/admin/posts")}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  📋 Manage Posts
+                </button>
+                <button
+                  onClick={() => {
+                    logout();
+                    router.push("/login");
+                  }}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  🚪 Logout
+                </button>
               </div>
             </div>
 
@@ -244,5 +267,13 @@ export default function AdminPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <ProtectedRoute requireAdmin={true}>
+      <AdminPageContent />
+    </ProtectedRoute>
   );
 }

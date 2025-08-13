@@ -1,10 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isLoggedIn, isAdmin, getUserInfo, logout } from "../lib/api";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const logged = isLoggedIn();
+      setLoggedIn(logged);
+      if (logged) {
+        setUserInfo(getUserInfo());
+      }
+    };
+
+    checkAuth();
+    // Check auth status on route changes
+    window.addEventListener("storage", checkAuth);
+    return () => window.removeEventListener("storage", checkAuth);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setLoggedIn(false);
+    setUserInfo(null);
+    router.push("/");
+  };
 
   return (
     <nav className="bg-white shadow-lg sticky top-0">
@@ -24,7 +51,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             <Link href="/" className="text-gray-600 hover:text-gray-800">
               Home
             </Link>
@@ -55,12 +82,39 @@ export default function Navbar() {
             >
               Portfolio
             </Link>
-            <Link
-              href="/admin"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Admin
-            </Link>
+
+            {loggedIn ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600">
+                  Welcome,{" "}
+                  <span className="font-semibold">{userInfo?.username}</span>
+                  {userInfo?.is_admin && (
+                    <span className="ml-1 text-blue-600">👑</span>
+                  )}
+                </span>
+                {userInfo?.is_admin && (
+                  <Link
+                    href="/admin"
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+                  >
+                    📝 Admin
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-600 hover:text-gray-800 px-3 py-2 rounded hover:bg-gray-100 transition-colors"
+                >
+                  🚪 Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+              >
+                🔐 Login
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -83,7 +137,7 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden pb-4">
+          <div className="md:hidden pb-4 border-t border-gray-200 pt-4">
             <Link
               href="/"
               className="block py-2 text-gray-600 hover:text-gray-800"
@@ -120,12 +174,41 @@ export default function Navbar() {
             >
               Portfolio
             </Link>
-            <Link
-              href="/admin"
-              className="block py-2 text-blue-600 hover:text-blue-800"
-            >
-              Admin
-            </Link>
+
+            {loggedIn ? (
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <div className="block py-2 text-sm text-gray-600">
+                  Welcome,{" "}
+                  <span className="font-semibold">{userInfo?.username}</span>
+                  {userInfo?.is_admin && (
+                    <span className="ml-1 text-blue-600">👑</span>
+                  )}
+                </div>
+                {userInfo?.is_admin && (
+                  <Link
+                    href="/admin"
+                    className="block py-2 text-blue-600 hover:text-blue-800"
+                  >
+                    📝 Admin
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="block py-2 text-red-600 hover:text-red-800 w-full text-left"
+                >
+                  🚪 Logout
+                </button>
+              </div>
+            ) : (
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <Link
+                  href="/login"
+                  className="block py-2 text-blue-600 hover:text-blue-800"
+                >
+                  🔐 Login
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </div>
