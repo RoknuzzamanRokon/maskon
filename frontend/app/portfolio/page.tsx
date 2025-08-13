@@ -22,11 +22,11 @@ export default async function PortfolioPage() {
               <Code className="w-16 h-16" />
             </div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              My Portfolio
+              Our Portfolio
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
               Crafting digital experiences with passion and precision. 
-              Here's a showcase of my journey in web development.
+              Here's a showcase of our journey.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a

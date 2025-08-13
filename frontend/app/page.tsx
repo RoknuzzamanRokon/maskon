@@ -8,7 +8,7 @@ export default async function Home() {
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <section className="text-center py-16 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg mb-12">
-        <h1 className="text-5xl font-bold mb-4">Welcome to My Blog</h1>
+        <h1 className="text-5xl font-bold mb-4">Welcome to MASKON Blog</h1>
         <p className="text-xl mb-8">
           Tech insights, Food adventures, and Daily activities
         </p>
