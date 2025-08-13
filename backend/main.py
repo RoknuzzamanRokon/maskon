@@ -71,7 +71,8 @@ class PostCreate(BaseModel):
     content: str
     category: str  # tech, food, activity
     tags: Optional[str] = None
-    image_url: Optional[str] = None
+    image_url: Optional[str] = None  # Keep for backward compatibility
+    media_urls: Optional[List[dict]] = None  # New field for multiple media
 
 class Post(BaseModel):
     id: int
@@ -80,6 +81,7 @@ class Post(BaseModel):
     category: str
     tags: Optional[str] = None
     image_url: Optional[str] = None
+    media_urls: Optional[List[dict]] = None
     likes_count: Optional[int] = 0
     dislikes_count: Optional[int] = 0
     comments_count: Optional[int] = 0
@@ -212,30 +214,72 @@ async def get_current_user_info(user_id: int = Depends(get_current_user)):
         cursor.close()
         connection.close()
 
-@app.post("/api/upload-image")
-async def upload_image(file: UploadFile = File(...), admin_id: int = Depends(get_current_admin)):
+@app.post("/api/upload-media")
+async def upload_media(files: List[UploadFile] = File(...), admin_id: int = Depends(get_current_admin)):
     UPLOAD_DIR = os.path.join(STATIC_DIR, "uploads")
     os.makedirs(UPLOAD_DIR, exist_ok=True)
+    
+    uploaded_files = []
+    allowed_image_types = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+    allowed_video_types = ["video/mp4", "video/webm", "video/ogg", "video/avi", "video/mov"]
+    
+    for file in files:
+        # Check file type
+        if file.content_type not in allowed_image_types + allowed_video_types:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"File type {file.content_type} not allowed. Only images and videos are supported."
+            )
+        
+        # Check file size (50MB limit for videos, 10MB for images)
+        file_size_limit = 50 * 1024 * 1024 if file.content_type in allowed_video_types else 10 * 1024 * 1024
+        
+        file_extension = file.filename.split(".")[-1].lower()
+        unique_filename = f"{uuid.uuid4()}.{file_extension}"
+        file_path = os.path.join(UPLOAD_DIR, unique_filename)
+        
+        try:
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+            
+            # Get file size after upload
+            file_size = os.path.getsize(file_path)
+            if file_size > file_size_limit:
+                os.remove(file_path)  # Remove the file
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"File too large. Maximum size: {file_size_limit // (1024*1024)}MB"
+                )
+            
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Could not upload file: {e}")
+        finally:
+            file.file.close()
+        
+        # Construct the full URL for the uploaded file
+        base_url = os.getenv('BACKEND_URL', 'http://localhost:8000')
+        file_url = f"{base_url}/static/uploads/{unique_filename}"
+        
+        # Determine media type
+        media_type = "image" if file.content_type in allowed_image_types else "video"
+        
+        uploaded_files.append({
+            "filename": unique_filename,
+            "url": file_url,
+            "type": media_type,
+            "original_name": file.filename
+        })
+    
+    return {"uploaded_files": uploaded_files}
 
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Only image files are allowed.")
-
-    file_extension = file.filename.split(".")[-1]
-    unique_filename = f"{uuid.uuid4()}.{file_extension}"
-    file_path = os.path.join(UPLOAD_DIR, unique_filename)
-
-    try:
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Could not upload file: {e}")
-    finally:
-        file.file.close()
-
-    # Construct the full URL for the uploaded image
-    base_url = os.getenv('BACKEND_URL', 'http://localhost:8000')
-    image_url = f"{base_url}/static/uploads/{unique_filename}"
-    return {"filename": unique_filename, "url": image_url}
+# Keep the old single image upload for backward compatibility
+@app.post("/api/upload-image")
+async def upload_single_image(file: UploadFile = File(...), admin_id: int = Depends(get_current_admin)):
+    result = await upload_media([file], admin_id)
+    if result["uploaded_files"]:
+        return result["uploaded_files"][0]
+    else:
+        raise HTTPException(status_code=500, detail="Upload failed")
 
 @app.get("/api/posts", response_model=List[Post])
 async def get_posts(category: Optional[str] = None, limit: int = 10):
@@ -251,6 +295,18 @@ async def get_posts(category: Optional[str] = None, limit: int = 10):
             cursor.execute(query, (limit,))
         
         posts = cursor.fetchall()
+        
+        # Parse media_urls JSON field
+        import json
+        for post in posts:
+            if post.get('media_urls'):
+                try:
+                    post['media_urls'] = json.loads(post['media_urls'])
+                except (json.JSONDecodeError, TypeError):
+                    post['media_urls'] = None
+            else:
+                post['media_urls'] = None
+        
         return posts
     finally:
         cursor.close()
@@ -262,11 +318,17 @@ async def create_post(post: PostCreate, admin_id: int = Depends(get_current_admi
     cursor = connection.cursor()
     
     try:
+        # Convert media_urls to JSON string if provided
+        media_urls_json = None
+        if post.media_urls:
+            import json
+            media_urls_json = json.dumps(post.media_urls)
+        
         query = """
-        INSERT INTO posts (title, content, category, tags, image_url, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, %s, NOW(), NOW())
+        INSERT INTO posts (title, content, category, tags, image_url, media_urls, created_at, updated_at)
+        VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW())
         """
-        cursor.execute(query, (post.title, post.content, post.category, post.tags, post.image_url))
+        cursor.execute(query, (post.title, post.content, post.category, post.tags, post.image_url, media_urls_json))
         connection.commit()
         
         return {"message": "Post created successfully", "id": cursor.lastrowid}
@@ -439,6 +501,16 @@ async def get_post(post_id: int):
         
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
+        
+        # Parse media_urls JSON field
+        import json
+        if post.get('media_urls'):
+            try:
+                post['media_urls'] = json.loads(post['media_urls'])
+            except (json.JSONDecodeError, TypeError):
+                post['media_urls'] = None
+        else:
+            post['media_urls'] = None
         
         return post
     finally:

@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { createPost, getUserInfo, logout } from "../lib/api";
-import ImageUpload from "../components/ImageUpload";
+import MultiMediaUpload from "../components/MultiMediaUpload";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useRouter } from "next/navigation";
 // Using emoji icons instead of lucide-react
@@ -16,10 +16,11 @@ function AdminPageContent() {
     category: "tech",
     tags: "",
     image_url: "",
+    media_urls: [] as any[],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
-  const [imagePreview, setImagePreview] = useState<string>("");
+  const [mediaFiles, setMediaFiles] = useState<any[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,8 +36,9 @@ function AdminPageContent() {
         category: "tech",
         tags: "",
         image_url: "",
+        media_urls: [],
       });
-      setImagePreview("");
+      setMediaFiles([]);
     } catch (error) {
       setMessage("Error creating post. Please try again.");
     } finally {
@@ -55,14 +57,14 @@ function AdminPageContent() {
     });
   };
 
-  const handleImageSelect = (imageUrl: string) => {
-    setFormData((prev) => ({ ...prev, image_url: imageUrl }));
-    setImagePreview(imageUrl);
-  };
-
-  const handleRemoveImage = () => {
-    setImagePreview("");
-    setFormData((prev) => ({ ...prev, image_url: "" }));
+  const handleMediaSelect = (mediaFiles: any[]) => {
+    setMediaFiles(mediaFiles);
+    setFormData((prev) => ({
+      ...prev,
+      media_urls: mediaFiles,
+      // Keep backward compatibility - set first image as image_url
+      image_url: mediaFiles.find((m) => m.type === "image")?.url || "",
+    }));
   };
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -218,10 +220,13 @@ function AdminPageContent() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center">
-                  <span className="mr-1">📤</span>
-                  Upload Image (alternative to URL)
+                  <span className="mr-1">🎬</span>
+                  Upload Images & Videos
                 </label>
-                <ImageUpload onImageSelect={handleImageSelect} />
+                <MultiMediaUpload
+                  onMediaSelect={handleMediaSelect}
+                  existingMedia={mediaFiles}
+                />
               </div>
 
               <div className="flex gap-4 pt-6 border-t">

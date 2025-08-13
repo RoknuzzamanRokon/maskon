@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getBlogPost } from "../../../lib/api";
 import PostInteractions from "../../../components/PostInteractions";
 import Comments from "../../../components/Comments";
+import MediaSlider from "../../../components/MediaSlider";
 
 export default async function BlogPostPage({
   params,
@@ -69,14 +70,24 @@ export default async function BlogPostPage({
           )}
         </div>
 
-        {post.image_url && (
+        {/* Media Display - Multiple Images/Videos with Slider */}
+        {post.media_urls && post.media_urls.length > 0 ? (
           <div className="mb-8">
-            <img
-              src={post.image_url}
-              alt={post.title}
-              className="w-full h-64 md:h-96 object-cover rounded-lg"
+            <MediaSlider
+              mediaFiles={post.media_urls}
+              className="w-full h-64 md:h-96"
             />
           </div>
+        ) : (
+          post.image_url && (
+            <div className="mb-8">
+              <img
+                src={post.image_url}
+                alt={post.title}
+                className="w-full h-64 md:h-96 object-cover rounded-lg"
+              />
+            </div>
+          )
         )}
 
         <div className="blog-content prose prose-lg max-w-none">
