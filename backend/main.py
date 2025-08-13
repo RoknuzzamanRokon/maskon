@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -7,6 +8,8 @@ import mysql.connector
 from mysql.connector import Error
 import os
 from dotenv import load_dotenv
+import uuid
+import shutil
 
 load_dotenv()
 
@@ -65,6 +68,39 @@ class PortfolioItem(BaseModel):
 @app.get("/")
 async def root():
     return {"message": "Blog & Portfolio API"}
+
+# Create static directory if it doesn't exist
+STATIC_DIR = "static"
+os.makedirs(STATIC_DIR, exist_ok=True)
+os.makedirs(os.path.join(STATIC_DIR, "uploads"), exist_ok=True)
+
+# Mount static files
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+@app.post("/api/upload-image")
+async def upload_image(file: UploadFile = File(...)):
+    UPLOAD_DIR = os.path.join(STATIC_DIR, "uploads")
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Only image files are allowed.")
+
+    file_extension = file.filename.split(".")[-1]
+    unique_filename = f"{uuid.uuid4()}.{file_extension}"
+    file_path = os.path.join(UPLOAD_DIR, unique_filename)
+
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Could not upload file: {e}")
+    finally:
+        file.file.close()
+
+    # Construct the full URL for the uploaded image
+    base_url = os.getenv('BACKEND_URL', 'http://localhost:8000')
+    image_url = f"{base_url}/static/uploads/{unique_filename}"
+    return {"filename": unique_filename, "url": image_url}
 
 @app.get("/api/posts", response_model=List[Post])
 async def get_posts(category: Optional[str] = None, limit: int = 10):
@@ -137,4 +173,4 @@ async def get_portfolio():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=7770)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

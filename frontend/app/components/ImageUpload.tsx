@@ -1,104 +1,126 @@
-import { useState } from 'react';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+"use client";
+
+import { useState, useRef } from "react";
+import { uploadImage } from "../lib/api";
 
 interface ImageUploadProps {
-  onImageSelect: (file: File) => void;
-  currentImage?: string;
-  onRemoveImage?: () => void;
+  onImageSelect: (imageUrl: string) => void;
 }
 
-export default function ImageUpload({ onImageSelect, currentImage, onRemoveImage }: ImageUploadProps) {
-  const [dragActive, setDragActive] = useState(false);
+export default function ImageUpload({ onImageSelect }: ImageUploadProps) {
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setUploadMessage("Please select an image file.");
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadMessage("Image size should be less than 5MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadMessage("");
+
+    try {
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      // Upload image
+      const result = await uploadImage(file);
+      onImageSelect(result.url);
+      setUploadMessage("Image uploaded successfully!");
+    } catch (error) {
+      setUploadMessage("Error uploading image. Please try again.");
+      setImagePreview("");
+    } finally {
+      setIsUploading(false);
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      if (file.type.startsWith('image/')) {
-        onImageSelect(file);
-      }
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      if (file.type.startsWith('image/')) {
-        onImageSelect(file);
-      }
+  const removeImage = () => {
+    setImagePreview("");
+    onImageSelect("");
+    setUploadMessage("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
   return (
-    <div className="w-full">
-      {currentImage ? (
+    <div className="space-y-4">
+      <div className="flex items-center justify-center w-full">
+        <label
+          htmlFor="image-upload"
+          className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
+        >
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <span className="text-2xl mb-2">📷</span>
+            <p className="mb-2 text-sm text-gray-500">
+              <span className="font-semibold">Click to upload</span> or drag and
+              drop
+            </p>
+            <p className="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
+          </div>
+          <input
+            id="image-upload"
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileSelect}
+            ref={fileInputRef}
+            disabled={isUploading}
+          />
+        </label>
+      </div>
+
+      {isUploading && (
+        <div className="flex items-center justify-center p-4 bg-blue-50 rounded-lg">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
+          <span className="text-blue-700">Uploading image...</span>
+        </div>
+      )}
+
+      {uploadMessage && (
+        <div
+          className={`p-3 rounded-lg text-sm ${
+            uploadMessage.includes("Error")
+              ? "bg-red-50 text-red-700 border border-red-200"
+              : "bg-green-50 text-green-700 border border-green-200"
+          }`}
+        >
+          {uploadMessage}
+        </div>
+      )}
+
+      {imagePreview && (
         <div className="relative">
           <img
-            src={currentImage}
-            alt="Selected"
-            className="w-full h-48 object-cover rounded-lg"
+            src={imagePreview}
+            alt="Preview"
+            className="w-full h-48 object-cover rounded-lg border"
           />
-          {onRemoveImage && (
-            <button
-              type="button"
-              onClick={onRemoveImage}
-              className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      ) : (
-        <div
-          className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${
-            dragActive
-              ? 'border-blue-400 bg-blue-50'
-              : 'border-gray-300 hover:border-gray-400'
-          }`}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        >
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleChange}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          />
-          <div className="text-center">
-            <div className="w-12 h-12 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-              {dragActive ? (
-                <Upload className="w-6 h-6 text-blue-500" />
-              ) : (
-                <ImageIcon className="w-6 h-6 text-gray-400" />
-              )}
-            </div>
-            <p className="text-sm text-gray-600">
-              {dragActive ? (
-                'Drop the image here'
-              ) : (
-                <>
-                  <span className="font-medium text-blue-600">Click to upload</span> or drag and drop
-                </>
-              )}
-            </p>
-            <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 10MB</p>
-          </div>
+          <button
+            type="button"
+            onClick={removeImage}
+            className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors"
+          >
+            ×
+          </button>
         </div>
       )}
     </div>

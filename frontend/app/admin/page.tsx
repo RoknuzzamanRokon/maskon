@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { createPost } from "../lib/api";
 import ImageUpload from "../components/ImageUpload";
-import { Save, Eye, FileText, Tag, Image as ImageIcon } from "lucide-react";
+// Using emoji icons instead of lucide-react
 
 export default function AdminPage() {
   const [formData, setFormData] = useState({
@@ -15,7 +15,6 @@ export default function AdminPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,14 +23,7 @@ export default function AdminPage() {
     setMessage("");
 
     try {
-      // In a real app, you'd upload the image to a storage service here
-      // For now, we'll use a placeholder URL if an image is selected
-      const finalFormData = {
-        ...formData,
-        image_url: selectedImage ? `https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg` : formData.image_url
-      };
-      
-      await createPost(finalFormData);
+      await createPost(formData);
       setMessage("Post created successfully!");
       setFormData({
         title: "",
@@ -40,7 +32,6 @@ export default function AdminPage() {
         tags: "",
         image_url: "",
       });
-      setSelectedImage(null);
       setImagePreview("");
     } catch (error) {
       setMessage("Error creating post. Please try again.");
@@ -60,20 +51,15 @@ export default function AdminPage() {
     });
   };
 
-  const handleImageSelect = useCallback((file: File) => {
-    setSelectedImage(file);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setImagePreview(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-  }, []);
+  const handleImageSelect = (imageUrl: string) => {
+    setFormData((prev) => ({ ...prev, image_url: imageUrl }));
+    setImagePreview(imageUrl);
+  };
 
-  const handleRemoveImage = useCallback(() => {
-    setSelectedImage(null);
+  const handleRemoveImage = () => {
     setImagePreview("");
-    setFormData(prev => ({ ...prev, image_url: "" }));
-  }, []);
+    setFormData((prev) => ({ ...prev, image_url: "" }));
+  };
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
@@ -81,11 +67,15 @@ export default function AdminPage() {
           <div className="bg-white rounded-lg shadow-sm p-8">
             <div className="flex items-center mb-8">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                <FileText className="w-6 h-6 text-blue-600" />
+                <span className="text-2xl">📝</span>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Create New Post</h1>
-                <p className="text-gray-600">Share your thoughts with the world</p>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Create New Post
+                </h1>
+                <p className="text-gray-600">
+                  Share your thoughts with the world
+                </p>
               </div>
             </div>
 
@@ -169,7 +159,7 @@ export default function AdminPage() {
                     htmlFor="tags"
                     className="block text-sm font-semibold text-gray-900 mb-2 flex items-center"
                   >
-                    <Tag className="w-4 h-4 mr-1" />
+                    <span className="mr-1">#</span>
                     Tags (comma-separated)
                   </label>
                   <input
@@ -188,7 +178,7 @@ export default function AdminPage() {
                     htmlFor="image_url"
                     className="block text-sm font-semibold text-gray-900 mb-2 flex items-center"
                   >
-                    <ImageIcon className="w-4 h-4 mr-1" />
+                    <span className="mr-1">🖼️</span>
                     Image URL (optional)
                   </label>
                   <input
@@ -205,14 +195,10 @@ export default function AdminPage() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center">
-                  <ImageIcon className="w-4 h-4 mr-1" />
+                  <span className="mr-1">📤</span>
                   Upload Image (alternative to URL)
                 </label>
-                <ImageUpload
-                  onImageSelect={handleImageSelect}
-                  currentImage={imagePreview}
-                  onRemoveImage={handleRemoveImage}
-                />
+                <ImageUpload onImageSelect={handleImageSelect} />
               </div>
 
               <div className="flex gap-4 pt-6 border-t">
@@ -221,15 +207,15 @@ export default function AdminPage() {
                   disabled={isSubmitting}
                   className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <Save className="w-4 h-4 mr-2" />
+                  <span className="mr-2">💾</span>
                   {isSubmitting ? "Creating Post..." : "Create Post"}
                 </button>
-                
+
                 <button
                   type="button"
                   className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
                 >
-                  <Eye className="w-4 h-4 mr-2 inline" />
+                  <span className="mr-2">👁️</span>
                   Preview
                 </button>
               </div>
@@ -237,15 +223,20 @@ export default function AdminPage() {
 
             <div className="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
               <h2 className="text-lg font-semibold mb-4 text-blue-900 flex items-center">
-                <FileText className="w-5 h-5 mr-2" />
+                <span className="mr-2">💡</span>
                 Writing Tips:
               </h2>
               <ul className="space-y-2 text-sm text-blue-800">
                 <li>• Use clear, descriptive titles for better SEO</li>
                 <li>• Add relevant tags to help categorize your content</li>
-                <li>• Include high-quality images to make posts more engaging</li>
+                <li>
+                  • Include high-quality images to make posts more engaging
+                </li>
                 <li>• Write engaging content that provides value to readers</li>
-                <li>• Use line breaks to separate paragraphs for better readability</li>
+                <li>
+                  • Use line breaks to separate paragraphs for better
+                  readability
+                </li>
                 <li>• Keep your audience in mind when choosing topics</li>
               </ul>
             </div>
