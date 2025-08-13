@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { getBlogPost } from "../../../lib/api";
+import PostInteractions from "../../../components/PostInteractions";
+import Comments from "../../../components/Comments";
 
 export default async function BlogPostPage({
   params,
@@ -84,6 +86,16 @@ export default async function BlogPostPage({
             </p>
           ))}
         </div>
+
+        {/* Post Interactions (Like/Dislike) */}
+        <PostInteractions
+          postId={parseInt(params.id)}
+          initialLikes={post.likes_count || 0}
+          initialDislikes={post.dislikes_count || 0}
+        />
+
+        {/* Comments Section */}
+        <Comments postId={parseInt(params.id)} />
 
         <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex justify-between items-center">

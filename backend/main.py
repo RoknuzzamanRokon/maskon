@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, status
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -296,41 +296,50 @@ async def delete_post(post_id: int, admin_id: int = Depends(get_current_admin)):
         cursor.close()
         connection.close()
 
-# User interactions (likes/dislikes)
+# Anonymous user interactions (likes/dislikes)
 @app.post("/api/posts/{post_id}/interact")
-async def interact_with_post(post_id: int, interaction: PostInteraction, user_id: int = Depends(get_current_user)):
+async def interact_with_post(post_id: int, interaction: PostInteraction, request: Request):
     connection = get_db_connection()
     cursor = connection.cursor()
     
     try:
-        # Check if user already interacted with this post
-        cursor.execute("SELECT interaction_type FROM post_interactions WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+        # Use IP address as anonymous user identifier
+        client_ip = request.client.host
+        anonymous_user_id = f"anon_{client_ip}"
+        
+        # Check if this IP already interacted with this post
+        cursor.execute("SELECT interaction_type FROM anonymous_interactions WHERE post_id = %s AND user_identifier = %s", (post_id, anonymous_user_id))
         existing = cursor.fetchone()
         
         if existing:
             if existing[0] == interaction.interaction_type:
-                # Remove interaction if same type
-                cursor.execute("DELETE FROM post_interactions WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+                # Remove interaction if same type (toggle off)
+                cursor.execute("DELETE FROM anonymous_interactions WHERE post_id = %s AND user_identifier = %s", (post_id, anonymous_user_id))
                 message = f"{interaction.interaction_type} removed"
             else:
                 # Update interaction type
-                cursor.execute("UPDATE post_interactions SET interaction_type = %s WHERE post_id = %s AND user_id = %s", 
-                             (interaction.interaction_type, post_id, user_id))
+                cursor.execute("UPDATE anonymous_interactions SET interaction_type = %s WHERE post_id = %s AND user_identifier = %s", 
+                             (interaction.interaction_type, post_id, anonymous_user_id))
                 message = f"Changed to {interaction.interaction_type}"
         else:
             # Add new interaction
-            cursor.execute("INSERT INTO post_interactions (post_id, user_id, interaction_type, created_at) VALUES (%s, %s, %s, NOW())", 
-                         (post_id, user_id, interaction.interaction_type))
+            cursor.execute("INSERT INTO anonymous_interactions (post_id, user_identifier, interaction_type, created_at) VALUES (%s, %s, %s, NOW())", 
+                         (post_id, anonymous_user_id, interaction.interaction_type))
             message = f"{interaction.interaction_type} added"
         
         connection.commit()
         
         # Get updated counts
-        cursor.execute("SELECT COUNT(*) FROM post_interactions WHERE post_id = %s AND interaction_type = 'like'", (post_id,))
+        cursor.execute("SELECT COUNT(*) FROM anonymous_interactions WHERE post_id = %s AND interaction_type = 'like'", (post_id,))
         likes_count = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM post_interactions WHERE post_id = %s AND interaction_type = 'dislike'", (post_id,))
+        cursor.execute("SELECT COUNT(*) FROM anonymous_interactions WHERE post_id = %s AND interaction_type = 'dislike'", (post_id,))
         dislikes_count = cursor.fetchone()[0]
+        
+        # Update post counts
+        cursor.execute("UPDATE posts SET likes_count = %s, dislikes_count = %s WHERE id = %s", 
+                     (likes_count, dislikes_count, post_id))
+        connection.commit()
         
         return {
             "message": message,
@@ -341,15 +350,29 @@ async def interact_with_post(post_id: int, interaction: PostInteraction, user_id
         cursor.close()
         connection.close()
 
-# Comments
+# Anonymous comments
+class AnonymousCommentCreate(BaseModel):
+    content: str
+    username: str  # Display name for anonymous user
+
 @app.post("/api/posts/{post_id}/comments")
-async def add_comment(post_id: int, comment: CommentCreate, user_id: int = Depends(get_current_user)):
+async def add_anonymous_comment(post_id: int, comment: AnonymousCommentCreate, request: Request):
     connection = get_db_connection()
     cursor = connection.cursor()
     
     try:
-        cursor.execute("INSERT INTO comments (post_id, user_id, content, created_at) VALUES (%s, %s, %s, NOW())", 
-                     (post_id, user_id, comment.content))
+        # Use IP address as anonymous user identifier
+        client_ip = request.client.host
+        anonymous_user_id = f"anon_{client_ip}"
+        
+        cursor.execute("INSERT INTO anonymous_comments (post_id, user_identifier, username, content, created_at) VALUES (%s, %s, %s, %s, NOW())", 
+                     (post_id, anonymous_user_id, comment.username, comment.content))
+        connection.commit()
+        
+        # Update comment count in posts table
+        cursor.execute("SELECT COUNT(*) FROM anonymous_comments WHERE post_id = %s", (post_id,))
+        comment_count = cursor.fetchone()[0]
+        cursor.execute("UPDATE posts SET comments_count = %s WHERE id = %s", (comment_count, post_id))
         connection.commit()
         
         return {"message": "Comment added successfully", "id": cursor.lastrowid}
@@ -357,18 +380,18 @@ async def add_comment(post_id: int, comment: CommentCreate, user_id: int = Depen
         cursor.close()
         connection.close()
 
-@app.get("/api/posts/{post_id}/comments", response_model=List[Comment])
+@app.get("/api/posts/{post_id}/comments")
 async def get_comments(post_id: int):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     
     try:
+        # Get anonymous comments
         query = """
-        SELECT c.id, c.post_id, c.user_id, u.username, c.content, c.created_at 
-        FROM comments c 
-        JOIN users u ON c.user_id = u.id 
-        WHERE c.post_id = %s 
-        ORDER BY c.created_at DESC
+        SELECT id, post_id, username, content, created_at, 'anonymous' as user_type
+        FROM anonymous_comments 
+        WHERE post_id = %s 
+        ORDER BY created_at DESC
         """
         cursor.execute(query, (post_id,))
         comments = cursor.fetchall()
