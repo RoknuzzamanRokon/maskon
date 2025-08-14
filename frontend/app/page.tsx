@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { getBlogPosts } from "./lib/api";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
+// import type { Variants } from "framer-motion";
 
 export default function Home() {
   const [recentPosts, setRecentPosts] = useState<any[]>([]);
@@ -29,34 +30,90 @@ export default function Home() {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.15,
       },
     },
   };
 
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  const item: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { 
+        duration: 0.6, 
+        ease: "easeOut",
+        type: "spring",
+        stiffness: 100
+      } 
+    },
   };
 
-  const fadeIn = {
+  const fadeIn: Variants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.8 } },
+    visible: { 
+      opacity: 1, 
+      transition: { 
+        duration: 0.8,
+        ease: "easeInOut"
+      } 
+    },
+  };
+
+  // Floating animation for elements
+  const floating: Variants = {
+    float: {
+      y: [0, -15, 0],
+      transition: {
+        duration: 4,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse", // ✅ correct literal type
+      },
+    },
+  };
+
+  // Rotating animation
+  const rotating: Variants = {
+    animate: {
+      rotate: 360,
+      transition: {
+        duration: 20,
+        ease: "linear",
+        repeat: Infinity,
+        repeatType: "loop"
+      }
+    }
+  };
+
+  // Pulse animation
+  const pulse: Variants = {
+    pulse: {
+      scale: [1, 1.05, 1],
+      transition: {
+        duration: 1.5,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse",
+      },
+    },
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      {/* Animated Background Particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(15)].map((_, i) => (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 overflow-hidden">
+      {/* Enhanced Animated Background */}
+      <div className="absolute inset-0 overflow-hidden z-0">
+        {/* Large floating circles */}
+        {[...Array(8)].map((_, i) => (
           <motion.div
-            key={i}
-            className="absolute rounded-full bg-indigo-100"
+            key={`circle-${i}`}
+            className="absolute rounded-full bg-gradient-to-br from-indigo-100/40 to-purple-100/40"
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 40 + 10}px`,
-              height: `${Math.random() * 40 + 10}px`,
+              width: `${Math.random() * 300 + 100}px`,
+              height: `${Math.random() * 300 + 100}px`,
+              filter: "blur(40px)",
             }}
             animate={{
               y: [0, Math.random() * 100 - 50],
@@ -64,16 +121,43 @@ export default function Home() {
               scale: [1, 1.2, 1],
             }}
             transition={{
+              duration: Math.random() * 20 + 20,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+
+        {/* Floating particles */}
+        {[...Array(40)].map((_, i) => (
+          <motion.div
+            key={`particle-${i}`}
+            className="absolute rounded-full"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 6 + 2}px`,
+              height: `${Math.random() * 6 + 2}px`,
+              backgroundColor: `hsl(${Math.random() * 60 + 240}, 80%, 80%)`,
+            }}
+            animate={{
+              y: [0, Math.random() * 100 - 50],
+              x: [0, Math.random() * 100 - 50],
+              scale: [1, 1.5, 1],
+            }}
+            transition={{
               duration: Math.random() * 10 + 10,
               repeat: Infinity,
               repeatType: "reverse",
+              ease: "easeInOut",
             }}
           />
         ))}
       </div>
 
       <div className="container mx-auto px-4 py-8 relative z-10">
-        {/* Hero Section */}
+        {/* Hero Section with Enhanced Animations */}
         <motion.section
           className="text-center py-16 md:py-24 rounded-3xl mb-16 relative overflow-hidden"
           initial={{ opacity: 0, y: -20 }}
@@ -81,7 +165,43 @@ export default function Home() {
           transition={{ duration: 0.8 }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 z-0"></div>
-          <div className="absolute inset-0 bg-[url('/pattern.svg')] bg-[length:200px] opacity-10 z-10"></div>
+
+          {/* Animated gradient overlay */}
+          <motion.div
+            className="absolute inset-0 opacity-30"
+            animate={{
+              background: [
+                "linear-gradient(45deg, #ff9a9e, #fad0c4)",
+                "linear-gradient(45deg, #a1c4fd, #c2e9fb)",
+                "linear-gradient(45deg, #fbc2eb, #a6c1ee)",
+                "linear-gradient(45deg, #ff9a9e, #fad0c4)",
+              ],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
+            }}
+          />
+
+          <div className="absolute inset-0 bg-[url('/pattern.svg')] bg-[size:200px] opacity-10 z-10"></div>
+
+          
+
+
+
+          {/* Floating decorative elements */}
+          <motion.div
+            className="absolute w-32 h-32 rounded-full bg-amber-400/20 blur-xl top-1/4 left-1/4"
+            variants={floating}
+            animate="animate"
+          />
+          <motion.div
+            className="absolute w-20 h-20 rounded-full bg-white/30 blur-xl bottom-1/3 right-1/4"
+            variants={floating}
+            animate="animate"
+          />
 
           <div className="relative z-20 max-w-4xl mx-auto">
             <motion.h1
@@ -91,10 +211,16 @@ export default function Home() {
               transition={{ delay: 0.2, duration: 0.8 }}
             >
               Welcome to{" "}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-300 to-yellow-400">
+              <motion.span
+                className="bg-clip-text text-transparent bg-gradient-to-r from-amber-300 to-yellow-400 inline-block"
+                variants={pulse}
+                animate="animate"
+              >
                 MASKON
-              </span>
+              </motion.span>
             </motion.h1>
+
+            
 
             <motion.div
               className="text-xl md:text-2xl mb-10 text-indigo-100 font-light"
@@ -103,27 +229,43 @@ export default function Home() {
               transition={{ delay: 0.4, duration: 1 }}
             >
               <div className="inline-flex items-center">
-                <span className="mr-3">Tech insights</span>
+                <motion.span
+                  className="mr-3"
+                  variants={floating}
+                  animate="animate"
+                >
+                  Tech insights
+                </motion.span>
+
                 <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
                   className="w-2 h-2 rounded-full bg-amber-400"
+                  variants={rotating}
+                  animate="animate"
                 />
-                <span className="mx-3">Food adventures</span>
+
+                <motion.span
+                  className="mx-3"
+                  variants={floating}
+                  animate="animate"
+                  style={{ animationDelay: "0.5s" }}
+                >
+                  Food adventures
+                </motion.span>
+
                 <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
                   className="w-2 h-2 rounded-full bg-amber-400"
+                  variants={rotating}
+                  animate="animate"
                 />
-                <span className="ml-3">Daily activities</span>
+
+                <motion.span
+                  className="ml-3"
+                  variants={floating}
+                  animate="animate"
+                  style={{ animationDelay: "1s" }}
+                >
+                  Daily activities
+                </motion.span>
               </div>
             </motion.div>
 
@@ -181,7 +323,11 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* Categories */}
+        
+
+
+
+        {/* Categories with Enhanced Animations */}
         <motion.section
           className="mb-16"
           variants={container}
@@ -190,13 +336,22 @@ export default function Home() {
           viewport={{ once: true, margin: "-100px" }}
         >
           <motion.h2
-            className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800"
+            className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 relative inline-block"
             variants={item}
           >
             Explore Our{" "}
             <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Categories
             </span>
+            {/* Animated underline */}
+            <motion.div
+              className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              style={{ originX: 0 }}
+            />
           </motion.h2>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -209,6 +364,7 @@ export default function Home() {
                 bg: "from-blue-50 to-indigo-50",
                 border: "border-blue-200",
                 hover: "hover:shadow-blue-200",
+                color: "text-blue-500",
               },
               {
                 title: "🍕 Food",
@@ -218,6 +374,7 @@ export default function Home() {
                 bg: "from-green-50 to-emerald-50",
                 border: "border-green-200",
                 hover: "hover:shadow-green-200",
+                color: "text-green-500",
               },
               {
                 title: "🏃 Activity",
@@ -226,40 +383,183 @@ export default function Home() {
                 bg: "from-orange-50 to-amber-50",
                 border: "border-orange-200",
                 hover: "hover:shadow-orange-200",
+                color: "text-orange-500",
               },
             ].map((category, index) => (
-              <motion.div key={index} variants={item} whileHover={{ y: -10 }}>
+              <motion.div
+                key={index}
+                variants={item}
+                whileHover={{
+                  y: -15,
+                  scale: 1.03,
+                  transition: {
+                    type: "spring",
+                    stiffness: 300,
+                  },
+                }}
+              >
                 <Link href={category.href}>
-                  <div
+                  <motion.div
                     className={`bg-gradient-to-br ${category.bg} border ${category.border} rounded-2xl p-8 h-full flex flex-col transition-all duration-300 shadow-lg hover:shadow-xl ${category.hover}`}
+                    whileHover={{
+                      boxShadow:
+                        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                    }}
                   >
-                    <div className="text-5xl mb-6">
+                    <motion.div
+                      className="text-5xl mb-6"
+                      variants={floating}
+                      animate="animate"
+                    >
                       {category.title.split(" ")[0]}
-                    </div>
+                    </motion.div>
                     <h3 className="text-2xl font-bold mb-3 text-gray-800">
                       {category.title}
                     </h3>
                     <p className="text-gray-600 mb-6 flex-grow">
                       {category.description}
                     </p>
-                    <div className="flex items-center text-indigo-600 font-medium">
-                      <span>View all posts</span>
+                    <motion.div
+                      className="flex items-center font-medium"
+                      whileHover={{ x: 5 }}
+                      transition={{ type: "spring", stiffness: 500 }}
+                    >
+                      <span className={category.color}>View all posts</span>
                       <svg
-                        className="w-4 h-4 ml-2"
+                        className={`w-4 h-4 ml-2 ${category.color}`}
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
                         <path d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
-                    </div>
-                  </div>
+                    </motion.div>
+                  </motion.div>
                 </Link>
               </motion.div>
             ))}
           </div>
         </motion.section>
 
-        {/* Recent Posts */}
+        
+
+
+
+
+
+        {/* Enhanced Animated Wave Divider */}
+        <motion.div
+          className="relative h-32 w-full my-16 overflow-hidden"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{
+            opacity: 1,
+            height: "8rem",
+            transition: {
+              duration: 1.2,
+              ease: "easeInOut",
+            },
+          }}
+          viewport={{ once: true, margin: "0px" }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10"></div>
+
+          <svg
+            viewBox="0 0 1200 120"
+            className="absolute bottom-0 left-0 w-full h-full"
+            preserveAspectRatio="none"
+          >
+            <motion.path
+              fill="url(#waveGradient)"
+              d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+              animate={{
+                d: [
+                  "M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z",
+                  "M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z",
+                  "M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z",
+                ],
+                opacity: [0.8, 0.9, 0.8],
+              }}
+              transition={{
+                duration: 15,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+              }}
+            />
+
+            {/* Gradient definition */}
+            <defs>
+              <linearGradient
+                id="waveGradient"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop offset="0%" stopColor="#6366F1" />
+                <stop offset="50%" stopColor="#8B5CF6" />
+                <stop offset="100%" stopColor="#EC4899" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          {/* Floating particles */}
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full bg-white opacity-20"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${Math.random() * 10 + 2}px`,
+                height: `${Math.random() * 10 + 2}px`,
+              }}
+              animate={{
+                y: [0, -20, 0],
+                x: [0, Math.random() * 40 - 20, 0],
+                scale: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: Math.random() * 10 + 10,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+                delay: Math.random() * 5,
+              }}
+            />
+          ))}
+
+          {/* Glitter effect */}
+          {[...Array(15)].map((_, i) => (
+            <motion.div
+              key={`glitter-${i}`}
+              className="absolute rounded-full"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${Math.random() * 4 + 1}px`,
+                height: `${Math.random() * 4 + 1}px`,
+                backgroundColor: "#ffffff",
+                boxShadow: "0 0 8px 2px rgba(255, 255, 255, 0.8)",
+              }}
+              animate={{
+                opacity: [0, 1, 0],
+                scale: [0.5, 1.5, 0.5],
+              }}
+              transition={{
+                duration: Math.random() * 3 + 2,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+                delay: Math.random() * 5,
+              }}
+            />
+          ))}
+        </motion.div>
+
+
+
+
+        {/* Recent Posts with Enhanced Animations */}
         <motion.section
           variants={container}
           initial="hidden"
@@ -267,13 +567,22 @@ export default function Home() {
           viewport={{ once: true, margin: "-100px" }}
         >
           <motion.h2
-            className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800"
+            className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 relative inline-block"
             variants={item}
           >
             Latest{" "}
             <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Articles
             </span>
+            {/* Animated underline */}
+            <motion.div
+              className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              style={{ originX: 0 }}
+            />
           </motion.h2>
 
           {isLoading ? (
@@ -283,13 +592,17 @@ export default function Home() {
                   key={i}
                   className="bg-white rounded-2xl shadow-lg overflow-hidden"
                   variants={item}
+                  initial="hidden"
+                  animate="show"
                 >
-                  <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-48" />
+                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-full h-48 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer" />
+                  </div>
                   <div className="p-6">
-                    <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
-                    <div className="h-5 bg-gray-200 rounded w-full mb-2"></div>
-                    <div className="h-5 bg-gray-200 rounded w-4/5 mb-4"></div>
-                    <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+                    <div className="h-6 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] rounded w-1/3 mb-4 animate-shimmer" />
+                    <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] rounded w-full mb-2 animate-shimmer" />
+                    <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] rounded w-4/5 mb-4 animate-shimmer" />
+                    <div className="h-8 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] rounded w-1/3 animate-shimmer" />
                   </div>
                 </motion.div>
               ))}
@@ -300,19 +613,33 @@ export default function Home() {
                 <motion.div
                   key={post.id}
                   variants={item}
-                  whileHover={{ y: -10 }}
+                  whileHover={{
+                    y: -15,
+                    rotate: index % 2 === 0 ? -1 : 1,
+                    transition: {
+                      type: "spring",
+                      stiffness: 300,
+                    },
+                  }}
                   className="bg-white rounded-2xl shadow-lg overflow-hidden group"
                 >
                   {post.image_url && (
                     <div className="relative h-56 overflow-hidden">
-                      <img
+                      <motion.img
                         src={post.image_url}
                         alt={post.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="w-full h-full object-cover"
+                        initial={{ scale: 1.1 }}
+                        whileHover={{
+                          scale: 1.2,
+                          transition: {
+                            duration: 0.5,
+                          },
+                        }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 to-transparent"></div>
                       <div className="absolute top-4 right-4">
-                        <span
+                        <motion.span
                           className={`inline-block px-3 py-1 text-xs rounded-full font-semibold ${
                             post.category === "tech"
                               ? "bg-blue-500 text-white"
@@ -320,9 +647,10 @@ export default function Home() {
                               ? "bg-green-500 text-white"
                               : "bg-orange-500 text-white"
                           }`}
+                          whileHover={{ scale: 1.1 }}
                         >
                           {post.category}
-                        </span>
+                        </motion.span>
                       </div>
                     </div>
                   )}
@@ -341,9 +669,18 @@ export default function Home() {
                       </span>
                     </div>
 
-                    <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors">
+                    <motion.h3
+                      className="text-xl font-bold text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors"
+                      whileHover={{
+                        x: 5,
+                        transition: {
+                          type: "spring",
+                          stiffness: 500,
+                        },
+                      }}
+                    >
                       {post.title}
-                    </h3>
+                    </motion.h3>
 
                     <p className="text-gray-600 mb-5">
                       {post.content.substring(0, 100)}...
@@ -351,16 +688,33 @@ export default function Home() {
 
                     <Link
                       href={`/blog/post/${post.id}`}
-                      className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center group-hover:underline"
+                      className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center"
                     >
-                      Read full article
-                      <svg
+                      <motion.span
+                        whileHover={{
+                          x: 5,
+                          transition: {
+                            type: "spring",
+                            stiffness: 500,
+                          },
+                        }}
+                      >
+                        Read full article
+                      </motion.span>
+                      <motion.svg
                         className="w-4 h-4 ml-2"
                         fill="currentColor"
                         viewBox="0 0 24 24"
+                        whileHover={{
+                          x: 5,
+                          transition: {
+                            type: "spring",
+                            stiffness: 500,
+                          },
+                        }}
                       >
                         <path d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
+                      </motion.svg>
                     </Link>
                   </div>
                 </motion.div>
@@ -370,13 +724,23 @@ export default function Home() {
             <motion.div
               className="text-center py-12 bg-white rounded-2xl shadow-lg"
               variants={fadeIn}
+              initial="hidden"
+              animate="visible"
             >
               <div className="bg-gray-100 border-2 border-dashed rounded-xl w-24 h-24 mx-auto flex items-center justify-center mb-6">
-                <svg
+                <motion.svg
                   className="w-12 h-12 text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  animate={{
+                    rotate: [0, 10, 0, -10, 0],
+                    scale: [1, 1.1, 1, 1.1, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                  }}
                 >
                   <path
                     strokeLinecap="round"
@@ -384,7 +748,7 @@ export default function Home() {
                     strokeWidth={2}
                     d="M6 18L18 6M6 6l12 12"
                   />
-                </svg>
+                </motion.svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 No posts available
@@ -398,22 +762,42 @@ export default function Home() {
           <motion.div
             className="mt-16 text-center"
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              transition: {
+                type: "spring",
+                stiffness: 100,
+              },
+            }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
             <Link
               href="/blog"
-              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:from-indigo-700 hover:to-purple-700 inline-flex items-center"
+              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:from-indigo-700 hover:to-purple-700 inline-flex items-center relative overflow-hidden"
             >
-              View All Blog Posts
+              <motion.span
+                className="relative z-10"
+                whileHover={{ scale: 1.05 }}
+              >
+                View All Blog Posts
+              </motion.span>
               <svg
-                className="w-5 h-5 ml-2"
+                className="w-5 h-5 ml-2 relative z-10"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
+
+              {/* Animated background */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-indigo-700 to-purple-700"
+                initial={{ x: "-100%" }}
+                whileHover={{ x: "0%" }}
+                transition={{ duration: 0.5 }}
+              />
             </Link>
           </motion.div>
         </motion.section>
