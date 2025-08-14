@@ -69,9 +69,9 @@ export default function ContactPage() {
                       Location
                     </h3>
                     <p className="text-gray-600">
-                      New York, NY
+                      Dhaka, Mirpur
                       <br />
-                      United States
+                      Bangladesh
                     </p>
                   </div>
                 </div>
@@ -86,11 +86,11 @@ export default function ContactPage() {
                       Working Hours
                     </h3>
                     <p className="text-gray-600">
-                      Monday - Friday: 9:00 AM - 6:00 PM
+                      Saturday - Thursday: 9:00 AM - 6:00 PM
                       <br />
                       Saturday: 10:00 AM - 4:00 PM
                       <br />
-                      Sunday: Closed
+                      Friday: Closed
                     </p>
                   </div>
                 </div>
@@ -158,7 +158,7 @@ export default function ContactPage() {
                       name="firstName"
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="John"
+                      placeholder="roko"
                     />
                   </div>
                   <div>
@@ -192,7 +192,7 @@ export default function ContactPage() {
                     name="email"
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="john.doe@example.com"
+                    placeholder="roko.ron@example.com"
                   />
                 </div>
 
