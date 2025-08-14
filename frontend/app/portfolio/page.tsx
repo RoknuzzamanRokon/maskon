@@ -32,12 +32,11 @@ export default async function PortfolioPage() {
         "Tailwind CSS",
         "UI/UX Design",
       ],
-      photo:
-        "/team/20240827_185556.jpg",
+      photo: "/team/20240827_185556.jpg",
     },
     {
       name: "Masrufa",
-      role: "Backend Developer & DevOps",
+      role: "Content Creator",
       bio: "Expert inteamMembers scalable backend systems and cloud infrastructure. Focused on building secure, high-performance APIs and services.",
       skills: [
         "Node.js",
@@ -47,7 +46,7 @@ export default async function PortfolioPage() {
         "PostgreSQL",
         "Kubernetes",
       ],
-      photo: "/taylor-chen.jpg",
+      photo: "/team/20240827_185556.jpg",
     },
   ];
 
@@ -79,7 +78,9 @@ export default async function PortfolioPage() {
                     className="relative group transform hover:-translate-y-2 transition-transform duration-300"
                   >
                     <div className="relative w-40 h-40 rounded-full border-4 border-white/20 overflow-hidden shadow-2xl">
-                      <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full" />
+                      <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full">
+                        <img src={`${member?.photo}`} />
+                      </div>
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
                       <span className="text-xs font-semibold text-white">
@@ -169,7 +170,9 @@ export default async function PortfolioPage() {
               >
                 <div className="relative h-64 bg-gradient-to-r from-blue-600 to-indigo-700 flex items-center justify-center">
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-4 border-white overflow-hidden shadow-xl">
-                    <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full" />
+                    <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full">
+                      <img src={`${member?.photo}`} />
+                    </div>
                   </div>
                 </div>
 
@@ -485,7 +488,9 @@ export default async function PortfolioPage() {
                 {teamMembers.map((member, index) => (
                   <div key={index} className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full border-2 border-white/30 overflow-hidden">
-                      <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full" />
+                      <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full">
+                        <img src={`${member?.photo}`} />
+                      </div>
                     </div>
                     <h3 className="text-xl font-bold mb-2">{member.name}</h3>
                     <p className="text-blue-200 mb-3">{member.role}</p>
@@ -494,7 +499,7 @@ export default async function PortfolioPage() {
                       className="inline-flex items-center text-blue-100 hover:text-white transition-colors"
                     >
                       <Mail className="w-4 h-4 mr-2" />
-                      contact@example.com
+                      rokon.raz@gmail.com
                     </a>
                   </div>
                 ))}
@@ -503,7 +508,7 @@ export default async function PortfolioPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="mailto:contact@example.com"
+                href="mailto:maskon@gmail.com"
                 className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-900 rounded-xl font-bold hover:from-amber-600 hover:to-yellow-600 transition-all shadow-lg hover:shadow-xl"
               >
                 <Mail className="w-5 h-5 mr-2" />
