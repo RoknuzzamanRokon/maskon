@@ -37,26 +37,26 @@ export default function Home() {
 
   const item: Variants = {
     hidden: { opacity: 0, y: 30 },
-    show: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.6, 
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
         ease: "easeOut",
         type: "spring",
-        stiffness: 100
-      } 
+        stiffness: 100,
+      },
     },
   };
 
   const fadeIn: Variants = {
     hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1, 
-      transition: { 
+    visible: {
+      opacity: 1,
+      transition: {
         duration: 0.8,
-        ease: "easeInOut"
-      } 
+        ease: "easeInOut",
+      },
     },
   };
 
@@ -81,9 +81,9 @@ export default function Home() {
         duration: 20,
         ease: "linear",
         repeat: Infinity,
-        repeatType: "loop"
-      }
-    }
+        repeatType: "loop",
+      },
+    },
   };
 
   // Pulse animation
@@ -187,10 +187,6 @@ export default function Home() {
 
           <div className="absolute inset-0 bg-[url('/pattern.svg')] bg-[size:200px] opacity-10 z-10"></div>
 
-          
-
-
-
           {/* Floating decorative elements */}
           <motion.div
             className="absolute w-32 h-32 rounded-full bg-amber-400/20 blur-xl top-1/4 left-1/4"
@@ -219,8 +215,6 @@ export default function Home() {
                 MASKON
               </motion.span>
             </motion.h1>
-
-            
 
             <motion.div
               className="text-xl md:text-2xl mb-10 text-indigo-100 font-light"
@@ -322,10 +316,6 @@ export default function Home() {
             </motion.div>
           </div>
         </motion.section>
-
-        
-
-
 
         {/* Categories with Enhanced Animations */}
         <motion.section
@@ -440,56 +430,59 @@ export default function Home() {
           </div>
         </motion.section>
 
+
         
 
 
 
 
 
-        {/* Enhanced Animated Wave Divider */}
+        
+        {/* Futuristic Animated Wave Divider */}
         <motion.div
-          className="relative h-32 w-full my-16 overflow-hidden"
+          className="relative h-40 w-full my-20 overflow-hidden"
           initial={{ opacity: 0, height: 0 }}
           animate={{
             opacity: 1,
-            height: "8rem",
-            transition: {
-              duration: 1.2,
-              ease: "easeInOut",
-            },
+            height: "10rem",
+            transition: { duration: 1.2, ease: "easeInOut" },
           }}
-          viewport={{ once: true, margin: "0px" }}
+          viewport={{ once: true }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10"></div>
+          {/* Background glow */}
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 animate-pulse"></div>
 
+          {/* Layered waves */}
           <svg
             viewBox="0 0 1200 120"
             className="absolute bottom-0 left-0 w-full h-full"
             preserveAspectRatio="none"
           >
-            <motion.path
-              fill="url(#waveGradient)"
-              d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-              animate={{
-                d: [
-                  "M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z",
-                  "M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z",
-                  "M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z",
-                ],
-                opacity: [0.8, 0.9, 0.8],
-              }}
-              transition={{
-                duration: 15,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-              }}
-            />
+            {[0.8, 0.5].map((opacity, idx) => (
+              <motion.path
+                key={idx}
+                fill={`url(#waveGradient${idx})`}
+                fillOpacity={opacity}
+                d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+                animate={{
+                  d: [
+                    "M0,0V46.29c50,22,120,32,180,28,80-5,150-33,220-37C480,30,550,50,620,70c70,20,150,30,230,20,40-6,80-20,120-32,100-34,230-70,310,0V0Z",
+                    "M0,0V20C60,50,150,80,250,70,340,60,430,30,520,20c90-10,180,10,260,40,80,30,160,60,250,40,90-20,180-70,250-80V0Z",
+                  ],
+                }}
+                transition={{
+                  duration: idx === 0 ? 14 : 20,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
 
-            {/* Gradient definition */}
+            {/* Gradient defs */}
             <defs>
               <linearGradient
-                id="waveGradient"
+                id="waveGradient0"
                 x1="0%"
                 y1="0%"
                 x2="100%"
@@ -499,62 +492,75 @@ export default function Home() {
                 <stop offset="50%" stopColor="#8B5CF6" />
                 <stop offset="100%" stopColor="#EC4899" />
               </linearGradient>
+              <linearGradient
+                id="waveGradient1"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop offset="0%" stopColor="#3B82F6" />
+                <stop offset="50%" stopColor="#9333EA" />
+                <stop offset="100%" stopColor="#F472B6" />
+              </linearGradient>
             </defs>
           </svg>
 
-          {/* Floating particles */}
-          {[...Array(20)].map((_, i) => (
+          {/* Bubbles */}
+          {[...Array(15)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute rounded-full bg-white opacity-20"
+              className="absolute rounded-full bg-white/30"
               style={{
-                top: `${Math.random() * 100}%`,
+                bottom: `${Math.random() * 40}%`,
                 left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 10 + 2}px`,
-                height: `${Math.random() * 10 + 2}px`,
+                width: `${Math.random() * 8 + 4}px`,
+                height: `${Math.random() * 8 + 4}px`,
               }}
               animate={{
-                y: [0, -20, 0],
-                x: [0, Math.random() * 40 - 20, 0],
-                scale: [1, 1.5, 1],
+                y: [0, -60],
+                x: [0, Math.random() * 20 - 10],
+                opacity: [0, 1, 0],
               }}
               transition={{
-                duration: Math.random() * 10 + 10,
+                duration: Math.random() * 6 + 4,
                 repeat: Infinity,
-                repeatType: "reverse",
                 ease: "easeInOut",
-                delay: Math.random() * 5,
+                delay: Math.random() * 4,
               }}
             />
           ))}
 
-          {/* Glitter effect */}
-          {[...Array(15)].map((_, i) => (
+          {/* Sparkles */}
+          {[...Array(10)].map((_, i) => (
             <motion.div
-              key={`glitter-${i}`}
-              className="absolute rounded-full"
+              key={`sparkle-${i}`}
+              className="absolute rounded-full bg-white shadow-lg"
               style={{
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 4 + 1}px`,
-                height: `${Math.random() * 4 + 1}px`,
-                backgroundColor: "#ffffff",
-                boxShadow: "0 0 8px 2px rgba(255, 255, 255, 0.8)",
+                width: `${Math.random() * 3 + 1}px`,
+                height: `${Math.random() * 3 + 1}px`,
               }}
               animate={{
                 opacity: [0, 1, 0],
-                scale: [0.5, 1.5, 0.5],
+                scale: [0.5, 1.2, 0.5],
               }}
               transition={{
                 duration: Math.random() * 3 + 2,
                 repeat: Infinity,
-                repeatType: "reverse",
                 ease: "easeInOut",
-                delay: Math.random() * 5,
               }}
             />
           ))}
         </motion.div>
+
+
+
+
+
+
+
 
 
 

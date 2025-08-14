@@ -50,9 +50,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                  <p className="text-gray-600 mb-2">contact@maskonvibes.com</p>
+                  <p className="text-gray-600 mb-2">maskon@gmail.com</p>
                   <a
-                    href="mailto:contact@maskonvibes.com"
+                    href="mailto:maskon@gmail.com"
                     className="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center"
                   >
                     Send message
