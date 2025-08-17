@@ -3,13 +3,15 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { isLoggedIn, isAdmin, getUserInfo, logout } from "../lib/api";
+import { isLoggedIn, getUserInfo, logout } from "../lib/api";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isBlogOpen, setIsBlogOpen] = useState(false);
   const [userInfo, setUserInfo] = useState<any>(null);
   const [loggedIn, setLoggedIn] = useState(false);
+  const { theme, toggleTheme } = useTheme();
   const router = useRouter();
   const blogDropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -58,7 +60,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white/90 backdrop-blur-sm shadow-md sticky top-0 z-50 border-b border-gray-100">
+    <nav className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-md sticky top-0 z-50 border-b border-gray-100 dark:border-gray-800">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-3">
           <Link
@@ -77,7 +79,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className="text-gray-600 hover:text-gray-900 transition-colors duration-300 py-2 px-1 relative group"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group"
             >
               Home
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
@@ -86,7 +88,7 @@ export default function Navbar() {
             <div className="relative" ref={blogDropdownRef}>
               <button
                 onClick={() => setIsBlogOpen(!isBlogOpen)}
-                className="text-gray-600 hover:text-gray-900 flex items-center gap-1 transition-colors duration-300 py-2 px-1 relative group"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 transition-colors duration-300 py-2 px-1 relative group"
               >
                 Blog
                 <svg
@@ -108,18 +110,18 @@ export default function Navbar() {
               </button>
 
               {isBlogOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-xl py-2 z-20 animate-fadeIn">
+                <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl py-2 z-20 animate-fadeIn">
                   <Link
                     href="/blog"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                    className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                     onClick={() => setIsBlogOpen(false)}
                   >
                     All Posts
                   </Link>
-                  <div className="border-t my-1"></div>
+                  <div className="border-t my-1 border-gray-200 dark:border-gray-600"></div>
                   <Link
                     href="/blog/category/tech"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                    className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                     onClick={() => setIsBlogOpen(false)}
                   >
                     <span className="inline-block w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
@@ -127,7 +129,7 @@ export default function Navbar() {
                   </Link>
                   <Link
                     href="/blog/category/food"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                    className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                     onClick={() => setIsBlogOpen(false)}
                   >
                     <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
@@ -135,7 +137,7 @@ export default function Navbar() {
                   </Link>
                   <Link
                     href="/blog/category/activity"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                    className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                     onClick={() => setIsBlogOpen(false)}
                   >
                     <span className="inline-block w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
@@ -147,7 +149,7 @@ export default function Navbar() {
 
             <Link
               href="/portfolio"
-              className="text-gray-600 hover:text-gray-900 transition-colors duration-300 py-2 px-1 relative group"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group"
             >
               Portfolio
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
@@ -155,11 +157,52 @@ export default function Navbar() {
 
             <Link
               href="/contact"
-              className="text-gray-600 hover:text-gray-900 transition-colors duration-300 py-2 px-1 relative group"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group"
             >
               Contact
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
             </Link>
+
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 flex items-center justify-center"
+              title={
+                theme === "light"
+                  ? "Switch to dark mode"
+                  : "Switch to light mode"
+              }
+            >
+              {theme === "light" ? (
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              )}
+            </button>
 
             {loggedIn ? (
               <div className="flex items-center space-x-4 ml-4">
@@ -254,12 +297,12 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? (
               <svg
-                className="w-6 h-6 text-gray-700"
+                className="w-6 h-6 text-gray-700 dark:text-gray-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -273,7 +316,7 @@ export default function Navbar() {
               </svg>
             ) : (
               <svg
-                className="w-6 h-6 text-gray-700"
+                className="w-6 h-6 text-gray-700 dark:text-gray-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -296,10 +339,10 @@ export default function Navbar() {
             isOpen ? "max-h-screen opacity-100 py-4" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="border-t border-gray-200 pt-4">
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
             <Link
               href="/"
-              className="block py-3 px-4 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              className="block py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Home
@@ -307,7 +350,7 @@ export default function Navbar() {
 
             <div className="py-3 px-4">
               <button
-                className="w-full flex justify-between items-center text-gray-700 hover:text-gray-900"
+                className="w-full flex justify-between items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                 onClick={() => setIsBlogOpen(!isBlogOpen)}
               >
                 Blog
@@ -335,7 +378,7 @@ export default function Navbar() {
               >
                 <Link
                   href="/blog"
-                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
                   onClick={() => {
                     setIsOpen(false);
                     setIsBlogOpen(false);
@@ -345,7 +388,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/blog/category/tech"
-                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
                   onClick={() => {
                     setIsOpen(false);
                     setIsBlogOpen(false);
@@ -356,7 +399,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/blog/category/food"
-                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
                   onClick={() => {
                     setIsOpen(false);
                     setIsBlogOpen(false);
@@ -367,7 +410,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/blog/category/activity"
-                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
                   onClick={() => {
                     setIsOpen(false);
                     setIsBlogOpen(false);
@@ -381,7 +424,7 @@ export default function Navbar() {
 
             <Link
               href="/portfolio"
-              className="block py-3 px-4 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              className="block py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Portfolio
@@ -389,11 +432,53 @@ export default function Navbar() {
 
             <Link
               href="/contact"
-              className="block py-3 px-4 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              className="block py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Contact
             </Link>
+
+            {/* Theme Toggle Button - Mobile */}
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-between w-full py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              <span>Theme</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">
+                  {theme === "light" ? "Light" : "Dark"}
+                </span>
+                {theme === "light" ? (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                )}
+              </div>
+            </button>
 
             {loggedIn ? (
               <div className="border-t border-gray-200 pt-4 mt-4">

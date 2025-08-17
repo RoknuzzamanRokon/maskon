@@ -100,7 +100,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden">
       {/* Enhanced Animated Background */}
       <div className="absolute inset-0 overflow-hidden z-0">
         {/* Large floating circles */}
@@ -430,14 +430,6 @@ export default function Home() {
           </div>
         </motion.section>
 
-
-        
-
-
-
-
-
-        
         {/* Futuristic Animated Wave Divider */}
         <motion.div
           className="relative h-40 w-full my-20 overflow-hidden"
@@ -554,16 +546,6 @@ export default function Home() {
             />
           ))}
         </motion.div>
-
-
-
-
-
-
-
-
-
-
 
         {/* Recent Posts with Enhanced Animations */}
         <motion.section
