@@ -36,28 +36,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Database connection
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
-            host=os.getenv('DB_HOST', 'localhost'),
-            database=os.getenv('DB_NAME', 'blog_portfolio'),
-            user=os.getenv('DB_USER', 'root'),
-            password=os.getenv('DB_PASSWORD', '')
+            host=os.getenv("DB_HOST", "localhost"),
+            database=os.getenv("DB_NAME", "blog_portfolio"),
+            user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASSWORD", ""),
         )
         return connection
     except Error as e:
         raise HTTPException(status_code=500, detail=f"Database connection failed: {e}")
+
 
 # Pydantic models
 class UserLogin(BaseModel):
     username: str
     password: str
 
+
 class UserRegister(BaseModel):
     username: str
     email: str
     password: str
+
 
 class Token(BaseModel):
     access_token: str
@@ -66,6 +70,7 @@ class Token(BaseModel):
     username: str
     is_admin: bool
 
+
 class PostCreate(BaseModel):
     title: str
     content: str
@@ -73,6 +78,7 @@ class PostCreate(BaseModel):
     tags: Optional[str] = None
     image_url: Optional[str] = None  # Keep for backward compatibility
     media_urls: Optional[List[dict]] = None  # New field for multiple media
+
 
 class Post(BaseModel):
     id: int
@@ -88,8 +94,10 @@ class Post(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+
 class CommentCreate(BaseModel):
     content: str
+
 
 class Comment(BaseModel):
     id: int
@@ -99,9 +107,11 @@ class Comment(BaseModel):
     content: str
     created_at: datetime
 
+
 class PostInteraction(BaseModel):
     post_id: int
     interaction_type: str  # 'like' or 'dislike'
+
 
 class PortfolioItem(BaseModel):
     id: int
@@ -113,12 +123,64 @@ class PortfolioItem(BaseModel):
     image_url: Optional[str] = None
     created_at: datetime
 
+
+class ProductCreate(BaseModel):
+    name: str
+    description: str
+    category: str
+    price: float
+    stock: int
+    discount: Optional[float] = None
+    specifications: Optional[str] = None
+    image_url: Optional[str] = None
+    is_active: bool = True
+
+
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    price: Optional[float] = None
+    stock: Optional[int] = None
+    discount: Optional[float] = None
+    specifications: Optional[str] = None
+    image_url: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class Product(BaseModel):
+    id: int
+    name: str
+    description: str
+    category: str
+    price: float
+    stock: int
+    discount: Optional[float] = None
+    specifications: Optional[str] = None
+    image_url: Optional[str] = None
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    created_by: Optional[int] = None
+
+
+class ProductInquiry(BaseModel):
+    product_id: int
+    customer_name: str
+    customer_email: str
+    customer_phone: Optional[str] = None
+    message: Optional[str] = None
+    inquiry_type: str = "purchase"
+
+
 # Authentication functions
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
+
 def get_password_hash(password):
     return pwd_context.hash(password)
+
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -130,33 +192,43 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM]
+        )
         user_id: int = payload.get("sub")
         if user_id is None:
-            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+            raise HTTPException(
+                status_code=401, detail="Invalid authentication credentials"
+            )
         return user_id
     except jwt.PyJWTError:
-        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+        raise HTTPException(
+            status_code=401, detail="Invalid authentication credentials"
+        )
+
 
 def get_current_admin(user_id: int = Depends(get_current_user)):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
+
     try:
         cursor.execute("SELECT is_admin FROM users WHERE id = %s", (user_id,))
         user = cursor.fetchone()
-        if not user or not user['is_admin']:
+        if not user or not user["is_admin"]:
             raise HTTPException(status_code=403, detail="Admin access required")
         return user_id
     finally:
         cursor.close()
         connection.close()
 
+
 @app.get("/")
 async def root():
     return {"message": "Blog & Portfolio API"}
+
 
 # Create static directory if it doesn't exist
 STATIC_DIR = "static"
@@ -166,46 +238,57 @@ os.makedirs(os.path.join(STATIC_DIR, "uploads"), exist_ok=True)
 # Mount static files
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
+
 # Registration disabled - Admin only system
 @app.post("/api/register", response_model=dict)
 async def register(user: UserRegister):
-    raise HTTPException(status_code=403, detail="Registration is disabled. This is an admin-only system.")
+    raise HTTPException(
+        status_code=403,
+        detail="Registration is disabled. This is an admin-only system.",
+    )
+
 
 @app.post("/api/login", response_model=Token)
 async def login(user: UserLogin):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
+
     try:
-        cursor.execute("SELECT id, username, password_hash, is_admin FROM users WHERE username = %s", (user.username,))
+        cursor.execute(
+            "SELECT id, username, password_hash, is_admin FROM users WHERE username = %s",
+            (user.username,),
+        )
         db_user = cursor.fetchone()
-        
-        if not db_user or not verify_password(user.password, db_user['password_hash']):
+
+        if not db_user or not verify_password(user.password, db_user["password_hash"]):
             raise HTTPException(status_code=401, detail="Invalid username or password")
-        
+
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
-            data={"sub": str(db_user['id'])}, expires_delta=access_token_expires
+            data={"sub": str(db_user["id"])}, expires_delta=access_token_expires
         )
-        
+
         return {
             "access_token": access_token,
             "token_type": "bearer",
-            "user_id": db_user['id'],
-            "username": db_user['username'],
-            "is_admin": db_user['is_admin']
+            "user_id": db_user["id"],
+            "username": db_user["username"],
+            "is_admin": db_user["is_admin"],
         }
     finally:
         cursor.close()
         connection.close()
 
+
 @app.get("/api/me")
 async def get_current_user_info(user_id: int = Depends(get_current_user)):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
+
     try:
-        cursor.execute("SELECT id, username, email, is_admin FROM users WHERE id = %s", (user_id,))
+        cursor.execute(
+            "SELECT id, username, email, is_admin FROM users WHERE id = %s", (user_id,)
+        )
         user = cursor.fetchone()
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
@@ -214,78 +297,97 @@ async def get_current_user_info(user_id: int = Depends(get_current_user)):
         cursor.close()
         connection.close()
 
+
 @app.post("/api/upload-media")
-async def upload_media(files: List[UploadFile] = File(...), admin_id: int = Depends(get_current_admin)):
+async def upload_media(
+    files: List[UploadFile] = File(...), admin_id: int = Depends(get_current_admin)
+):
     UPLOAD_DIR = os.path.join(STATIC_DIR, "uploads")
     os.makedirs(UPLOAD_DIR, exist_ok=True)
-    
+
     uploaded_files = []
     allowed_image_types = ["image/jpeg", "image/png", "image/gif", "image/webp"]
-    allowed_video_types = ["video/mp4", "video/webm", "video/ogg", "video/avi", "video/mov"]
-    
+    allowed_video_types = [
+        "video/mp4",
+        "video/webm",
+        "video/ogg",
+        "video/avi",
+        "video/mov",
+    ]
+
     for file in files:
         # Check file type
         if file.content_type not in allowed_image_types + allowed_video_types:
             raise HTTPException(
-                status_code=400, 
-                detail=f"File type {file.content_type} not allowed. Only images and videos are supported."
+                status_code=400,
+                detail=f"File type {file.content_type} not allowed. Only images and videos are supported.",
             )
-        
+
         # Check file size (50MB limit for videos, 10MB for images)
-        file_size_limit = 50 * 1024 * 1024 if file.content_type in allowed_video_types else 10 * 1024 * 1024
-        
+        file_size_limit = (
+            50 * 1024 * 1024
+            if file.content_type in allowed_video_types
+            else 10 * 1024 * 1024
+        )
+
         file_extension = file.filename.split(".")[-1].lower()
         unique_filename = f"{uuid.uuid4()}.{file_extension}"
         file_path = os.path.join(UPLOAD_DIR, unique_filename)
-        
+
         try:
             with open(file_path, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
-            
+
             # Get file size after upload
             file_size = os.path.getsize(file_path)
             if file_size > file_size_limit:
                 os.remove(file_path)  # Remove the file
                 raise HTTPException(
-                    status_code=400, 
-                    detail=f"File too large. Maximum size: {file_size_limit // (1024*1024)}MB"
+                    status_code=400,
+                    detail=f"File too large. Maximum size: {file_size_limit // (1024*1024)}MB",
                 )
-            
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Could not upload file: {e}")
         finally:
             file.file.close()
-        
+
         # Construct the full URL for the uploaded file
-        base_url = os.getenv('BACKEND_URL', 'http://localhost:8000')
+        base_url = os.getenv("BACKEND_URL", "http://localhost:8000")
         file_url = f"{base_url}/static/uploads/{unique_filename}"
-        
+
         # Determine media type
         media_type = "image" if file.content_type in allowed_image_types else "video"
-        
-        uploaded_files.append({
-            "filename": unique_filename,
-            "url": file_url,
-            "type": media_type,
-            "original_name": file.filename
-        })
-    
+
+        uploaded_files.append(
+            {
+                "filename": unique_filename,
+                "url": file_url,
+                "type": media_type,
+                "original_name": file.filename,
+            }
+        )
+
     return {"uploaded_files": uploaded_files}
+
 
 # Keep the old single image upload for backward compatibility
 @app.post("/api/upload-image")
-async def upload_single_image(file: UploadFile = File(...), admin_id: int = Depends(get_current_admin)):
+async def upload_single_image(
+    file: UploadFile = File(...), admin_id: int = Depends(get_current_admin)
+):
     result = await upload_media([file], admin_id)
     if result["uploaded_files"]:
         return result["uploaded_files"][0]
     else:
         raise HTTPException(status_code=500, detail="Upload failed")
 
+
 @app.get("/api/posts", response_model=List[Post])
 async def get_posts(category: Optional[str] = None, limit: int = 10):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
+
     try:
         if category:
             query = "SELECT * FROM posts WHERE category = %s ORDER BY created_at DESC LIMIT %s"
@@ -293,160 +395,207 @@ async def get_posts(category: Optional[str] = None, limit: int = 10):
         else:
             query = "SELECT * FROM posts ORDER BY created_at DESC LIMIT %s"
             cursor.execute(query, (limit,))
-        
+
         posts = cursor.fetchall()
-        
+
         # Parse media_urls JSON field
         import json
+
         for post in posts:
-            if post.get('media_urls'):
+            if post.get("media_urls"):
                 try:
-                    post['media_urls'] = json.loads(post['media_urls'])
+                    post["media_urls"] = json.loads(post["media_urls"])
                 except (json.JSONDecodeError, TypeError):
-                    post['media_urls'] = None
+                    post["media_urls"] = None
             else:
-                post['media_urls'] = None
-        
+                post["media_urls"] = None
+
         return posts
     finally:
         cursor.close()
         connection.close()
 
+
 @app.post("/api/posts", response_model=dict)
 async def create_post(post: PostCreate, admin_id: int = Depends(get_current_admin)):
     connection = get_db_connection()
     cursor = connection.cursor()
-    
+
     try:
         # Convert media_urls to JSON string if provided
         media_urls_json = None
         if post.media_urls:
             import json
+
             media_urls_json = json.dumps(post.media_urls)
-        
+
         query = """
         INSERT INTO posts (title, content, category, tags, image_url, media_urls, created_at, updated_at)
         VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW())
         """
-        cursor.execute(query, (post.title, post.content, post.category, post.tags, post.image_url, media_urls_json))
+        cursor.execute(
+            query,
+            (
+                post.title,
+                post.content,
+                post.category,
+                post.tags,
+                post.image_url,
+                media_urls_json,
+            ),
+        )
         connection.commit()
-        
+
         return {"message": "Post created successfully", "id": cursor.lastrowid}
     finally:
         cursor.close()
         connection.close()
 
+
 @app.delete("/api/posts/{post_id}")
 async def delete_post(post_id: int, admin_id: int = Depends(get_current_admin)):
     connection = get_db_connection()
     cursor = connection.cursor()
-    
+
     try:
         # Delete related comments and interactions first
         cursor.execute("DELETE FROM comments WHERE post_id = %s", (post_id,))
         cursor.execute("DELETE FROM post_interactions WHERE post_id = %s", (post_id,))
-        
+
         # Delete the post
         cursor.execute("DELETE FROM posts WHERE id = %s", (post_id,))
-        
+
         if cursor.rowcount == 0:
             raise HTTPException(status_code=404, detail="Post not found")
-        
+
         connection.commit()
         return {"message": "Post deleted successfully"}
     finally:
         cursor.close()
         connection.close()
 
+
 # Anonymous user interactions (likes/dislikes)
 @app.post("/api/posts/{post_id}/interact")
-async def interact_with_post(post_id: int, interaction: PostInteraction, request: Request):
+async def interact_with_post(
+    post_id: int, interaction: PostInteraction, request: Request
+):
     connection = get_db_connection()
     cursor = connection.cursor()
-    
+
     try:
         # Use IP address as anonymous user identifier
         client_ip = request.client.host
         anonymous_user_id = f"anon_{client_ip}"
-        
+
         # Check if this IP already interacted with this post
-        cursor.execute("SELECT interaction_type FROM anonymous_interactions WHERE post_id = %s AND user_identifier = %s", (post_id, anonymous_user_id))
+        cursor.execute(
+            "SELECT interaction_type FROM anonymous_interactions WHERE post_id = %s AND user_identifier = %s",
+            (post_id, anonymous_user_id),
+        )
         existing = cursor.fetchone()
-        
+
         if existing:
             if existing[0] == interaction.interaction_type:
                 # Remove interaction if same type (toggle off)
-                cursor.execute("DELETE FROM anonymous_interactions WHERE post_id = %s AND user_identifier = %s", (post_id, anonymous_user_id))
+                cursor.execute(
+                    "DELETE FROM anonymous_interactions WHERE post_id = %s AND user_identifier = %s",
+                    (post_id, anonymous_user_id),
+                )
                 message = f"{interaction.interaction_type} removed"
             else:
                 # Update interaction type
-                cursor.execute("UPDATE anonymous_interactions SET interaction_type = %s WHERE post_id = %s AND user_identifier = %s", 
-                             (interaction.interaction_type, post_id, anonymous_user_id))
+                cursor.execute(
+                    "UPDATE anonymous_interactions SET interaction_type = %s WHERE post_id = %s AND user_identifier = %s",
+                    (interaction.interaction_type, post_id, anonymous_user_id),
+                )
                 message = f"Changed to {interaction.interaction_type}"
         else:
             # Add new interaction
-            cursor.execute("INSERT INTO anonymous_interactions (post_id, user_identifier, interaction_type, created_at) VALUES (%s, %s, %s, NOW())", 
-                         (post_id, anonymous_user_id, interaction.interaction_type))
+            cursor.execute(
+                "INSERT INTO anonymous_interactions (post_id, user_identifier, interaction_type, created_at) VALUES (%s, %s, %s, NOW())",
+                (post_id, anonymous_user_id, interaction.interaction_type),
+            )
             message = f"{interaction.interaction_type} added"
-        
+
         connection.commit()
-        
+
         # Get updated counts
-        cursor.execute("SELECT COUNT(*) FROM anonymous_interactions WHERE post_id = %s AND interaction_type = 'like'", (post_id,))
+        cursor.execute(
+            "SELECT COUNT(*) FROM anonymous_interactions WHERE post_id = %s AND interaction_type = 'like'",
+            (post_id,),
+        )
         likes_count = cursor.fetchone()[0]
-        
-        cursor.execute("SELECT COUNT(*) FROM anonymous_interactions WHERE post_id = %s AND interaction_type = 'dislike'", (post_id,))
+
+        cursor.execute(
+            "SELECT COUNT(*) FROM anonymous_interactions WHERE post_id = %s AND interaction_type = 'dislike'",
+            (post_id,),
+        )
         dislikes_count = cursor.fetchone()[0]
-        
+
         # Update post counts
-        cursor.execute("UPDATE posts SET likes_count = %s, dislikes_count = %s WHERE id = %s", 
-                     (likes_count, dislikes_count, post_id))
+        cursor.execute(
+            "UPDATE posts SET likes_count = %s, dislikes_count = %s WHERE id = %s",
+            (likes_count, dislikes_count, post_id),
+        )
         connection.commit()
-        
+
         return {
             "message": message,
             "likes_count": likes_count,
-            "dislikes_count": dislikes_count
+            "dislikes_count": dislikes_count,
         }
     finally:
         cursor.close()
         connection.close()
+
 
 # Anonymous comments
 class AnonymousCommentCreate(BaseModel):
     content: str
     username: str  # Display name for anonymous user
 
+
 @app.post("/api/posts/{post_id}/comments")
-async def add_anonymous_comment(post_id: int, comment: AnonymousCommentCreate, request: Request):
+async def add_anonymous_comment(
+    post_id: int, comment: AnonymousCommentCreate, request: Request
+):
     connection = get_db_connection()
     cursor = connection.cursor()
-    
+
     try:
         # Use IP address as anonymous user identifier
         client_ip = request.client.host
         anonymous_user_id = f"anon_{client_ip}"
-        
-        cursor.execute("INSERT INTO anonymous_comments (post_id, user_identifier, username, content, created_at) VALUES (%s, %s, %s, %s, NOW())", 
-                     (post_id, anonymous_user_id, comment.username, comment.content))
+
+        cursor.execute(
+            "INSERT INTO anonymous_comments (post_id, user_identifier, username, content, created_at) VALUES (%s, %s, %s, %s, NOW())",
+            (post_id, anonymous_user_id, comment.username, comment.content),
+        )
         connection.commit()
-        
+
         # Update comment count in posts table
-        cursor.execute("SELECT COUNT(*) FROM anonymous_comments WHERE post_id = %s", (post_id,))
+        cursor.execute(
+            "SELECT COUNT(*) FROM anonymous_comments WHERE post_id = %s", (post_id,)
+        )
         comment_count = cursor.fetchone()[0]
-        cursor.execute("UPDATE posts SET comments_count = %s WHERE id = %s", (comment_count, post_id))
+        cursor.execute(
+            "UPDATE posts SET comments_count = %s WHERE id = %s",
+            (comment_count, post_id),
+        )
         connection.commit()
-        
+
         return {"message": "Comment added successfully", "id": cursor.lastrowid}
     finally:
         cursor.close()
         connection.close()
 
+
 @app.get("/api/posts/{post_id}/comments")
 async def get_comments(post_id: int):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
+
     try:
         # Get anonymous comments
         query = """
@@ -462,66 +611,72 @@ async def get_comments(post_id: int):
         cursor.close()
         connection.close()
 
+
 @app.delete("/api/comments/{comment_id}")
 async def delete_comment(comment_id: int, user_id: int = Depends(get_current_user)):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
+
     try:
         # Check if user owns the comment or is admin
         cursor.execute("SELECT user_id FROM comments WHERE id = %s", (comment_id,))
         comment = cursor.fetchone()
-        
+
         if not comment:
             raise HTTPException(status_code=404, detail="Comment not found")
-        
+
         cursor.execute("SELECT is_admin FROM users WHERE id = %s", (user_id,))
         user = cursor.fetchone()
-        
-        if comment['user_id'] != user_id and not user['is_admin']:
-            raise HTTPException(status_code=403, detail="Not authorized to delete this comment")
-        
+
+        if comment["user_id"] != user_id and not user["is_admin"]:
+            raise HTTPException(
+                status_code=403, detail="Not authorized to delete this comment"
+            )
+
         cursor.execute("DELETE FROM comments WHERE id = %s", (comment_id,))
         connection.commit()
-        
+
         return {"message": "Comment deleted successfully"}
     finally:
         cursor.close()
         connection.close()
 
+
 @app.get("/api/posts/{post_id}", response_model=Post)
 async def get_post(post_id: int):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
+
     try:
         query = "SELECT * FROM posts WHERE id = %s"
         cursor.execute(query, (post_id,))
         post = cursor.fetchone()
-        
+
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
-        
+
         # Parse media_urls JSON field
         import json
-        if post.get('media_urls'):
+
+        if post.get("media_urls"):
             try:
-                post['media_urls'] = json.loads(post['media_urls'])
+                post["media_urls"] = json.loads(post["media_urls"])
             except (json.JSONDecodeError, TypeError):
-                post['media_urls'] = None
+                post["media_urls"] = None
         else:
-            post['media_urls'] = None
-        
+            post["media_urls"] = None
+
         return post
     finally:
         cursor.close()
         connection.close()
 
+
 @app.get("/api/portfolio", response_model=List[PortfolioItem])
 async def get_portfolio():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
+
     try:
         query = "SELECT * FROM portfolio ORDER BY created_at DESC"
         cursor.execute(query)
@@ -531,6 +686,250 @@ async def get_portfolio():
         cursor.close()
         connection.close()
 
+
+# Product API endpoints
+@app.get("/api/products", response_model=List[Product])
+async def get_products(category: Optional[str] = None, limit: int = 20):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        if category and category != "all":
+            query = "SELECT * FROM products WHERE category = %s AND is_active = TRUE ORDER BY created_at DESC LIMIT %s"
+            cursor.execute(query, (category, limit))
+        else:
+            query = "SELECT * FROM products WHERE is_active = TRUE ORDER BY created_at DESC LIMIT %s"
+            cursor.execute(query, (limit,))
+
+        products = cursor.fetchall()
+        return products
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.get("/api/products/{product_id}", response_model=Product)
+async def get_product(product_id: int):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        query = "SELECT * FROM products WHERE id = %s"
+        cursor.execute(query, (product_id,))
+        product = cursor.fetchone()
+
+        if not product:
+            raise HTTPException(status_code=404, detail="Product not found")
+
+        return product
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.post("/api/products", response_model=dict)
+async def create_product(
+    product: ProductCreate, admin_id: int = Depends(get_current_admin)
+):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        query = """
+        INSERT INTO products (name, description, category, price, stock, discount, specifications, image_url, is_active, created_by, created_at, updated_at)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
+        """
+        cursor.execute(
+            query,
+            (
+                product.name,
+                product.description,
+                product.category,
+                product.price,
+                product.stock,
+                product.discount,
+                product.specifications,
+                product.image_url,
+                product.is_active,
+                admin_id,
+            ),
+        )
+        connection.commit()
+
+        return {"message": "Product created successfully", "id": cursor.lastrowid}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.put("/api/products/{product_id}", response_model=dict)
+async def update_product(
+    product_id: int, product: ProductUpdate, admin_id: int = Depends(get_current_admin)
+):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Build dynamic update query
+        update_fields = []
+        update_values = []
+
+        if product.name is not None:
+            update_fields.append("name = %s")
+            update_values.append(product.name)
+        if product.description is not None:
+            update_fields.append("description = %s")
+            update_values.append(product.description)
+        if product.category is not None:
+            update_fields.append("category = %s")
+            update_values.append(product.category)
+        if product.price is not None:
+            update_fields.append("price = %s")
+            update_values.append(product.price)
+        if product.stock is not None:
+            update_fields.append("stock = %s")
+            update_values.append(product.stock)
+        if product.discount is not None:
+            update_fields.append("discount = %s")
+            update_values.append(product.discount)
+        if product.specifications is not None:
+            update_fields.append("specifications = %s")
+            update_values.append(product.specifications)
+        if product.image_url is not None:
+            update_fields.append("image_url = %s")
+            update_values.append(product.image_url)
+        if product.is_active is not None:
+            update_fields.append("is_active = %s")
+            update_values.append(product.is_active)
+
+        if not update_fields:
+            raise HTTPException(status_code=400, detail="No fields to update")
+
+        update_fields.append("updated_at = NOW()")
+        update_values.append(product_id)
+
+        query = f"UPDATE products SET {', '.join(update_fields)} WHERE id = %s"
+        cursor.execute(query, update_values)
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Product not found")
+
+        connection.commit()
+        return {"message": "Product updated successfully"}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.delete("/api/products/{product_id}")
+async def delete_product(product_id: int, admin_id: int = Depends(get_current_admin)):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Delete related inquiries first
+        cursor.execute(
+            "DELETE FROM product_inquiries WHERE product_id = %s", (product_id,)
+        )
+
+        # Delete the product
+        cursor.execute("DELETE FROM products WHERE id = %s", (product_id,))
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Product not found")
+
+        connection.commit()
+        return {"message": "Product deleted successfully"}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.post("/api/products/{product_id}/inquire")
+async def create_product_inquiry(
+    product_id: int, inquiry: ProductInquiry, request: Request
+):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Check if product exists
+        cursor.execute("SELECT id FROM products WHERE id = %s", (product_id,))
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="Product not found")
+
+        query = """
+        INSERT INTO product_inquiries (product_id, customer_name, customer_email, customer_phone, message, inquiry_type, created_at)
+        VALUES (%s, %s, %s, %s, %s, %s, NOW())
+        """
+        cursor.execute(
+            query,
+            (
+                product_id,
+                inquiry.customer_name,
+                inquiry.customer_email,
+                inquiry.customer_phone,
+                inquiry.message,
+                inquiry.inquiry_type,
+            ),
+        )
+        connection.commit()
+
+        return {"message": "Inquiry submitted successfully", "id": cursor.lastrowid}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.get("/api/admin/product-inquiries")
+async def get_product_inquiries(admin_id: int = Depends(get_current_admin)):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        query = """
+        SELECT pi.*, p.name as product_name, p.price as product_price
+        FROM product_inquiries pi
+        JOIN products p ON pi.product_id = p.id
+        ORDER BY pi.created_at DESC
+        """
+        cursor.execute(query)
+        inquiries = cursor.fetchall()
+        return inquiries
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.put("/api/admin/product-inquiries/{inquiry_id}/status")
+async def update_inquiry_status(
+    inquiry_id: int, status: str, admin_id: int = Depends(get_current_admin)
+):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        valid_statuses = ["pending", "responded", "closed"]
+        if status not in valid_statuses:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid status. Must be one of: {valid_statuses}",
+            )
+
+        query = "UPDATE product_inquiries SET status = %s, responded_at = NOW() WHERE id = %s"
+        cursor.execute(query, (status, inquiry_id))
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Inquiry not found")
+
+        connection.commit()
+        return {"message": "Inquiry status updated successfully"}
+    finally:
+        cursor.close()
+        connection.close()
+
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
