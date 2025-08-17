@@ -5,16 +5,16 @@ export default async function BlogPage() {
   const posts = await getBlogPosts(20);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-extrabold text-gray-900 mb-6 relative inline-block">
+          <h1 className="text-5xl font-extrabold text-gray-900 dark:text-white mb-6 relative inline-block">
             <span className="relative z-10">
               Latest Articles
               <span className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-500 transform -rotate-1 -z-1"></span>
             </span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Discover insightful articles on technology, food, and activities
             that inspire and inform.
           </p>
@@ -23,7 +23,7 @@ export default async function BlogPage() {
             {["all", "tech", "food", "activity"].map((category) => (
               <button
                 key={category}
-                className="px-5 py-2 rounded-full text-sm font-medium capitalize bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-indigo-300"
+                className="px-5 py-2 rounded-full text-sm font-medium capitalize bg-white dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-400 text-gray-700 dark:text-gray-300"
               >
                 {category}
               </button>
@@ -35,7 +35,7 @@ export default async function BlogPage() {
           {posts.map((post: any) => (
             <div
               key={post.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group"
+              className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group"
             >
               {post.image_url && (
                 <div className="relative h-56 overflow-hidden">
@@ -62,7 +62,7 @@ export default async function BlogPage() {
               )}
 
               <div className="p-6">
-                <div className="flex items-center text-sm text-gray-500 mb-4">
+                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
                   <svg
                     className="w-4 h-4 mr-1"
                     fill="currentColor"
@@ -90,11 +90,11 @@ export default async function BlogPage() {
                   </div>
                 </div>
 
-                <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">
                   {post.title}
                 </h2>
 
-                <p className="text-gray-600 mb-5">
+                <p className="text-gray-600 dark:text-gray-300 mb-5">
                   {post.content.substring(0, 150)}...
                 </p>
 
@@ -103,7 +103,7 @@ export default async function BlogPage() {
                     {post.tags.split(",").map((tag: string) => (
                       <span
                         key={tag}
-                        className="inline-block bg-indigo-50 text-indigo-700 px-3 py-1 text-xs rounded-full font-medium"
+                        className="inline-block bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 px-3 py-1 text-xs rounded-full font-medium"
                       >
                         #{tag.trim()}
                       </span>
@@ -114,7 +114,7 @@ export default async function BlogPage() {
                 <div className="flex items-center justify-between">
                   <Link
                     href={`/blog/post/${post.id}`}
-                    className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center group-hover:underline transition-all"
+                    className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium flex items-center group-hover:underline transition-all"
                   >
                     Read full article
                     <svg
@@ -127,7 +127,7 @@ export default async function BlogPage() {
                   </Link>
 
                   <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-sm font-bold text-gray-700">
+                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 border-2 border-white dark:border-gray-700 flex items-center justify-center text-sm font-bold text-gray-700 dark:text-gray-300">
                       {post.author?.charAt(0) || "A"}
                     </div>
                   </div>
@@ -171,9 +171,9 @@ export default async function BlogPage() {
               <input
                 type="email"
                 placeholder="Your email address"
-                className="flex-grow px-5 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white"
+                className="flex-grow px-5 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
-              <button className="px-6 py-3 bg-white text-indigo-600 font-medium rounded-full hover:bg-gray-100 transition-colors whitespace-nowrap">
+              <button className="px-6 py-3 bg-white dark:bg-gray-200 text-indigo-600 dark:text-indigo-700 font-medium rounded-full hover:bg-gray-100 dark:hover:bg-gray-300 transition-colors whitespace-nowrap">
                 Subscribe Now
               </button>
             </div>

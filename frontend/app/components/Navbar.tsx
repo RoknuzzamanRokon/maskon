@@ -253,7 +253,7 @@ export default function Navbar() {
 
                   <button
                     onClick={handleLogout}
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-1.5 border border-gray-200"
+                    className="bg-red-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-1.5 border border-gray-200"
                   >
                     <svg
                       className="w-4 h-4"
