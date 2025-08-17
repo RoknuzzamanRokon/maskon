@@ -219,7 +219,7 @@ export default function Navbar() {
                     {userInfo?.username.charAt(0).toUpperCase()}
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-800">
+                    <p className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group">
                       {userInfo?.username}
                       {userInfo?.is_admin && (
                         <span className="ml-1.5 bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">

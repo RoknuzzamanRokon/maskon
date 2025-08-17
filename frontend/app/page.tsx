@@ -326,7 +326,7 @@ export default function Home() {
           viewport={{ once: true, margin: "-100px" }}
         >
           <motion.h2
-            className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 relative inline-block"
+            className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200 relative inline-block"
             variants={item}
           >
             Explore Our{" "}
@@ -555,7 +555,7 @@ export default function Home() {
           viewport={{ once: true, margin: "-100px" }}
         >
           <motion.h2
-            className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 relative inline-block"
+            className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-100 relative inline-block"
             variants={item}
           >
             Latest{" "}

@@ -33,6 +33,7 @@ export default async function PortfolioPage() {
         "UI/UX Design",
       ],
       photo: "/team/20240827_185556.jpg",
+      email: "rokon.raz@gmail.com",
     },
     {
       name: "Masrufa",
@@ -47,6 +48,7 @@ export default async function PortfolioPage() {
         "Kubernetes",
       ],
       photo: "/team/20240827_185556.jpg",
+      email: "sdfsdfsdf.raz@gmail.com",
     },
   ];
 
@@ -503,7 +505,7 @@ export default async function PortfolioPage() {
                       className="inline-flex items-center text-blue-100 hover:text-white transition-colors"
                     >
                       <Mail className="w-4 h-4 mr-2" />
-                      rokon.raz@gmail.com
+                      {member.email}
                     </a>
                   </div>
                 ))}

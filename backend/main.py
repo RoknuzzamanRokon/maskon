@@ -132,7 +132,7 @@ class ProductCreate(BaseModel):
     stock: int
     discount: Optional[float] = None
     specifications: Optional[str] = None
-    image_url: Optional[str] = None
+    image_urls: List[str] = [] # Changed from image_url to image_urls
     is_active: bool = True
 
 
@@ -157,7 +157,7 @@ class Product(BaseModel):
     stock: int
     discount: Optional[float] = None
     specifications: Optional[str] = None
-    image_url: Optional[str] = None
+    image_urls: List[str] = [] # Changed from image_url to image_urls
     is_active: bool
     created_at: datetime
     updated_at: datetime
@@ -445,8 +445,9 @@ async def create_post(post: PostCreate, admin_id: int = Depends(get_current_admi
             ),
         )
         connection.commit()
+        post_id = cursor.lastrowid
 
-        return {"message": "Post created successfully", "id": cursor.lastrowid}
+        return {"message": "Post created successfully", "id": post_id}
     finally:
         cursor.close()
         connection.close()
@@ -585,11 +586,9 @@ async def add_anonymous_comment(
         )
         connection.commit()
 
-        return {"message": "Comment added successfully", "id": cursor.lastrowid}
     finally:
         cursor.close()
         connection.close()
-
 
 @app.get("/api/posts/{post_id}/comments")
 async def get_comments(post_id: int):
@@ -636,11 +635,9 @@ async def delete_comment(comment_id: int, user_id: int = Depends(get_current_use
         cursor.execute("DELETE FROM comments WHERE id = %s", (comment_id,))
         connection.commit()
 
-        return {"message": "Comment deleted successfully"}
     finally:
         cursor.close()
         connection.close()
-
 
 @app.get("/api/posts/{post_id}", response_model=Post)
 async def get_post(post_id: int):
@@ -716,10 +713,35 @@ async def get_product(product_id: int):
     try:
         query = "SELECT * FROM products WHERE id = %s"
         cursor.execute(query, (product_id,))
-        product = cursor.fetchone()
+        product_data = cursor.fetchone()
 
-        if not product:
+        if not product_data:
             raise HTTPException(status_code=404, detail="Product not found")
+
+        # Fetch additional images for this product
+        cursor.execute(
+            "SELECT id, image_url FROM product_images WHERE product_id = %s ORDER BY id ASC",
+            (product_id,),
+        )
+        images = cursor.fetchall()
+        image_urls = [img["image_url"] for img in images] if images else []
+
+        # Construct the Product model instance
+        product = Product(
+            id=product_data["id"],
+            name=product_data["name"],
+            description=product_data["description"],
+            category=product_data["category"],
+            price=product_data["price"],
+            stock=product_data["stock"],
+            discount=product_data["discount"],
+            specifications=product_data["specifications"],
+            image_urls=image_urls,  # Use the fetched image_urls
+            is_active=product_data["is_active"],
+            created_at=product_data["created_at"],
+            updated_at=product_data["updated_at"],
+            created_by=product_data["created_by"],
+        )
 
         return product
     finally:
@@ -736,8 +758,8 @@ async def create_product(
 
     try:
         query = """
-        INSERT INTO products (name, description, category, price, stock, discount, specifications, image_url, is_active, created_by, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
+        INSERT INTO products (name, description, category, price, stock, discount, specifications, is_active, created_by, created_at, updated_at)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
         """
         cursor.execute(
             query,
@@ -749,14 +771,26 @@ async def create_product(
                 product.stock,
                 product.discount,
                 product.specifications,
-                product.image_url,
                 product.is_active,
                 admin_id,
             ),
         )
         connection.commit()
+        product_id = cursor.lastrowid
 
-        return {"message": "Product created successfully", "id": cursor.lastrowid}
+        # Insert images into product_images table
+        if product.image_urls:
+            image_records = [(product_id, url, False) for url in product.image_urls]
+            cursor.executemany(
+                """
+                INSERT INTO product_images (product_id, image_url, is_primary, created_at)
+                VALUES (%s, %s, %s, NOW())
+                """,
+                image_records,
+            )
+            connection.commit()
+
+        return {"message": "Product created successfully", "id": product_id}
     finally:
         cursor.close()
         connection.close()
@@ -924,6 +958,146 @@ async def update_inquiry_status(
 
         connection.commit()
         return {"message": "Inquiry status updated successfully"}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+# Product Images API endpoints
+@app.post("/api/products/{product_id}/images")
+async def add_product_images(
+    product_id: int,
+    files: List[UploadFile] = File(...),
+    admin_id: int = Depends(get_current_admin),
+):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        # Check if product exists
+        cursor.execute("SELECT id FROM products WHERE id = %s", (product_id,))
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="Product not found")
+
+        # Upload images
+        uploaded_files = await upload_media(files, admin_id)
+
+        # Prepare bulk insert
+        image_records = [
+            (product_id, f["url"], False)
+            for f in uploaded_files["uploaded_files"]
+            if f["type"] == "image"
+        ]
+
+        if image_records:
+            cursor.executemany(
+                """
+                INSERT INTO product_images (product_id, image_url, is_primary, created_at)
+                VALUES (%s, %s, %s, NOW())
+                ON DUPLICATE KEY UPDATE updated_at = NOW()
+                """,
+                image_records,
+            )
+            connection.commit()
+
+            cursor.execute(
+                """
+                SELECT id, image_url, is_primary, created_at
+                FROM product_images
+                WHERE product_id = %s
+                ORDER BY is_primary DESC, id DESC
+                LIMIT %s
+                """,
+                (product_id, len(image_records)),
+            )
+            added_images = cursor.fetchall()
+        else:
+            added_images = []
+
+        return {
+            "message": f"Added {len(added_images)} images successfully",
+            "images": added_images,
+        }
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.delete("/api/products/{product_id}/images/{image_id}")
+async def delete_product_image(
+    product_id: int, image_id: int, admin_id: int = Depends(get_current_admin)
+):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Check if image exists and belongs to the product
+        cursor.execute(
+            "SELECT image_url FROM product_images WHERE id = %s AND product_id = %s",
+            (image_id, product_id),
+        )
+        image = cursor.fetchone()
+
+        if not image:
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        # Delete from database
+        cursor.execute("DELETE FROM product_images WHERE id = %s", (image_id,))
+        connection.commit()
+
+        return {"message": "Image deleted successfully"}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.put("/api/products/{product_id}/images/{image_id}/primary")
+async def set_primary_image(
+    product_id: int, image_id: int, admin_id: int = Depends(get_current_admin)
+):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Check if image exists and belongs to the product
+        cursor.execute(
+            "SELECT id FROM product_images WHERE id = %s AND product_id = %s",
+            (image_id, product_id),
+        )
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        # Remove primary status from all images of this product
+        cursor.execute(
+            "UPDATE product_images SET is_primary = FALSE WHERE product_id = %s",
+            (product_id,),
+        )
+
+        # Set this image as primary
+        cursor.execute(
+            "UPDATE product_images SET is_primary = TRUE WHERE id = %s", (image_id,)
+        )
+
+        connection.commit()
+        return {"message": "Primary image updated successfully"}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.get("/api/products/{product_id}/images")
+async def get_product_images(product_id: int):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            "SELECT id, image_url, is_primary, created_at FROM product_images WHERE product_id = %s ORDER BY is_primary DESC, id ASC",
+            (product_id,),
+        )
+        images = cursor.fetchall()
+        return images
     finally:
         cursor.close()
         connection.close()
