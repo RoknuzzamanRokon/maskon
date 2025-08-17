@@ -67,20 +67,20 @@ function AdminPageContent() {
     }));
   };
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-sm p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-4">
                   <span className="text-2xl">📝</span>
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                     Admin Dashboard
                   </h1>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-300">
                     Welcome back, {userInfo?.username}!
                   </p>
                 </div>
@@ -88,7 +88,7 @@ function AdminPageContent() {
               <div className="flex items-center space-x-4">
                 <button
                   onClick={() => router.push("/admin/posts")}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
                   📋 Manage Posts
                 </button>
@@ -108,8 +108,8 @@ function AdminPageContent() {
               <div
                 className={`p-4 rounded-lg mb-6 border ${
                   message.includes("Error")
-                    ? "bg-red-50 text-red-700 border-red-200"
-                    : "bg-green-50 text-green-700 border-green-200"
+                    ? "bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700"
+                    : "bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700"
                 }`}
               >
                 {message}
@@ -121,7 +121,7 @@ function AdminPageContent() {
                 <div>
                   <label
                     htmlFor="title"
-                    className="block text-sm font-semibold text-gray-900 mb-2"
+                    className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
                   >
                     Title *
                   </label>
@@ -132,7 +132,7 @@ function AdminPageContent() {
                     value={formData.title}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     placeholder="Enter an engaging title"
                   />
                 </div>
@@ -140,7 +140,7 @@ function AdminPageContent() {
                 <div>
                   <label
                     htmlFor="category"
-                    className="block text-sm font-semibold text-gray-900 mb-2"
+                    className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
                   >
                     Category *
                   </label>
@@ -150,7 +150,7 @@ function AdminPageContent() {
                     value={formData.category}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="tech">🚀 Tech</option>
                     <option value="food">🍕 Food</option>
@@ -162,7 +162,7 @@ function AdminPageContent() {
               <div>
                 <label
                   htmlFor="content"
-                  className="block text-sm font-semibold text-gray-900 mb-2"
+                  className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
                 >
                   Content *
                 </label>
@@ -173,7 +173,7 @@ function AdminPageContent() {
                   onChange={handleChange}
                   required
                   rows={12}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="Write your post content here... Use line breaks to separate paragraphs."
                 />
               </div>
@@ -182,7 +182,7 @@ function AdminPageContent() {
                 <div>
                   <label
                     htmlFor="tags"
-                    className="block text-sm font-semibold text-gray-900 mb-2 flex items-center"
+                    className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2 flex items-center"
                   >
                     <span className="mr-1">#</span>
                     Tags (comma-separated)
@@ -193,7 +193,7 @@ function AdminPageContent() {
                     name="tags"
                     value={formData.tags}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     placeholder="e.g., python, fastapi, web development"
                   />
                 </div>
@@ -201,7 +201,7 @@ function AdminPageContent() {
                 <div>
                   <label
                     htmlFor="image_url"
-                    className="block text-sm font-semibold text-gray-900 mb-2 flex items-center"
+                    className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2 flex items-center"
                   >
                     <span className="mr-1">🖼️</span>
                     Image URL (optional)
@@ -212,14 +212,14 @@ function AdminPageContent() {
                     name="image_url"
                     value={formData.image_url}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     placeholder="https://example.com/image.jpg"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center">
+                <label className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2 flex items-center">
                   <span className="mr-1">🎬</span>
                   Upload Images & Videos
                 </label>
@@ -229,7 +229,7 @@ function AdminPageContent() {
                 />
               </div>
 
-              <div className="flex gap-4 pt-6 border-t">
+              <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-600">
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -241,7 +241,7 @@ function AdminPageContent() {
 
                 <button
                   type="button"
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+                  className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
                 >
                   <span className="mr-2">👁️</span>
                   Preview
@@ -249,12 +249,12 @@ function AdminPageContent() {
               </div>
             </form>
 
-            <div className="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
-              <h2 className="text-lg font-semibold mb-4 text-blue-900 flex items-center">
+            <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700">
+              <h2 className="text-lg font-semibold mb-4 text-blue-900 dark:text-blue-200 flex items-center">
                 <span className="mr-2">💡</span>
                 Writing Tips:
               </h2>
-              <ul className="space-y-2 text-sm text-blue-800">
+              <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-300">
                 <li>• Use clear, descriptive titles for better SEO</li>
                 <li>• Add relevant tags to help categorize your content</li>
                 <li>

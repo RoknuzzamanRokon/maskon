@@ -2,15 +2,15 @@ import Link from "next/link";
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-16">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-16">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Enhanced Header */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
             Connect With Us
           </h1>
           <div className="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
             Have a project in mind or want to discuss opportunities? We're here
             to listen and collaborate.
           </p>
@@ -18,13 +18,13 @@ export default function ContactPage() {
 
         <div className="grid lg:grid-cols-3 gap-10">
           {/* Professional Contact Card */}
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
                 <span className="mr-3 text-blue-600">•</span>
                 Contact Details
               </h2>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
                 Reach out through any of these channels
               </p>
             </div>
@@ -49,11 +49,15 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                  <p className="text-gray-600 mb-2">maskon@gmail.com</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    Email
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-2">
+                    maskon@gmail.com
+                  </p>
                   <a
                     href="mailto:maskon@gmail.com"
-                    className="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center"
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium inline-flex items-center"
                   >
                     Send message
                     <svg
@@ -93,11 +97,15 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                  <p className="text-gray-600 mb-2">+880 173 99 33258</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    Phone
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-2">
+                    +880 173 99 33258
+                  </p>
                   <a
                     href="tel:+8801739933258"
-                    className="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center"
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium inline-flex items-center"
                   >
                     Call now
                     <svg
@@ -143,8 +151,10 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Location</h3>
-                  <p className="text-gray-600">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    Location
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
                     Dhaka, Mirpur
                     <br />
                     Bangladesh
@@ -154,10 +164,10 @@ export default function ContactPage() {
 
               {/* Working Hours */}
               <div className="flex items-start">
-                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 mr-4">
+                <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0 mr-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-blue-600"
+                    className="h-6 w-6 text-blue-600 dark:text-blue-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -171,8 +181,10 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Hours</h3>
-                  <p className="text-gray-600">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    Hours
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
                     Mon-Fri: 9:00 AM - 6:00 PM
                     <br />
                     Sat: 10:00 AM - 4:00 PM
@@ -184,8 +196,10 @@ export default function ContactPage() {
             </div>
 
             {/* Professional Social Media */}
-            <div className="mt-10 pt-8 border-t border-gray-200">
-              <h3 className="font-semibold text-gray-900 mb-4">Follow Us</h3>
+            <div className="mt-10 pt-8 border-t border-gray-200 dark:border-gray-600">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
+                Follow Us
+              </h3>
               <div className="flex space-x-3">
                 {[
                   {
@@ -236,13 +250,13 @@ export default function ContactPage() {
           </div>
 
           {/* Enhanced Contact Form */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
                 <span className="mr-3 text-blue-600">•</span>
                 Send Us a Message
               </h2>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
                 We typically respond within 24 hours
               </p>
             </div>
@@ -252,7 +266,7 @@ export default function ContactPage() {
                 <div>
                   <label
                     htmlFor="firstName"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                   >
                     First Name
                   </label>
@@ -261,14 +275,14 @@ export default function ContactPage() {
                     id="firstName"
                     name="firstName"
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     placeholder="Enter your first name"
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="lastName"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                   >
                     Last Name
                   </label>
@@ -277,7 +291,7 @@ export default function ContactPage() {
                     id="lastName"
                     name="lastName"
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     placeholder="Enter your last name"
                   />
                 </div>
@@ -286,7 +300,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Email Address
                 </label>
@@ -295,7 +309,7 @@ export default function ContactPage() {
                   id="email"
                   name="email"
                   required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="your.email@example.com"
                 />
               </div>
@@ -303,7 +317,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="subject"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Subject
                 </label>
@@ -311,7 +325,7 @@ export default function ContactPage() {
                   id="subject"
                   name="subject"
                   required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiA2YjcyOGQiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=')] bg-no-repeat bg-[center_right_1rem]"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiA2YjcyOGQiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=')] bg-no-repeat bg-[center_right_1rem]"
                 >
                   <option value="">Select a subject</option>
                   <option value="collaboration">Project Collaboration</option>
@@ -324,7 +338,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Message
                 </label>
@@ -333,7 +347,7 @@ export default function ContactPage() {
                   name="message"
                   rows={5}
                   required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="How can we help you?"
                 />
               </div>
@@ -343,11 +357,11 @@ export default function ContactPage() {
                   id="consent"
                   name="consent"
                   type="checkbox"
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 bg-white dark:bg-gray-700"
                 />
                 <label
                   htmlFor="consent"
-                  className="ml-2 block text-sm text-gray-700"
+                  className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
                 >
                   I consent to Maskon Vibes collecting my details through this
                   form
@@ -389,9 +403,9 @@ export default function ContactPage() {
         </div>
 
         {/* Value Proposition Section */}
-        <div className="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 border border-gray-100">
+        <div className="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl shadow-lg p-10 border border-gray-100 dark:border-gray-600">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
               Why Partner With Us?
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
@@ -400,7 +414,7 @@ export default function ContactPage() {
                   icon: (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-10 w-10 text-blue-600"
+                      className="h-10 w-10 text-blue-600 dark:text-blue-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -421,7 +435,7 @@ export default function ContactPage() {
                   icon: (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-10 w-10 text-blue-600"
+                      className="h-10 w-10 text-blue-600 dark:text-blue-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -442,7 +456,7 @@ export default function ContactPage() {
                   icon: (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-10 w-10 text-blue-600"
+                      className="h-10 w-10 text-blue-600 dark:text-blue-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -462,15 +476,17 @@ export default function ContactPage() {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                  className="p-6 bg-white dark:bg-gray-600 rounded-lg shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
                     {item.icon}
                   </div>
-                  <h3 className="font-bold text-gray-900 text-lg mb-2">
+                  <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">
                     {item.title}
                   </h3>
-                  <p className="text-gray-600 text-sm">{item.description}</p>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    {item.description}
+                  </p>
                 </div>
               ))}
             </div>

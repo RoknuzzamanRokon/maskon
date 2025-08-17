@@ -58,7 +58,7 @@ export default async function PortfolioPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-700 via-indigo-800 to-purple-900 text-white overflow-hidden">
         {/* Decorative elements */}
@@ -125,21 +125,23 @@ export default async function PortfolioPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="text-center bg-gradient-to-br from-gray-50 to-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2"
+                className="text-center bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2"
               >
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
-                  <stat.icon className="w-8 h-8 text-blue-600" />
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-full flex items-center justify-center">
+                  <stat.icon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="text-3xl font-bold text-gray-900 mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {stat.value}
                 </div>
-                <div className="text-gray-600">{stat.label}</div>
+                <div className="text-gray-600 dark:text-gray-300">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -147,16 +149,16 @@ export default async function PortfolioPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Meet{" "}
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 The Team
               </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Two passionate developers with complementary skills creating
               exceptional digital experiences
             </p>
@@ -166,7 +168,7 @@ export default async function PortfolioPage() {
             {teamMembers.map((member, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                className="bg-white dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
               >
                 <div className="relative h-64 bg-gradient-to-r from-blue-600 to-indigo-700 flex items-center justify-center">
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-4 border-white overflow-hidden shadow-xl">
@@ -177,24 +179,26 @@ export default async function PortfolioPage() {
                 </div>
 
                 <div className="pt-16 pb-8 px-8 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                     {member.name}
                   </h3>
-                  <p className="text-blue-600 font-medium mb-6">
+                  <p className="text-blue-600 dark:text-blue-400 font-medium mb-6">
                     {member.role}
                   </p>
-                  <p className="text-gray-600 mb-8">{member.bio}</p>
+                  <p className="text-gray-600 dark:text-gray-300 mb-8">
+                    {member.bio}
+                  </p>
 
                   <div className="mb-8">
-                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center justify-center">
-                      <Code className="w-4 h-4 mr-2 text-indigo-600" />
+                    <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center justify-center">
+                      <Code className="w-4 h-4 mr-2 text-indigo-600 dark:text-indigo-400" />
                       Core Skills:
                     </h4>
                     <div className="flex flex-wrap justify-center gap-2">
                       {member.skills.map((skill, skillIndex) => (
                         <span
                           key={skillIndex}
-                          className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium"
+                          className="bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-medium"
                         >
                           {skill}
                         </span>
@@ -205,19 +209,19 @@ export default async function PortfolioPage() {
                   <div className="flex justify-center space-x-4">
                     <a
                       href="#"
-                      className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition-colors"
+                      className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       <Linkedin className="w-5 h-5" />
                     </a>
                     <a
                       href="#"
-                      className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition-colors"
+                      className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       <Github className="w-5 h-5" />
                     </a>
                     <a
                       href="#"
-                      className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition-colors"
+                      className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       <Mail className="w-5 h-5" />
                     </a>
@@ -230,31 +234,31 @@ export default async function PortfolioPage() {
       </section>
 
       {/* Skills Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
                 Our{" "}
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Expertise
                 </span>
               </h2>
-              <p className="text-xl text-gray-600">
+              <p className="text-xl text-gray-600 dark:text-gray-300">
                 Combined technical skills that enable us to deliver full-stack
                 solutions
               </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-gradient-to-br from-gray-50 to-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center mb-6">
-                  <Code className="w-6 h-6 text-blue-600" />
+              <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-lg flex items-center justify-center mb-6">
+                  <Code className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+                <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
                   Frontend Development
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Creating responsive and interactive user interfaces with
                   modern frameworks
                 </p>
@@ -275,7 +279,7 @@ export default async function PortfolioPage() {
                   ].map((skill) => (
                     <span
                       key={skill}
-                      className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium"
+                      className="bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-medium"
                     >
                       {skill}
                     </span>
@@ -283,14 +287,14 @@ export default async function PortfolioPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-gray-50 to-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg flex items-center justify-center mb-6">
-                  <Zap className="w-6 h-6 text-green-600" />
+              <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900 dark:to-emerald-900 rounded-lg flex items-center justify-center mb-6">
+                  <Zap className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
-                <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+                <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
                   Backend & DevOps
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Building robust APIs and server-side applications with
                   scalable architecture
                 </p>
@@ -311,7 +315,7 @@ export default async function PortfolioPage() {
                   ].map((skill) => (
                     <span
                       key={skill}
-                      className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium"
+                      className="bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 py-1 rounded-full text-sm font-medium"
                     >
                       {skill}
                     </span>
@@ -319,14 +323,14 @@ export default async function PortfolioPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-gray-50 to-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-100 to-violet-100 rounded-lg flex items-center justify-center mb-6">
-                  <Award className="w-6 h-6 text-purple-600" />
+              <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-100 to-violet-100 dark:from-purple-900 dark:to-violet-900 rounded-lg flex items-center justify-center mb-6">
+                  <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
-                <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+                <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
                   Design & Strategy
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Creating intuitive user experiences and effective product
                   strategies
                 </p>
@@ -347,7 +351,7 @@ export default async function PortfolioPage() {
                   ].map((skill) => (
                     <span
                       key={skill}
-                      className="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-sm font-medium"
+                      className="bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium"
                     >
                       {skill}
                     </span>
@@ -360,17 +364,17 @@ export default async function PortfolioPage() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-16 bg-gray-50">
+      <section id="projects" className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
                 Our{" "}
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Projects
                 </span>
               </h2>
-              <p className="text-xl text-gray-600">
+              <p className="text-xl text-gray-600 dark:text-gray-300">
                 A collection of projects that showcase our skills and creativity
               </p>
             </div>
@@ -379,7 +383,7 @@ export default async function PortfolioPage() {
               {portfolioItems.map((item: any, index: number) => (
                 <div
                   key={item.id}
-                  className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                  className="group bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
                 >
                   <div className="relative overflow-hidden">
                     {item.image_url ? (
@@ -403,21 +407,21 @@ export default async function PortfolioPage() {
 
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {item.title}
                       </h3>
-                      <div className="flex items-center text-gray-500 text-sm">
+                      <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
                         <Calendar className="w-4 h-4 mr-1" />
                         {new Date(item.created_at).getFullYear()}
                       </div>
                     </div>
 
-                    <p className="text-gray-600 mb-4 leading-relaxed">
+                    <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
                       {item.description}
                     </p>
 
                     <div className="mb-6">
-                      <h4 className="font-semibold text-sm text-gray-800 mb-3 flex items-center">
+                      <h4 className="font-semibold text-sm text-gray-800 dark:text-gray-200 mb-3 flex items-center">
                         <Code className="w-4 h-4 mr-1" />
                         Technologies Used:
                       </h4>
@@ -425,7 +429,7 @@ export default async function PortfolioPage() {
                         {item.technologies.split(",").map((tech: string) => (
                           <span
                             key={tech}
-                            className="bg-gray-100 text-gray-700 px-2 py-1 text-xs rounded-md font-medium hover:bg-gray-200 transition-colors"
+                            className="bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-2 py-1 text-xs rounded-md font-medium hover:bg-gray-200 dark:hover:bg-gray-500 transition-colors"
                           >
                             {tech.trim()}
                           </span>
@@ -450,7 +454,7 @@ export default async function PortfolioPage() {
                           href={item.github_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                          className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
                         >
                           <Github className="w-4 h-4 mr-2" />
                           Code
