@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getProducts } from "../lib/api";
-import ProductImage from "../components/ProductImage";
+import Image from "next/image";
 
 // Helper function to get the main image URL
 function getMainImageUrl(product: any): string | undefined {
@@ -30,6 +30,35 @@ function getMainImageUrl(product: any): string | undefined {
     return product.image_url;
   }
   return undefined;
+}
+
+// Component for handling product images
+function ProductImage({
+  imageUrl,
+  alt,
+}: {
+  imageUrl: string | undefined;
+  alt: string;
+}) {
+  if (!imageUrl) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+        <span className="text-gray-500 dark:text-gray-400">
+          No Image Available
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={imageUrl}
+      alt={alt}
+      fill
+      className="object-cover transition-transform duration-500 hover:scale-105"
+      sizes="(max-width: 768px) 100vw, 33vw"
+    />
+  );
 }
 
 export default async function ProductsPage() {
