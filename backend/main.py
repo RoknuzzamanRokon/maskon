@@ -19,6 +19,17 @@ load_dotenv()
 
 app = FastAPI(title="Blog & Portfolio API", version="1.0.0")
 
+
+# Add request logging middleware
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    # print(f"Request: {request.method} {request.url}")
+    # print(f"Headers: {dict(request.headers)}")
+    response = await call_next(request)
+    # print(f"Response status: {response.status_code}")
+    return response
+
+
 # Security
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
 ALGORITHM = "HS256"
@@ -30,9 +41,9 @@ security = HTTPBearer()
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -132,7 +143,7 @@ class ProductCreate(BaseModel):
     stock: int
     discount: Optional[float] = None
     specifications: Optional[str] = None
-    image_urls: List[str] = [] # Changed from image_url to image_urls
+    image_urls: List[str] = []  # Changed from image_url to image_urls
     is_active: bool = True
 
 
@@ -157,7 +168,7 @@ class Product(BaseModel):
     stock: int
     discount: Optional[float] = None
     specifications: Optional[str] = None
-    image_urls: List[str] = [] # Changed from image_url to image_urls
+    image_urls: List[str] = []  # Changed from image_url to image_urls
     is_active: bool
     created_at: datetime
     updated_at: datetime
@@ -230,6 +241,21 @@ async def root():
     return {"message": "Blog & Portfolio API"}
 
 
+@app.get("/api/health")
+async def health_check():
+    try:
+        # Test database connection
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT 1")
+        cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "error": str(e)}
+
+
 # Create static directory if it doesn't exist
 STATIC_DIR = "static"
 os.makedirs(STATIC_DIR, exist_ok=True)
@@ -248,8 +274,14 @@ async def register(user: UserRegister):
     )
 
 
+@app.options("/api/login")
+async def login_options():
+    return {"message": "OK"}
+
+
 @app.post("/api/login", response_model=Token)
 async def login(user: UserLogin):
+    print(f"Login attempt for username: {user.username}")
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
@@ -259,8 +291,17 @@ async def login(user: UserLogin):
             (user.username,),
         )
         db_user = cursor.fetchone()
+        print(f"User found in database: {db_user is not None}")
 
-        if not db_user or not verify_password(user.password, db_user["password_hash"]):
+        if not db_user:
+            print("User not found in database")
+            raise HTTPException(status_code=401, detail="Invalid username or password")
+
+        password_valid = verify_password(user.password, db_user["password_hash"])
+        print(f"Password valid: {password_valid}")
+
+        if not password_valid:
+            print("Password verification failed")
             raise HTTPException(status_code=401, detail="Invalid username or password")
 
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -268,6 +309,7 @@ async def login(user: UserLogin):
             data={"sub": str(db_user["id"])}, expires_delta=access_token_expires
         )
 
+        print("Login successful, returning token")
         return {
             "access_token": access_token,
             "token_type": "bearer",
@@ -275,6 +317,11 @@ async def login(user: UserLogin):
             "username": db_user["username"],
             "is_admin": db_user["is_admin"],
         }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Login error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
     finally:
         cursor.close()
         connection.close()
@@ -590,6 +637,7 @@ async def add_anonymous_comment(
         cursor.close()
         connection.close()
 
+
 @app.get("/api/posts/{post_id}/comments")
 async def get_comments(post_id: int):
     connection = get_db_connection()
@@ -638,6 +686,7 @@ async def delete_comment(comment_id: int, user_id: int = Depends(get_current_use
     finally:
         cursor.close()
         connection.close()
+
 
 @app.get("/api/posts/{post_id}", response_model=Post)
 async def get_post(post_id: int):
@@ -718,9 +767,9 @@ async def get_product(product_id: int):
         if not product_data:
             raise HTTPException(status_code=404, detail="Product not found")
 
-        # Fetch additional images for this product
+        # Fetch additional images for this product, ordered by primary first
         cursor.execute(
-            "SELECT id, image_url FROM product_images WHERE product_id = %s ORDER BY id ASC",
+            "SELECT id, image_url, is_primary FROM product_images WHERE product_id = %s ORDER BY is_primary DESC, id ASC",
             (product_id,),
         )
         images = cursor.fetchall()
@@ -743,7 +792,11 @@ async def get_product(product_id: int):
             created_by=product_data["created_by"],
         )
 
-        return product
+        # Add images array to the response for frontend gallery
+        product_dict = product.dict()
+        product_dict["images"] = images  # Include detailed image info
+
+        return product_dict
     finally:
         cursor.close()
         connection.close()
@@ -757,6 +810,23 @@ async def create_product(
     cursor = connection.cursor()
 
     try:
+        # Validation: Check if at least one image is provided
+        if not product.image_urls or len(product.image_urls) == 0:
+            raise HTTPException(
+                status_code=400, detail="At least one product image is required"
+            )
+
+        # Validate image URLs
+        for i, url in enumerate(product.image_urls):
+            if not url or not url.strip():
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Image URL at position {i + 1} is empty or invalid",
+                )
+
+        # Start transaction
+        connection.start_transaction()
+
         query = """
         INSERT INTO products (name, description, category, price, stock, discount, specifications, is_active, created_by, created_at, updated_at)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
@@ -775,22 +845,42 @@ async def create_product(
                 admin_id,
             ),
         )
-        connection.commit()
         product_id = cursor.lastrowid
 
         # Insert images into product_images table
-        if product.image_urls:
-            image_records = [(product_id, url, False) for url in product.image_urls]
-            cursor.executemany(
-                """
-                INSERT INTO product_images (product_id, image_url, is_primary, created_at)
-                VALUES (%s, %s, %s, NOW())
-                """,
-                image_records,
-            )
-            connection.commit()
+        image_records = []
+        for i, url in enumerate(product.image_urls):
+            # First image is primary, others are not
+            is_primary = i == 0
+            image_records.append((product_id, url, is_primary))
 
-        return {"message": "Product created successfully", "id": product_id}
+        cursor.executemany(
+            """
+            INSERT INTO product_images (product_id, image_url, is_primary, created_at)
+            VALUES (%s, %s, %s, NOW())
+            """,
+            image_records,
+        )
+
+        # Commit transaction
+        connection.commit()
+
+        return {
+            "message": "Product created successfully",
+            "id": product_id,
+            "images_saved": len(product.image_urls),
+        }
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        connection.rollback()
+        raise
+    except Exception as e:
+        # Handle database errors
+        connection.rollback()
+        raise HTTPException(
+            status_code=500, detail=f"Failed to create product: {str(e)}"
+        )
     finally:
         cursor.close()
         connection.close()
