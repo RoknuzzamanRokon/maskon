@@ -157,10 +157,39 @@ export default function Navbar() {
 
             <Link
               href="/products"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group"
+              className="relative text-gray-600 dark:text-gray-300 
+             hover:text-gray-900 dark:hover:text-white 
+             transition-all duration-300 py-2 px-3 rounded-lg
+             group overflow-hidden"
             >
-              Products
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
+              {/* Red pulse animation that triggers every 3 seconds */}
+              <span className="absolute inset-0 rounded-lg bg-red-500/0 animate-red-bip"></span>
+
+              <span className="relative z-10 flex items-center">
+                <svg
+                  className="w-4 h-4 mr-1.5 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                  />
+                </svg>
+                Products
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-500 to-pink-500 transition-all duration-300 group-hover:w-full"></span>
+              </span>
+
+              {/* Enhanced red shimmer underline */}
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-red-400/30 via-red-500 to-pink-400/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer-sweep"></span>
+              </span>
+
+              {/* Red notification dot with pulse every 3 seconds */}
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-red-bip-dot"></span>
             </Link>
 
             <Link

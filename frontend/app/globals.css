@@ -68,3 +68,6 @@ body {
 
 
 
+.bg-double {
+  background-size: 200% 200%;
+}
