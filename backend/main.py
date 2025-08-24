@@ -159,6 +159,12 @@ class ProductUpdate(BaseModel):
     is_active: Optional[bool] = None
 
 
+class ProductImage(BaseModel):
+    id: int
+    image_url: str
+    is_primary: bool
+
+
 class Product(BaseModel):
     id: int
     name: str
@@ -169,6 +175,7 @@ class Product(BaseModel):
     discount: Optional[float] = None
     specifications: Optional[str] = None
     image_urls: List[str] = []  # Changed from image_url to image_urls
+    images: List[ProductImage] = []  # Full image objects with is_primary
     is_active: bool
     created_at: datetime
     updated_at: datetime
@@ -748,7 +755,26 @@ async def get_products(category: Optional[str] = None, limit: int = 20):
             cursor.execute(query, (limit,))
 
         products = cursor.fetchall()
-        return products
+
+        # Fetch images for each product
+        products_with_images = []
+        for product in products:
+            # Fetch images for this product, ordered by primary first
+            cursor.execute(
+                "SELECT id, image_url, is_primary FROM product_images WHERE product_id = %s ORDER BY is_primary DESC, id ASC",
+                (product["id"],),
+            )
+            images = cursor.fetchall()
+            image_urls = [img["image_url"] for img in images] if images else []
+
+            # Create product dict with images
+            product_dict = dict(product)
+            product_dict["image_urls"] = image_urls
+            product_dict["images"] = [ProductImage(**img) for img in images]
+
+            products_with_images.append(product_dict)
+
+        return products_with_images
     finally:
         cursor.close()
         connection.close()
@@ -786,6 +812,7 @@ async def get_product(product_id: int):
             discount=product_data["discount"],
             specifications=product_data["specifications"],
             image_urls=image_urls,  # Use the fetched image_urls
+            images=[ProductImage(**img) for img in images],  # Full image objects
             is_active=product_data["is_active"],
             created_at=product_data["created_at"],
             updated_at=product_data["updated_at"],

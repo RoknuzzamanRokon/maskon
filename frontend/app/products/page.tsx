@@ -1,17 +1,28 @@
 import Link from "next/link";
 import { getProducts } from "../lib/api";
-import Image from "next/image";
+import ProductImage from "../components/ProductImage";
 
 // Helper function to get the main image URL
 function getMainImageUrl(product: any): string | undefined {
+  if (!product) return undefined;
+
   // Priority 1: images array with is_primary
-  if (product.images && product.images.length > 0) {
-    const primary = product.images.find((img: any) => img.is_primary);
-    if (primary) return primary.image_url;
-    return product.images[0].image_url;
+  if (
+    product.images &&
+    Array.isArray(product.images) &&
+    product.images.length > 0
+  ) {
+    const primary = product.images.find((img: any) => img && img.is_primary);
+    if (primary && primary.image_url) return primary.image_url;
+    if (product.images[0] && product.images[0].image_url)
+      return product.images[0].image_url;
   }
   // Priority 2: image_urls array
-  if (product.image_urls && product.image_urls.length > 0) {
+  if (
+    product.image_urls &&
+    Array.isArray(product.image_urls) &&
+    product.image_urls.length > 0
+  ) {
     return product.image_urls[0];
   }
   // Priority 3: single image_url
@@ -21,41 +32,19 @@ function getMainImageUrl(product: any): string | undefined {
   return undefined;
 }
 
-// Client component for handling image errors
-function ProductImage({
-  imageUrl,
-  alt,
-}: {
-  imageUrl: string | undefined;
-  alt: string;
-}) {
-  if (!imageUrl) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
-        <span className="text-gray-500 dark:text-gray-400">
-          No Image Available
-        </span>
-      </div>
-    );
-  }
-
-  return (
-    <Image
-      src={imageUrl}
-      alt={alt}
-      fill
-      className="object-cover transition-transform duration-500 hover:scale-105"
-      sizes="(max-width: 768px) 100vw, 33vw"
-      onError={(e) => {
-        // Hide the image and let the parent div show the fallback background
-        e.currentTarget.style.display = "none";
-      }}
-    />
-  );
-}
-
 export default async function ProductsPage() {
-  const products = await getProducts(20);
+  let products = [];
+
+  try {
+    products = await getProducts(20);
+    // Ensure products is an array
+    if (!Array.isArray(products)) {
+      products = [];
+    }
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    products = [];
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-850 py-12">
@@ -96,6 +85,8 @@ export default async function ProductsPage() {
         {/* Products Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {products.map((product: any) => {
+            if (!product || !product.id) return null;
+
             const imageUrl = getMainImageUrl(product);
 
             return (
@@ -105,27 +96,32 @@ export default async function ProductsPage() {
               >
                 {/* Product Image */}
                 <div className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
-                  <ProductImage imageUrl={imageUrl} alt={product.name} />
+                  <ProductImage
+                    imageUrl={imageUrl}
+                    alt={product.name || "Product"}
+                  />
 
                   <div className="absolute top-3 right-3 flex flex-col gap-2">
-                    {product.discount && (
+                    {product.discount && product.discount > 0 && (
                       <span className="bg-red-600 text-white px-2.5 py-1 text-xs rounded-full font-semibold shadow-md">
                         -{product.discount}%
                       </span>
                     )}
-                    <span
-                      className={`inline-block px-2.5 py-1 text-xs rounded-full font-semibold text-white shadow-md ${
-                        product.category === "electronics"
-                          ? "bg-blue-600"
-                          : product.category === "clothing"
-                          ? "bg-emerald-600"
-                          : product.category === "books"
-                          ? "bg-violet-600"
-                          : "bg-amber-600"
-                      }`}
-                    >
-                      {product.category}
-                    </span>
+                    {product.category && (
+                      <span
+                        className={`inline-block px-2.5 py-1 text-xs rounded-full font-semibold text-white shadow-md ${
+                          product.category === "electronics"
+                            ? "bg-blue-600"
+                            : product.category === "clothing"
+                            ? "bg-emerald-600"
+                            : product.category === "books"
+                            ? "bg-violet-600"
+                            : "bg-amber-600"
+                        }`}
+                      >
+                        {product.category}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -133,7 +129,7 @@ export default async function ProductsPage() {
                 <div className="p-5">
                   <div className="flex justify-between items-start mb-3">
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-1">
-                      {product.name}
+                      {product.name || "Unnamed Product"}
                     </h2>
                     <div className="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
                       <span className="text-amber-400 text-sm">★</span>
@@ -144,12 +140,14 @@ export default async function ProductsPage() {
                   </div>
 
                   <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2 h-10">
-                    {product.description}
+                    {product.description || "No description available"}
                   </p>
 
                   <div className="flex justify-between items-center mb-5">
                     <div className="flex items-baseline gap-2">
-                      {product.discount ? (
+                      {product.discount &&
+                      product.discount > 0 &&
+                      product.price ? (
                         <>
                           <span className="text-xl font-bold text-gray-900 dark:text-white">
                             $
@@ -159,25 +157,25 @@ export default async function ProductsPage() {
                             ).toFixed(2)}
                           </span>
                           <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                            ${product.price}
+                            ${product.price.toFixed(2)}
                           </span>
                         </>
                       ) : (
                         <span className="text-xl font-bold text-gray-900 dark:text-white">
-                          ${product.price}
+                          ${product.price ? product.price.toFixed(2) : "0.00"}
                         </span>
                       )}
                     </div>
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${
-                        product.stock > 10
+                        (product.stock || 0) > 10
                           ? "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300"
-                          : product.stock > 0
+                          : (product.stock || 0) > 0
                           ? "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300"
                           : "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300"
                       }`}
                     >
-                      {product.stock > 0
+                      {(product.stock || 0) > 0
                         ? `${product.stock} available`
                         : "Out of stock"}
                     </span>
@@ -192,11 +190,11 @@ export default async function ProductsPage() {
                     </Link>
                     <button
                       className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                        product.stock === 0
+                        (product.stock || 0) === 0
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                           : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600"
                       }`}
-                      disabled={product.stock === 0}
+                      disabled={(product.stock || 0) === 0}
                     >
                       Add to Cart
                     </button>
