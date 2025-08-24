@@ -17,8 +17,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Variants, motion } from "framer-motion";
 
 export default function PortfolioPage() {
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
@@ -81,7 +81,7 @@ export default function PortfolioPage() {
   ];
 
   // Animation variants
-  const fadeInUp = {
+  const fadeInUp: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
