@@ -153,19 +153,47 @@ function ProductsManagementContent() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          {product.image_url && (
-                            <img
-                              src={product.image_url}
-                              alt={product.name}
-                              className="h-12 w-12 rounded-lg object-cover mr-4"
-                            />
-                          )}
+                          {(() => {
+                            // Get primary image from images array, fallback to first image_url, then image_url
+                            let imageUrl = null;
+                            if (product.images && product.images.length > 0) {
+                              const primary = product.images.find(
+                                (img: any) => img.is_primary
+                              );
+                              imageUrl = primary
+                                ? primary.image_url
+                                : product.images[0].image_url;
+                            } else if (
+                              product.image_urls &&
+                              product.image_urls.length > 0
+                            ) {
+                              imageUrl = product.image_urls[0];
+                            } else if (product.image_url) {
+                              imageUrl = product.image_url;
+                            }
+
+                            return imageUrl ? (
+                              <img
+                                src={imageUrl}
+                                alt={product.name}
+                                className="h-12 w-12 rounded-lg object-cover mr-4"
+                              />
+                            ) : (
+                              <div className="h-12 w-12 rounded-lg bg-gray-200 dark:bg-gray-600 flex items-center justify-center mr-4">
+                                <span className="text-gray-400 text-xs">
+                                  No Image
+                                </span>
+                              </div>
+                            );
+                          })()}
                           <div>
                             <div className="text-sm font-medium text-gray-900 dark:text-white">
                               {product.name}
                             </div>
                             <div className="text-sm text-gray-500 dark:text-gray-400">
-                              {product.description.substring(0, 50)}...
+                              {product.description
+                                ? product.description.substring(0, 50) + "..."
+                                : "No description"}
                             </div>
                           </div>
                         </div>
