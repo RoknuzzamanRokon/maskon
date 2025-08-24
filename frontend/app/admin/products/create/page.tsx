@@ -18,12 +18,13 @@ function CreateProductContent() {
     stock: "",
     discount: "",
     specifications: "",
-    image_url: "",
+    image_urls: [] as string[],
     is_active: true,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [mediaFiles, setMediaFiles] = useState<any[]>([]);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,15 +32,23 @@ function CreateProductContent() {
     setMessage("");
 
     try {
+      // Validation: Check if at least one image is selected
+      if (formData.image_urls.length === 0) {
+        setMessage("Please select at least one product image.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
         discount: formData.discount ? parseFloat(formData.discount) : null,
+        image_urls: formData.image_urls, // Ensure image_urls is included
       };
 
       await createProduct(productData);
-      setMessage("Product created successfully!");
+      setMessage("Product created successfully! All images have been saved.");
       setFormData({
         name: "",
         description: "",
@@ -48,12 +57,15 @@ function CreateProductContent() {
         stock: "",
         discount: "",
         specifications: "",
-        image_url: "",
+        image_urls: [],
         is_active: true,
       });
       setMediaFiles([]);
-    } catch (error) {
-      setMessage("Error creating product. Please try again.");
+    } catch (error: any) {
+      console.error("Product creation error:", error);
+      const errorMessage =
+        error?.message || "Error creating product. Please try again.";
+      setMessage(`Error: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -75,11 +87,23 @@ function CreateProductContent() {
   };
 
   const handleMediaSelect = (mediaFiles: any[]) => {
+    setIsUploadingImages(true);
     setMediaFiles(mediaFiles);
+    // Extract all image URLs from the selected media files
+    const imageUrls = mediaFiles
+      .filter((m) => m.type === "image")
+      .map((m) => m.url);
+
     setFormData((prev) => ({
       ...prev,
-      image_url: mediaFiles.find((m) => m.type === "image")?.url || "",
+      image_urls: imageUrls,
     }));
+    setIsUploadingImages(false);
+
+    // Clear any previous error messages when new images are selected
+    if (message.includes("Error") || message.includes("Please select")) {
+      setMessage("");
+    }
   };
 
   return (
@@ -276,28 +300,50 @@ function CreateProductContent() {
                 />
               </div>
 
-              <div>
-                <label
-                  htmlFor="image_url"
-                  className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
-                >
-                  Image URL (Optional)
-                </label>
-                <input
-                  type="url"
-                  id="image_url"
-                  name="image_url"
-                  value={formData.image_url}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
+              {/* Display selected images count */}
+              {formData.image_urls.length > 0 && (
+                <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg border border-blue-200 dark:border-blue-700">
+                  <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                    Selected Images ({formData.image_urls.length})
+                  </h3>
+                  <div className="grid grid-cols-4 gap-2">
+                    {formData.image_urls.slice(0, 4).map((url, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={url}
+                          alt={`Selected ${index + 1}`}
+                          className="w-full h-16 object-cover rounded border"
+                        />
+                        {index === 0 && (
+                          <div className="absolute top-0 left-0 bg-blue-500 text-white text-xs px-1 rounded">
+                            Primary
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {formData.image_urls.length > 4 && (
+                      <div className="w-full h-16 bg-gray-200 dark:bg-gray-700 rounded border flex items-center justify-center text-sm text-gray-600 dark:text-gray-400">
+                        +{formData.image_urls.length - 4} more
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2">
-                  Upload Product Images
+                  Upload Product Images *
                 </label>
+                {isUploadingImages && (
+                  <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg">
+                    <div className="flex items-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                      <span className="text-sm text-blue-700 dark:text-blue-300">
+                        Processing images...
+                      </span>
+                    </div>
+                  </div>
+                )}
                 <MultiMediaUpload
                   onMediaSelect={handleMediaSelect}
                   existingMedia={mediaFiles}

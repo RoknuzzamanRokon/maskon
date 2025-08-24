@@ -6,7 +6,8 @@ interface ProductImageGalleryProps {
   product: {
     id: number;
     name: string;
-    image_url?: string;
+    image_url?: string; // Keep for backward compatibility
+    image_urls?: string[]; // New array of image URLs
     images?: Array<{
       id: number;
       image_url: string;
@@ -18,21 +19,30 @@ interface ProductImageGalleryProps {
 export default function ProductImageGallery({
   product,
 }: ProductImageGalleryProps) {
-  // Combine main image and additional images
+  // Combine all images from different sources
   const allImages = [];
 
-  // Add main image if exists
-  if (product.image_url) {
+  // Priority 1: Use detailed images array if available (from backend)
+  if (product.images && product.images.length > 0) {
+    allImages.push(...product.images);
+  }
+  // Priority 2: Use image_urls array if available
+  else if (product.image_urls && product.image_urls.length > 0) {
+    product.image_urls.forEach((url, index) => {
+      allImages.push({
+        id: index,
+        image_url: url,
+        is_primary: index === 0, // First image is primary
+      });
+    });
+  }
+  // Priority 3: Fallback to single image_url for backward compatibility
+  else if (product.image_url) {
     allImages.push({
       id: 0,
       image_url: product.image_url,
       is_primary: true,
     });
-  }
-
-  // Add additional images if they exist
-  if (product.images && product.images.length > 0) {
-    allImages.push(...product.images);
   }
 
   // If no images at all, show placeholder
@@ -137,12 +147,12 @@ export default function ProductImageGallery({
         <div className="grid grid-cols-4 gap-3">
           {allImages.map((image, index) => (
             <button
-              key={image.id}
+              key={`${image.id}-${index}`}
               onClick={() => {
                 setSelectedImageIndex(index);
                 setIsZoomed(false);
               }}
-              className={`aspect-square rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+              className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                 selectedImageIndex === index
                   ? "border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800"
                   : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
