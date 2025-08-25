@@ -5,6 +5,7 @@ A full-stack blog and portfolio website with:
 - **Backend**: Python FastAPI
 - **Frontend**: Next.js
 - **Database**: MySQL
+- **Communication**: WhatsApp integration for customer support
 
 ## Features
 
@@ -13,6 +14,8 @@ A full-stack blog and portfolio website with:
 - Activity posts
 - Portfolio page
 - Admin dashboard for posting
+- Product catalog with WhatsApp chat integration
+- Contact forms and WhatsApp support
 
 ## Quick Start
 
@@ -39,12 +42,25 @@ cd database
 # Run the SQL scripts to create tables
 ```
 
+## WhatsApp Integration
+
+The website includes WhatsApp chat integration for customer support:
+
+- **Phone Number**: +880 173 99 33258
+- **Features**: 
+  - Floating WhatsApp button on product pages
+  - Pre-filled messages with product context
+  - Direct links from product listings
+  - Contact page integration
+
 ## API Endpoints
 
 - `GET /api/posts` - Get all posts
 - `POST /api/posts` - Create new post
 - `GET /api/posts/{category}` - Get posts by category
 - `GET /api/portfolio` - Get portfolio data
+- `GET /api/products` - Get all products
+- `GET /api/products/{id}` - Get specific product
 
 ## Categories
 

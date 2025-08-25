@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getProduct } from "../../lib/api";
 import ProductImageGallery from "../../components/ProductImageGallery";
-import ChatWidget from "../../components/ChatWidget";
+import WhatsAppChat from "../../components/WhatsAppChat";
 
 export default async function ProductDetailPage({
   params,
@@ -348,8 +348,12 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      {/* Chat Widget */}
-      <ChatWidget productId={product.id} productName={product.name} />
+      {/* WhatsApp Chat */}
+      <WhatsAppChat 
+        productId={product.id} 
+        productName={product.name}
+        productPrice={product.price}
+      />
     </div>
   );
 }
