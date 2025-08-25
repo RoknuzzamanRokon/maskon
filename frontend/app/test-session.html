@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Session Management Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      .stat-card {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        border-left: 4px solid #007bff;
+      }
+      .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #007bff;
+      }
+      .stat-label {
+        font-size: 14px;
+        color: #666;
+        margin-top: 5px;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .btn-primary {
+        background: #007bff;
+        color: white;
+      }
+      .btn-success {
+        background: #28a745;
+        color: white;
+      }
+      .btn-warning {
+        background: #ffc107;
+        color: black;
+      }
+      .btn-danger {
+        background: #dc3545;
+        color: white;
+      }
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+      button:hover {
+        opacity: 0.9;
+      }
+      .session-list {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .session-item {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        background: white;
+      }
+      .session-item:last-child {
+        border-bottom: none;
+      }
+      .session-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .session-id {
+        font-family: monospace;
+        font-size: 12px;
+        color: #666;
+        background: #f8f9fa;
+        padding: 2px 6px;
+        border-radius: 3px;
+      }
+      .session-status {
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .status-active {
+        background: #d4edda;
+        color: #155724;
+      }
+      .status-inactive {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .status-expired {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .log {
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      .log-entry {
+        margin-bottom: 5px;
+        padding: 2px 0;
+      }
+      .log-info {
+        color: #007bff;
+      }
+      .log-success {
+        color: #28a745;
+      }
+      .log-warning {
+        color: #ffc107;
+      }
+      .log-error {
+        color: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Session Management Test Page</h1>
+
+    <div class="container">
+      <h2>Session Statistics</h2>
+      <div class="stats" id="stats">
+        <div class="stat-card">
+          <div class="stat-value" id="totalSessions">0</div>
+          <div class="stat-label">Total Sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="activeSessions">0</div>
+          <div class="stat-label">Active Sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalMessages">0</div>
+          <div class="stat-label">Total Messages</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="storageUsed">0 KB</div>
+          <div class="stat-label">Storage Used</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Actions</h2>
+      <div class="actions">
+        <button class="btn-primary" onclick="createTestSession()">
+          Create Test Session
+        </button>
+        <button class="btn-success" onclick="addTestMessage()">
+          Add Test Message
+        </button>
+        <button class="btn-warning" onclick="refreshData()">
+          Refresh Data
+        </button>
+        <button class="btn-secondary" onclick="exportData()">
+          Export Data
+        </button>
+        <button class="btn-danger" onclick="clearAllSessions()">
+          Clear All Sessions
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Active Sessions</h2>
+      <div class="session-list" id="sessionList">
+        <div style="padding: 20px; text-align: center; color: #666">
+          No sessions found
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Activity Log</h2>
+      <div class="log" id="activityLog">
+        <div class="log-entry log-info">
+          Session management test page loaded
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      // Mock session manager for testing
+      class MockSessionManager {
+        constructor() {
+          this.SESSION_PREFIX = "chat_session_";
+          this.MESSAGE_PREFIX = "chat_messages_";
+          this.GLOBAL_SESSION_KEY = "chat_global_session";
+          this.SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+        }
+
+        generateSessionId() {
+          const timestamp = Date.now();
+          const random = Math.random().toString(36).substr(2, 9);
+          return `anon_${timestamp}_${random}`;
+        }
+
+        getOrCreateSession(productId, customerName, customerEmail) {
+          const sessionId = this.generateSessionId();
+          const now = new Date().toISOString();
+          const expiresAt = new Date(
+            Date.now() + this.SESSION_DURATION
+          ).toISOString();
+
+          const session = {
+            sessionId,
+            productId,
+            customerName,
+            customerEmail,
+            createdAt: now,
+            lastActivity: now,
+            expiresAt,
+            messageCount: 0,
+            isActive: true,
+          };
+
+          this.saveSession(session);
+          this.updateGlobalSessionList(sessionId);
+          return session;
+        }
+
+        saveSession(session) {
+          const key = `${this.SESSION_PREFIX}${session.sessionId}`;
+          localStorage.setItem(key, JSON.stringify(session));
+        }
+
+        getSession(sessionId) {
+          const key = `${this.SESSION_PREFIX}${sessionId}`;
+          const stored = localStorage.getItem(key);
+          if (!stored) return null;
+
+          const session = JSON.parse(stored);
+          if (this.isSessionExpired(session)) {
+            this.removeSession(sessionId);
+            return null;
+          }
+          return session;
+        }
+
+        getAllSessions() {
+          const sessions = [];
+          const globalSessions = this.getGlobalSessionList();
+
+          for (const sessionId of globalSessions) {
+            const session = this.getSession(sessionId);
+            if (session) {
+              sessions.push(session);
+            }
+          }
+
+          return sessions.filter((session) => !this.isSessionExpired(session));
+        }
+
+        storeMessage(message) {
+          const messages = this.getStoredMessages(
+            message.sessionId,
+            message.productId
+          );
+          messages.push(message);
+
+          const key = `${this.MESSAGE_PREFIX}${message.sessionId}`;
+          localStorage.setItem(key, JSON.stringify(messages));
+
+          // Update session message count
+          const session = this.getSession(message.sessionId);
+          if (session) {
+            session.messageCount = messages.length;
+            session.lastActivity = new Date().toISOString();
+            this.saveSession(session);
+          }
+        }
+
+        getStoredMessages(sessionId, productId) {
+          const key = `${this.MESSAGE_PREFIX}${sessionId}`;
+          const stored = localStorage.getItem(key);
+          if (!stored) return [];
+
+          const messages = JSON.parse(stored);
+          return messages.filter((msg) => msg.productId === productId);
+        }
+
+        removeSession(sessionId) {
+          localStorage.removeItem(`${this.SESSION_PREFIX}${sessionId}`);
+          localStorage.removeItem(`${this.MESSAGE_PREFIX}${sessionId}`);
+
+          const globalSessions = this.getGlobalSessionList();
+          const updatedSessions = globalSessions.filter(
+            (id) => id !== sessionId
+          );
+          localStorage.setItem(
+            this.GLOBAL_SESSION_KEY,
+            JSON.stringify(updatedSessions)
+          );
+        }
+
+        getSessionStats() {
+          const sessions = this.getAllSessions();
+          const activeSessions = sessions.filter((s) => s.isActive).length;
+          const totalMessages = sessions.reduce(
+            (sum, s) => sum + s.messageCount,
+            0
+          );
+
+          let storageSize = 0;
+          for (let key in localStorage) {
+            if (
+              key.startsWith(this.SESSION_PREFIX) ||
+              key.startsWith(this.MESSAGE_PREFIX)
+            ) {
+              storageSize += localStorage[key].length;
+            }
+          }
+
+          return {
+            totalSessions: sessions.length,
+            activeSessions,
+            totalMessages,
+            storageUsed: `${(storageSize / 1024).toFixed(2)} KB`,
+          };
+        }
+
+        exportSessionData() {
+          const data = {
+            sessions: this.getAllSessions(),
+            stats: this.getSessionStats(),
+            timestamp: new Date().toISOString(),
+          };
+          return JSON.stringify(data, null, 2);
+        }
+
+        clearAllSessions() {
+          const sessions = this.getAllSessions();
+          sessions.forEach((session) => this.removeSession(session.sessionId));
+          localStorage.removeItem(this.GLOBAL_SESSION_KEY);
+        }
+
+        isSessionExpired(session) {
+          return new Date(session.expiresAt).getTime() < Date.now();
+        }
+
+        updateGlobalSessionList(sessionId) {
+          const sessions = this.getGlobalSessionList();
+          if (!sessions.includes(sessionId)) {
+            sessions.push(sessionId);
+            localStorage.setItem(
+              this.GLOBAL_SESSION_KEY,
+              JSON.stringify(sessions)
+            );
+          }
+        }
+
+        getGlobalSessionList() {
+          const stored = localStorage.getItem(this.GLOBAL_SESSION_KEY);
+          return stored ? JSON.parse(stored) : [];
+        }
+      }
+
+      // Initialize session manager
+      const sessionManager = new MockSessionManager();
+
+      // Logging function
+      function log(message, type = "info") {
+        const logElement = document.getElementById("activityLog");
+        const entry = document.createElement("div");
+        entry.className = `log-entry log-${type}`;
+        entry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+        logElement.appendChild(entry);
+        logElement.scrollTop = logElement.scrollHeight;
+      }
+
+      // Update statistics display
+      function updateStats() {
+        const stats = sessionManager.getSessionStats();
+        document.getElementById("totalSessions").textContent =
+          stats.totalSessions;
+        document.getElementById("activeSessions").textContent =
+          stats.activeSessions;
+        document.getElementById("totalMessages").textContent =
+          stats.totalMessages;
+        document.getElementById("storageUsed").textContent = stats.storageUsed;
+      }
+
+      // Update sessions list display
+      function updateSessionsList() {
+        const sessions = sessionManager.getAllSessions();
+        const listElement = document.getElementById("sessionList");
+
+        if (sessions.length === 0) {
+          listElement.innerHTML =
+            '<div style="padding: 20px; text-align: center; color: #666;">No sessions found</div>';
+          return;
+        }
+
+        listElement.innerHTML = sessions
+          .map((session) => {
+            const status = getSessionStatus(session);
+            return `
+                    <div class="session-item">
+                        <div class="session-header">
+                            <div>
+                                <strong>Product #${session.productId}</strong>
+                                ${
+                                  session.customerName
+                                    ? `<br><small>${session.customerName}</small>`
+                                    : ""
+                                }
+                            </div>
+                            <span class="session-status ${status.className}">${
+              status.text
+            }</span>
+                        </div>
+                        <div class="session-id">${session.sessionId}</div>
+                        <div style="margin-top: 8px; font-size: 12px; color: #666;">
+                            Messages: ${session.messageCount} | 
+                            Created: ${new Date(
+                              session.createdAt
+                            ).toLocaleString()} |
+                            Last Activity: ${new Date(
+                              session.lastActivity
+                            ).toLocaleString()}
+                        </div>
+                    </div>
+                `;
+          })
+          .join("");
+      }
+
+      // Get session status
+      function getSessionStatus(session) {
+        const now = new Date();
+        const expiresAt = new Date(session.expiresAt);
+        const lastActivity = new Date(session.lastActivity);
+        const timeSinceActivity = now.getTime() - lastActivity.getTime();
+
+        if (expiresAt < now)
+          return { text: "Expired", className: "status-expired" };
+        if (timeSinceActivity > 30 * 60 * 1000)
+          return { text: "Inactive", className: "status-inactive" };
+        return { text: "Active", className: "status-active" };
+      }
+
+      // Test functions
+      window.createTestSession = function () {
+        const productId = Math.floor(Math.random() * 100) + 1;
+        const customerName = `Test User ${Math.floor(Math.random() * 1000)}`;
+        const customerEmail = `test${Math.floor(
+          Math.random() * 1000
+        )}@example.com`;
+
+        const session = sessionManager.getOrCreateSession(
+          productId,
+          customerName,
+          customerEmail
+        );
+        log(
+          `Created session for Product #${productId} (${customerName})`,
+          "success"
+        );
+        refreshData();
+      };
+
+      window.addTestMessage = function () {
+        const sessions = sessionManager.getAllSessions();
+        if (sessions.length === 0) {
+          log("No sessions available. Create a session first.", "warning");
+          return;
+        }
+
+        const session = sessions[Math.floor(Math.random() * sessions.length)];
+        const message = {
+          id: `msg_${Date.now()}`,
+          sessionId: session.sessionId,
+          productId: session.productId,
+          message_text: `Test message ${Math.floor(Math.random() * 1000)}`,
+          sender_type: Math.random() > 0.5 ? "customer" : "admin",
+          sender_name: session.customerName || "Test User",
+          created_at: new Date().toISOString(),
+          is_read: false,
+          status: "sent",
+        };
+
+        sessionManager.storeMessage(message);
+        log(
+          `Added message to session ${session.sessionId.substring(0, 20)}...`,
+          "success"
+        );
+        refreshData();
+      };
+
+      window.refreshData = function () {
+        updateStats();
+        updateSessionsList();
+        log("Data refreshed", "info");
+      };
+
+      window.exportData = function () {
+        const data = sessionManager.exportSessionData();
+        const blob = new Blob([data], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `session-test-data-${
+          new Date().toISOString().split("T")[0]
+        }.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        log("Session data exported", "success");
+      };
+
+      window.clearAllSessions = function () {
+        if (confirm("Are you sure you want to clear all sessions?")) {
+          sessionManager.clearAllSessions();
+          log("All sessions cleared", "warning");
+          refreshData();
+        }
+      };
+
+      // Initialize display
+      refreshData();
+      log("Session management test initialized", "success");
+    </script>
+  </body>
+</html>

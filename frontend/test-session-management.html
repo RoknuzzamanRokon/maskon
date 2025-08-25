@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Session Management Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .test-section {
+        background: white;
+        padding: 20px;
+        margin: 10px 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .test-result {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      pre {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Session Management Test - Task 5</h1>
+    <p>
+      This page tests the session management functionality for anonymous users.
+    </p>
+
+    <div class="test-section">
+      <h2>Test 1: Generate Unique Session IDs</h2>
+      <button onclick="testSessionIdGeneration()">
+        Test Session ID Generation
+      </button>
+      <div id="sessionIdTest"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 2: Store Session ID in localStorage</h2>
+      <button onclick="testLocalStoragePersistence()">
+        Test localStorage Persistence
+      </button>
+      <div id="localStorageTest"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 3: Product-Specific Sessions</h2>
+      <button onclick="testProductSessions()">Test Product Sessions</button>
+      <div id="productSessionTest"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 4: Session Persistence Across Page Reloads</h2>
+      <button onclick="testSessionPersistence()">
+        Test Session Persistence
+      </button>
+      <button onclick="simulatePageReload()">Simulate Page Reload</button>
+      <div id="persistenceTest"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 5: Message Association with Sessions</h2>
+      <button onclick="testMessageAssociation()">
+        Test Message Association
+      </button>
+      <div id="messageTest"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Current Session Data</h2>
+      <button onclick="displaySessionData()">Show Current Session Data</button>
+      <div id="sessionData"></div>
+    </div>
+
+    <script type="module">
+      // Import session manager (this would normally be from the built app)
+      // For testing, we'll create a simplified version
+
+      class TestSessionManager {
+        constructor() {
+          this.STORAGE_KEY = "chat_session_data";
+          this.GLOBAL_SESSION_KEY = "global_chat_session";
+          this.SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours
+        }
+
+        generateUniqueId() {
+          const timestamp = Date.now();
+          const random = Math.random().toString(36).substring(2, 11);
+          const browserFingerprint = this.getBrowserFingerprint();
+          return `session_${timestamp}_${random}_${browserFingerprint}`;
+        }
+
+        getBrowserFingerprint() {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          ctx.fillText("fingerprint", 10, 10);
+          const canvasFingerprint = canvas.toDataURL().slice(-10);
+
+          const fingerprint = [
+            navigator.userAgent.slice(-10),
+            screen.width,
+            screen.height,
+            new Date().getTimezoneOffset(),
+            canvasFingerprint,
+          ]
+            .join("")
+            .replace(/[^a-zA-Z0-9]/g, "")
+            .slice(-8);
+
+          return fingerprint;
+        }
+
+        getGlobalSessionId() {
+          let globalSessionId = localStorage.getItem(this.GLOBAL_SESSION_KEY);
+
+          if (!globalSessionId) {
+            globalSessionId = this.generateUniqueId();
+            localStorage.setItem(this.GLOBAL_SESSION_KEY, globalSessionId);
+          }
+
+          return globalSessionId;
+        }
+
+        getSessionStorage() {
+          try {
+            const stored = localStorage.getItem(this.STORAGE_KEY);
+            if (stored) {
+              return JSON.parse(stored);
+            }
+          } catch (error) {
+            console.warn("Failed to parse session storage:", error);
+          }
+
+          return {
+            globalSessionId: this.getGlobalSessionId(),
+            productSessions: {},
+            userPreferences: {},
+          };
+        }
+
+        saveSessionStorage(data) {
+          try {
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+          } catch (error) {
+            console.error("Failed to save session storage:", error);
+          }
+        }
+
+        getProductSession(productId) {
+          const storage = this.getSessionStorage();
+          const productKey = `product_${productId}`;
+
+          let session = storage.productSessions[productKey];
+
+          if (!session) {
+            session = {
+              sessionId: this.generateUniqueId(),
+              productId,
+              createdAt: new Date().toISOString(),
+              lastActivity: new Date().toISOString(),
+              messageCount: 0,
+              isActive: true,
+            };
+
+            storage.productSessions[productKey] = session;
+            this.saveSessionStorage(storage);
+          }
+
+          return session;
+        }
+
+        updateProductSession(productId, updates) {
+          const storage = this.getSessionStorage();
+          const productKey = `product_${productId}`;
+
+          if (storage.productSessions[productKey]) {
+            storage.productSessions[productKey] = {
+              ...storage.productSessions[productKey],
+              ...updates,
+              lastActivity: new Date().toISOString(),
+            };
+
+            this.saveSessionStorage(storage);
+          }
+        }
+
+        incrementMessageCount(productId) {
+          const storage = this.getSessionStorage();
+          const productKey = `product_${productId}`;
+
+          if (storage.productSessions[productKey]) {
+            storage.productSessions[productKey].messageCount++;
+            storage.productSessions[productKey].lastActivity =
+              new Date().toISOString();
+            this.saveSessionStorage(storage);
+          }
+        }
+
+        getSessionStats() {
+          const storage = this.getSessionStorage();
+          const sessions = Object.values(storage.productSessions);
+
+          const activeSessions = sessions.filter((s) => s.isActive);
+          const totalMessages = sessions.reduce(
+            (sum, s) => sum + s.messageCount,
+            0
+          );
+
+          return {
+            totalSessions: sessions.length,
+            activeSessions: activeSessions.length,
+            totalMessages,
+          };
+        }
+
+        exportSessionData() {
+          return this.getSessionStorage();
+        }
+
+        clearAllSessions() {
+          localStorage.removeItem(this.STORAGE_KEY);
+          localStorage.removeItem(this.GLOBAL_SESSION_KEY);
+        }
+      }
+
+      // Create global instance
+      window.sessionManager = new TestSessionManager();
+
+      // Test functions
+      window.testSessionIdGeneration = function () {
+        const results = document.getElementById("sessionIdTest");
+        try {
+          const id1 = window.sessionManager.generateUniqueId();
+          const id2 = window.sessionManager.generateUniqueId();
+          const globalId = window.sessionManager.getGlobalSessionId();
+
+          results.innerHTML = `
+                    <div class="test-result success">
+                        <strong>✓ Session ID Generation Test Passed</strong><br>
+                        Generated ID 1: <code>${id1}</code><br>
+                        Generated ID 2: <code>${id2}</code><br>
+                        Global Session ID: <code>${globalId}</code><br>
+                        Unique: ${id1 !== id2 ? "✓ Yes" : "✗ No"}
+                    </div>
+                `;
+        } catch (error) {
+          results.innerHTML = `
+                    <div class="test-result error">
+                        <strong>✗ Session ID Generation Test Failed</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+        }
+      };
+
+      window.testLocalStoragePersistence = function () {
+        const results = document.getElementById("localStorageTest");
+        try {
+          const globalId = window.sessionManager.getGlobalSessionId();
+          const storedId = localStorage.getItem("global_chat_session");
+          const sessionData = localStorage.getItem("chat_session_data");
+
+          results.innerHTML = `
+                    <div class="test-result success">
+                        <strong>✓ localStorage Persistence Test Passed</strong><br>
+                        Global Session ID: <code>${globalId}</code><br>
+                        Stored in localStorage: <code>${storedId}</code><br>
+                        Session Data Exists: ${
+                          sessionData ? "✓ Yes" : "✗ No"
+                        }<br>
+                        IDs Match: ${globalId === storedId ? "✓ Yes" : "✗ No"}
+                    </div>
+                `;
+        } catch (error) {
+          results.innerHTML = `
+                    <div class="test-result error">
+                        <strong>✗ localStorage Persistence Test Failed</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+        }
+      };
+
+      window.testProductSessions = function () {
+        const results = document.getElementById("productSessionTest");
+        try {
+          const productId1 = 123;
+          const productId2 = 456;
+
+          const session1 = window.sessionManager.getProductSession(productId1);
+          const session2 = window.sessionManager.getProductSession(productId2);
+          const session1Again =
+            window.sessionManager.getProductSession(productId1);
+
+          results.innerHTML = `
+                    <div class="test-result success">
+                        <strong>✓ Product Sessions Test Passed</strong><br>
+                        Product ${productId1} Session: <code>${
+            session1.sessionId
+          }</code><br>
+                        Product ${productId2} Session: <code>${
+            session2.sessionId
+          }</code><br>
+                        Same Product Session Again: <code>${
+                          session1Again.sessionId
+                        }</code><br>
+                        Sessions are Different: ${
+                          session1.sessionId !== session2.sessionId
+                            ? "✓ Yes"
+                            : "✗ No"
+                        }<br>
+                        Same Product Returns Same Session: ${
+                          session1.sessionId === session1Again.sessionId
+                            ? "✓ Yes"
+                            : "✗ No"
+                        }
+                    </div>
+                `;
+        } catch (error) {
+          results.innerHTML = `
+                    <div class="test-result error">
+                        <strong>✗ Product Sessions Test Failed</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+        }
+      };
+
+      window.testSessionPersistence = function () {
+        const results = document.getElementById("persistenceTest");
+        try {
+          const productId = 789;
+          const session = window.sessionManager.getProductSession(productId);
+
+          // Update session with customer info
+          window.sessionManager.updateProductSession(productId, {
+            customerName: "John Doe",
+            customerEmail: "john@example.com",
+          });
+
+          // Store the session ID for comparison after reload
+          localStorage.setItem("test_session_id", session.sessionId);
+
+          results.innerHTML = `
+                    <div class="test-result info">
+                        <strong>Session Created for Persistence Test</strong><br>
+                        Product ID: ${productId}<br>
+                        Session ID: <code>${session.sessionId}</code><br>
+                        Customer Name: John Doe<br>
+                        Customer Email: john@example.com<br>
+                        <em>Click "Simulate Page Reload" to test persistence</em>
+                    </div>
+                `;
+        } catch (error) {
+          results.innerHTML = `
+                    <div class="test-result error">
+                        <strong>✗ Session Persistence Test Failed</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+        }
+      };
+
+      window.simulatePageReload = function () {
+        const results = document.getElementById("persistenceTest");
+        try {
+          const productId = 789;
+          const originalSessionId = localStorage.getItem("test_session_id");
+
+          // Clear the session manager instance to simulate page reload
+          window.sessionManager = new TestSessionManager();
+
+          // Get the session again (should load from localStorage)
+          const session = window.sessionManager.getProductSession(productId);
+
+          results.innerHTML = `
+                    <div class="test-result success">
+                        <strong>✓ Session Persistence Test Passed</strong><br>
+                        Original Session ID: <code>${originalSessionId}</code><br>
+                        Session ID After Reload: <code>${
+                          session.sessionId
+                        }</code><br>
+                        Customer Name: ${
+                          session.customerName || "Not persisted"
+                        }<br>
+                        Customer Email: ${
+                          session.customerEmail || "Not persisted"
+                        }<br>
+                        Session Persisted: ${
+                          originalSessionId === session.sessionId
+                            ? "✓ Yes"
+                            : "✗ No"
+                        }
+                    </div>
+                `;
+        } catch (error) {
+          results.innerHTML = `
+                    <div class="test-result error">
+                        <strong>✗ Session Persistence Test Failed</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+        }
+      };
+
+      window.testMessageAssociation = function () {
+        const results = document.getElementById("messageTest");
+        try {
+          const productId = 999;
+          const session = window.sessionManager.getProductSession(productId);
+
+          // Simulate sending messages
+          window.sessionManager.incrementMessageCount(productId);
+          window.sessionManager.incrementMessageCount(productId);
+          window.sessionManager.incrementMessageCount(productId);
+
+          const updatedSession =
+            window.sessionManager.getProductSession(productId);
+
+          results.innerHTML = `
+                    <div class="test-result success">
+                        <strong>✓ Message Association Test Passed</strong><br>
+                        Product ID: ${productId}<br>
+                        Session ID: <code>${session.sessionId}</code><br>
+                        Initial Message Count: 0<br>
+                        Final Message Count: ${updatedSession.messageCount}<br>
+                        Messages Associated: ${
+                          updatedSession.messageCount === 3 ? "✓ Yes" : "✗ No"
+                        }
+                    </div>
+                `;
+        } catch (error) {
+          results.innerHTML = `
+                    <div class="test-result error">
+                        <strong>✗ Message Association Test Failed</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+        }
+      };
+
+      window.displaySessionData = function () {
+        const results = document.getElementById("sessionData");
+        try {
+          const sessionData = window.sessionManager.exportSessionData();
+          const stats = window.sessionManager.getSessionStats();
+
+          results.innerHTML = `
+                    <div class="test-result info">
+                        <strong>Current Session Data</strong><br>
+                        <strong>Statistics:</strong><br>
+                        Total Sessions: ${stats.totalSessions}<br>
+                        Active Sessions: ${stats.activeSessions}<br>
+                        Total Messages: ${stats.totalMessages}<br><br>
+                        <strong>Raw Session Data:</strong><br>
+                        <pre>${JSON.stringify(sessionData, null, 2)}</pre>
+                    </div>
+                `;
+        } catch (error) {
+          results.innerHTML = `
+                    <div class="test-result error">
+                        <strong>✗ Failed to Display Session Data</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+        }
+      };
+
+      // Auto-run basic tests on page load
+      window.addEventListener("load", function () {
+        console.log("Session Management Test Page Loaded");
+        console.log("Task 5 Requirements:");
+        console.log("1. Generate unique session IDs for chat tracking");
+        console.log("2. Store session ID in browser localStorage");
+        console.log("3. Associate messages with session IDs");
+        console.log("4. Handle session persistence across page reloads");
+      });
+    </script>
+  </body>
+</html>

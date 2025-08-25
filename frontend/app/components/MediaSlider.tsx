@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 interface MediaFile {
   url: string;
@@ -29,7 +29,7 @@ export default function MediaSlider({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isFullscreen) return;
-      
+
       switch (e.key) {
         case "ArrowLeft":
           goToPrevious();
@@ -54,11 +54,23 @@ export default function MediaSlider({
 
   if (!mediaFiles || mediaFiles.length === 0) {
     return (
-      <div className={`bg-gray-100 rounded-xl flex items-center justify-center aspect-video ${className}`}>
+      <div
+        className={`bg-gray-100 rounded-xl flex items-center justify-center aspect-video ${className}`}
+      >
         <div className="text-center p-8">
           <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg
+              className="w-8 h-8 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
           </div>
           <p className="text-gray-500 font-medium">No media available</p>
@@ -101,9 +113,9 @@ export default function MediaSlider({
 
   const toggleFullscreen = () => {
     if (!sliderRef.current) return;
-    
+
     if (!document.fullscreenElement) {
-      sliderRef.current.requestFullscreen().catch(err => {
+      sliderRef.current.requestFullscreen().catch((err) => {
         console.error(`Error attempting to enable fullscreen: ${err.message}`);
       });
       setIsFullscreen(true);
@@ -115,7 +127,7 @@ export default function MediaSlider({
     }
   };
 
-  const slideVariants = {
+  const slideVariants: Variants = {
     hiddenRight: {
       x: "100%",
       opacity: 0,
@@ -129,7 +141,7 @@ export default function MediaSlider({
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: "easeInOut",
+        ease: [0.42, 0, 0.58, 1],
       },
     },
     exit: {
@@ -259,16 +271,36 @@ export default function MediaSlider({
               className="bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white rounded-full p-2 transition-all duration-300"
             >
               {isFullscreen ? (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4a1 1 0 00-1-1H4a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1zm0 10v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4a1 1 0 011-1h4a1 1 0 011 1zm10 0v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4a1 1 0 011-1h4a1 1 0 011 1zm0-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 9V4a1 1 0 00-1-1H4a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1zm0 10v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4a1 1 0 011-1h4a1 1 0 011 1zm10 0v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4a1 1 0 011-1h4a1 1 0 011 1zm0-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1z"
+                  />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5"
+                  />
                 </svg>
               )}
             </button>
-            
+
             {currentMedia.type === "video" && (
               <button
                 onClick={toggleVideoPlay}
@@ -277,13 +309,38 @@ export default function MediaSlider({
                 }`}
               >
                 {isVideoPlaying ? (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 )}
               </button>
@@ -326,11 +383,14 @@ export default function MediaSlider({
       {/* Progress Bar for Video */}
       {currentMedia.type === "video" && isVideoPlaying && (
         <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-700 z-10">
-          <motion.div 
+          <motion.div
             className="h-full bg-gradient-to-r from-blue-500 to-indigo-600"
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
-            transition={{ duration: videoRef.current?.duration || 0, ease: "linear" }}
+            transition={{
+              duration: videoRef.current?.duration || 0,
+              ease: [0, 0, 1, 1],
+            }}
           />
         </div>
       )}

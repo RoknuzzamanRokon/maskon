@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getProduct } from "../../lib/api";
 import ProductImageGallery from "../../components/ProductImageGallery";
+import ChatWidget from "../../components/ChatWidget";
 
 export default async function ProductDetailPage({
   params,
@@ -22,7 +23,8 @@ export default async function ProductDetailPage({
             Product Not Found
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-8">
-            The item you're looking for is no longer available or has been moved.
+            The item you're looking for is no longer available or has been
+            moved.
           </p>
           <Link
             href="/products"
@@ -182,10 +184,34 @@ export default async function ProductDetailPage({
                 </h3>
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-5">
                   {(() => {
+                    // Check if specifications is a valid string
+                    if (
+                      !product.specifications ||
+                      typeof product.specifications !== "string"
+                    ) {
+                      return (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                          No specifications available
+                        </p>
+                      );
+                    }
+
+                    // Clean the specifications string
+                    const cleanSpecs = product.specifications.trim();
+
+                    // Check if it's empty after trimming
+                    if (!cleanSpecs) {
+                      return (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                          No specifications available
+                        </p>
+                      );
+                    }
+
                     try {
                       // Try to parse as JSON array
-                      const specs = JSON.parse(product.specifications);
-                      if (Array.isArray(specs)) {
+                      const specs = JSON.parse(cleanSpecs);
+                      if (Array.isArray(specs) && specs.length > 0) {
                         return (
                           <div className="space-y-3">
                             {specs.map(
@@ -198,10 +224,10 @@ export default async function ProductDetailPage({
                                   className="flex border-b border-gray-200 dark:border-gray-700 pb-3 last:border-0 last:pb-0"
                                 >
                                   <div className="w-1/3 text-gray-600 dark:text-gray-400 font-medium">
-                                    {spec.key}
+                                    {spec.key || "N/A"}
                                   </div>
                                   <div className="w-2/3 text-gray-800 dark:text-gray-200">
-                                    {spec.value}
+                                    {spec.value || "N/A"}
                                   </div>
                                 </div>
                               )
@@ -211,14 +237,28 @@ export default async function ProductDetailPage({
                       }
                     } catch (e) {
                       // Fallback to raw display if parsing fails
-                      console.error("Failed to parse specifications:", e);
+                      console.warn(
+                        "Failed to parse specifications as JSON:",
+                        e
+                      );
+                    }
+
+                    // Check if it looks like invalid JSON (contains random characters)
+                    if (cleanSpecs.length < 10 && !/^[\[\{]/.test(cleanSpecs)) {
+                      return (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                          Specifications data is being updated
+                        </p>
+                      );
                     }
 
                     // Default display for non-JSON specs
                     return (
-                      <pre className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-wrap">
-                        {product.specifications}
-                      </pre>
+                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                        <p className="whitespace-pre-wrap break-words">
+                          {cleanSpecs}
+                        </p>
+                      </div>
                     );
                   })()}
                 </div>
@@ -307,8 +347,9 @@ export default async function ProductDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Chat Widget */}
+      <ChatWidget productId={product.id} productName={product.name} />
     </div>
   );
 }
-
-

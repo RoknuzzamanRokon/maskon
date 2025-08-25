@@ -4,7 +4,8 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "wait-on http://localhost:8000 && next build",
+        "build": "next build",
+        "build:with-backend": "wait-on http://localhost:8000 && next build",
         "start": "next start",
         "lint": "next lint",
         "test": "jest",
