@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { getProducts } from "../lib/api";
 import Image from "next/image";
+import ChatWidget from "../components/ChatWidget";
+import { useEffect, useState } from "react";
 
 // Helper function to get the main image URL
 function getMainImageUrl(product: any): string | undefined {
@@ -61,18 +65,61 @@ function ProductImage({
   );
 }
 
-export default async function ProductsPage() {
-  let products = [];
+export default function ProductsPage() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  try {
-    products = await getProducts(20);
-    // Ensure products is an array
-    if (!Array.isArray(products)) {
-      products = [];
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        const fetchedProducts = await getProducts(20);
+        // Ensure products is an array
+        if (Array.isArray(fetchedProducts)) {
+          setProducts(fetchedProducts);
+        } else {
+          setProducts([]);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setError("Failed to load products");
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
     }
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    products = [];
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-850 py-12 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">
+            Loading products...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-850 py-12 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -119,117 +166,128 @@ export default async function ProductsPage() {
             const imageUrl = getMainImageUrl(product);
 
             return (
-              <article
-                key={product.id}
-                className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
-              >
-                {/* Product Image */}
-                <div className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
-                  <ProductImage
-                    imageUrl={imageUrl}
-                    alt={product.name || "Product"}
-                  />
+              <Link href={`/products/${product.id}`} key={product.id}>
+                <article className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 cursor-pointer group">
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none"></div>
+                  {/* Product Image */}
+                  <div className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
+                    <ProductImage
+                      imageUrl={imageUrl}
+                      alt={product.name || "Product"}
+                    />
 
-                  <div className="absolute top-3 right-3 flex flex-col gap-2">
-                    {product.discount && product.discount > 0 && (
-                      <span className="bg-red-600 text-white px-2.5 py-1 text-xs rounded-full font-semibold shadow-md">
-                        -{product.discount}%
-                      </span>
-                    )}
-                    {product.category && (
-                      <span
-                        className={`inline-block px-2.5 py-1 text-xs rounded-full font-semibold text-white shadow-md ${
-                          product.category === "electronics"
-                            ? "bg-blue-600"
-                            : product.category === "clothing"
-                            ? "bg-emerald-600"
-                            : product.category === "books"
-                            ? "bg-violet-600"
-                            : "bg-amber-600"
-                        }`}
-                      >
-                        {product.category}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Product Details */}
-                <div className="p-5">
-                  <div className="flex justify-between items-start mb-3">
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-1">
-                      {product.name || "Unnamed Product"}
-                    </h2>
-                    <div className="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                      <span className="text-amber-400 text-sm">★</span>
-                      <span className="text-xs text-gray-700 dark:text-gray-300 ml-1">
-                        {product.rating || "4.8"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2 h-10">
-                    {product.description || "No description available"}
-                  </p>
-
-                  <div className="flex justify-between items-center mb-5">
-                    <div className="flex items-baseline gap-2">
-                      {product.discount &&
-                      product.discount > 0 &&
-                      product.price ? (
-                        <>
-                          <span className="text-xl font-bold text-gray-900 dark:text-white">
-                            $
-                            {(
-                              product.price *
-                              (1 - product.discount / 100)
-                            ).toFixed(2)}
-                          </span>
-                          <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                            ${product.price.toFixed(2)}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-xl font-bold text-gray-900 dark:text-white">
-                          ${product.price ? product.price.toFixed(2) : "0.00"}
+                    <div className="absolute top-3 right-3 flex flex-col gap-2">
+                      {product.discount && product.discount > 0 && (
+                        <span className="bg-red-600 text-white px-2.5 py-1 text-xs rounded-full font-semibold shadow-md">
+                          -{product.discount}%
+                        </span>
+                      )}
+                      {product.category && (
+                        <span
+                          className={`inline-block px-2.5 py-1 text-xs rounded-full font-semibold text-white shadow-md ${
+                            product.category === "electronics"
+                              ? "bg-blue-600"
+                              : product.category === "clothing"
+                              ? "bg-emerald-600"
+                              : product.category === "books"
+                              ? "bg-violet-600"
+                              : "bg-amber-600"
+                          }`}
+                        >
+                          {product.category}
                         </span>
                       )}
                     </div>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        (product.stock || 0) > 10
-                          ? "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300"
-                          : (product.stock || 0) > 0
-                          ? "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300"
-                          : "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300"
-                      }`}
-                    >
-                      {(product.stock || 0) > 0
-                        ? `${product.stock} available`
-                        : "Out of stock"}
-                    </span>
                   </div>
 
-                  <div className="flex gap-3">
-                    <Link
-                      href={`/products/${product.id}`}
-                      className="flex-1 text-center px-4 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
-                    >
-                      Details
-                    </Link>
-                    <button
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                        (product.stock || 0) === 0
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600"
-                      }`}
-                      disabled={(product.stock || 0) === 0}
-                    >
-                      Add to Cart
-                    </button>
+                  {/* Product Details */}
+                  <div className="p-5">
+                    <div className="flex justify-between items-start mb-3">
+                      <h2 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-1">
+                        {product.name || "Unnamed Product"}
+                      </h2>
+                      <div className="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                        <span className="text-amber-400 text-sm">★</span>
+                        <span className="text-xs text-gray-700 dark:text-gray-300 ml-1">
+                          {product.rating || "4.8"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2 h-10">
+                      {product.description || "No description available"}
+                    </p>
+
+                    <div className="flex justify-between items-center mb-5">
+                      <div className="flex items-baseline gap-2">
+                        {product.discount &&
+                        product.discount > 0 &&
+                        product.price ? (
+                          <>
+                            <span className="text-xl font-bold text-gray-900 dark:text-white">
+                              $
+                              {(
+                                product.price *
+                                (1 - product.discount / 100)
+                              ).toFixed(2)}
+                            </span>
+                            <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
+                              ${product.price.toFixed(2)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-xl font-bold text-gray-900 dark:text-white">
+                            ${product.price ? product.price.toFixed(2) : "0.00"}
+                          </span>
+                        )}
+                      </div>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          (product.stock || 0) > 10
+                            ? "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300"
+                            : (product.stock || 0) > 0
+                            ? "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300"
+                            : "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300"
+                        }`}
+                      >
+                        {(product.stock || 0) > 0
+                          ? `${product.stock} available`
+                          : "Out of stock"}
+                      </span>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <button
+                        className="flex-1 text-center px-4 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium group-hover:bg-blue-600"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // Handle view details - the Link wrapper will handle navigation
+                        }}
+                      >
+                        View Details
+                      </button>
+                      <button
+                        className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                          (product.stock || 0) === 0
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                            : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600"
+                        }`}
+                        disabled={(product.stock || 0) === 0}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // Handle add to cart
+                          console.log("Add to cart:", product.id);
+                        }}
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </article>
+                </article>
+              </Link>
             );
           })}
         </div>
