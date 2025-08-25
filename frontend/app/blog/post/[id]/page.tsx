@@ -146,7 +146,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
             </div>
             <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
               <User className="w-4 h-4 mr-2" />
-              <span>MASKON</span>
+              <span>MASHKON</span>
             </div>
           </div>
 

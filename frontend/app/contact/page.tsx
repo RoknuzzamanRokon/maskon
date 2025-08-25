@@ -376,7 +376,7 @@ export default function ContactPage() {
                   htmlFor="consent"
                   className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
                 >
-                  I consent to Maskon Vibes collecting my details through this
+                  I consent to Mashkon Vibes collecting my details through this
                   form
                 </label>
               </div>

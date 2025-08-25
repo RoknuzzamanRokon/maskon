@@ -6,7 +6,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Maskon Vibes",
+  title: "Mashkon Vibes",
   description: "Tech, Food, and Activity Blog with Portfolio",
 };
 
@@ -27,7 +27,7 @@ export default function RootLayout({
             <div className="container mx-auto px-4">
               <div className="grid md:grid-cols-4 gap-8 mb-8">
                 <div>
-                  <h3 className="text-xl font-bold mb-4">Maskon Vibes</h3>
+                  <h3 className="text-xl font-bold mb-4">Mashkon Vibes</h3>
                   <p className="text-gray-300 text-sm">
                     Sharing insights on technology, food, and daily activities.
                   </p>

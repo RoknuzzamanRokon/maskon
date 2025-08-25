@@ -183,7 +183,7 @@ export default function PortfolioPage() {
               <motion.div variants={fadeInUp}>
                 <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
                   <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                    MASKON
+                    MASHKON
                   </span>
                   <br />
                   <span className="text-3xl md:text-4xl font-light text-blue-100">
@@ -1002,7 +1002,7 @@ export default function PortfolioPage() {
 
                 <div className="space-y-4">
                   <motion.a
-                    href="mailto:maskon@gmail.com"
+                    href="mailto:mashkon@gmail.com"
                     className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

@@ -69,7 +69,7 @@ export default function Navbar() {
           >
             <span className="relative z-10 inline-block py-1">
               <span className="block text-animate bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-600 bg-clip-text text-transparent">
-                Maskon
+                Mashkon
               </span>
               <span className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-600 w-full underline-animate scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
             </span>

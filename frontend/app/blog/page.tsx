@@ -295,7 +295,7 @@ export default function BlogPage() {
                         </span>
                         <span className="mx-2">•</span>
                         <User className="w-4 h-4 mr-1" />
-                        <span>MASKON</span>
+                        <span>MASHKON</span>
                       </div>
 
                       {/* Article Title */}
