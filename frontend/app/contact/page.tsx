@@ -53,7 +53,7 @@ export default function ContactPage() {
                     Email
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-2">
-                    maskon@gmail.com
+                    mashkon.vibes@gmail.com
                   </p>
                   <a
                     href="mailto:maskon@gmail.com"

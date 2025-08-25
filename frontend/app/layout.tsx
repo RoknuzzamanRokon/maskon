@@ -133,13 +133,13 @@ export default function RootLayout({
                       💻
                     </a>
                   </div>
-                  <p className="text-gray-300 text-sm">📧 maskon@gmail.com</p>
+                  <p className="text-gray-300 text-sm">📧 mashkon@gmail.com</p>
                   <p className="text-gray-300">📱 WhatsApp: +880 173 99 33258</p>
                 </div>
               </div>
               <div className="border-t border-gray-700 pt-8 text-center">
                 <p className="text-gray-300">
-                  &copy; 2025 Maskon Vibes. All rights reserved.
+                  &copy; 2025 Mashkon Vibes. All rights reserved.
                 </p>
               </div>
             </div>
