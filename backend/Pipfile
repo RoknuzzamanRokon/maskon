@@ -1,0 +1,28 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "==0.104.1"
+mysql-connector-python = "==8.2.0"
+python-multipart = "==0.0.6"
+pydantic = "==2.5.0"
+python-dotenv = "==1.0.0"
+sqlalchemy = "==2.0.23"
+alembic = "==1.13.1"
+passlib = {extras = ["bcrypt"], version = "*"}
+python-jose = {extras = ["cryptography"], version = "*"}
+pyjwt = "*"
+authlib = "*"
+bleach = "==6.1.0"
+requests = "*"
+pytest-asyncio = "*"
+uvicorn = {extras = ["standard"], version = "*"}
+websockets = "*"
+aiohttp = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
