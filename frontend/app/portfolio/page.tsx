@@ -55,6 +55,7 @@ export default function PortfolioPage() {
       ],
       photo: "/team/20240827_185556.jpg",
       email: "rokon.raz@gmail.com",
+      linkedin: "https://www.linkedin.com/in/rokon-raz/",
     },
     {
       name: "Masrufa",
@@ -70,6 +71,7 @@ export default function PortfolioPage() {
       ],
       photo: "/team/20240827_185556.jpg",
       email: "masrufa.sarkar896@gmail.com",
+      linkedin: "https://www.linkedin.com/in/rokon-raz/",
     },
   ];
 
@@ -423,7 +425,6 @@ export default function PortfolioPage() {
                     <div className="absolute -bottom-12 left-8">
                       <div className="w-24 h-24 rounded-2xl border-4 border-white dark:border-gray-800 overflow-hidden shadow-xl bg-gradient-to-br from-blue-100 to-indigo-100">
                         <div className="w-full h-full bg-gradient-to-br from-blue-200 to-indigo-200 flex items-center justify-center">
-                          
                           <span className="text-2xl font-bold text-blue-800">
                             {member.name.charAt(0)}
                           </span>
@@ -475,7 +476,9 @@ export default function PortfolioPage() {
                         </div>
                         <div className="flex space-x-3">
                           <motion.a
-                            href="#"
+                            href={
+                              member.linkedin 
+                            }
                             className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
@@ -765,8 +768,10 @@ export default function PortfolioPage() {
                         </h3>
 
                         {/* Project Description */}
-                        <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed line-clamp-3">
-                          {item.description}
+                        <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                          {item.description.length > 30
+                            ? item.description.slice(0, 30) + "..."
+                            : item.description}
                         </p>
 
                         {/* Technologies */}
@@ -778,7 +783,7 @@ export default function PortfolioPage() {
                           <div className="flex flex-wrap gap-2">
                             {item.technologies
                               .split(",")
-                              .slice(0, 6)
+                              .slice(0, 3)
                               .map((tech: string) => (
                                 <span
                                   key={tech}
@@ -787,9 +792,9 @@ export default function PortfolioPage() {
                                   {tech.trim()}
                                 </span>
                               ))}
-                            {item.technologies.split(",").length > 6 && (
+                            {item.technologies.split(",").length > 3 && (
                               <span className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-3 py-1 text-sm rounded-lg font-medium">
-                                +{item.technologies.split(",").length - 6} more
+                                +{item.technologies.split(",").length - 3} more
                               </span>
                             )}
                           </div>
@@ -932,15 +937,21 @@ export default function PortfolioPage() {
                         whileHover={{ x: 5 }}
                         transition={{ type: "spring", stiffness: 300 }}
                       >
-                        <div className="w-12 h-12 rounded-x5 bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center mr-4">
-                          <img src={member?.photo} />
+                        <div className="w-12 h-15 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center mr-4">
+                          <img
+                            src={member?.photo}
+                            alt={member?.name}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
+
                         <div className="flex-1">
                           <h4 className="font-semibold text-white">
                             {member.name}
                           </h4>
                           <p className="text-blue-200 text-sm">{member.role}</p>
                         </div>
+
                         <div className="flex space-x-2">
                           <motion.a
                             href={`mailto:${member.email}`}
@@ -952,7 +963,12 @@ export default function PortfolioPage() {
                           </motion.a>
 
                           <motion.a
-                            href="#"
+                            href={
+                              member.linkedin ||
+                              "https://www.linkedin.com/in/rokon-raz/"
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-blue-200 hover:text-white hover:bg-white/20 transition-colors"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
