@@ -783,7 +783,7 @@ export default function PortfolioPage() {
                           <div className="flex flex-wrap gap-2">
                             {item.technologies
                               .split(",")
-                              .slice(0, 3)
+                              .slice(0, 2)
                               .map((tech: string) => (
                                 <span
                                   key={tech}
@@ -792,9 +792,9 @@ export default function PortfolioPage() {
                                   {tech.trim()}
                                 </span>
                               ))}
-                            {item.technologies.split(",").length > 3 && (
+                            {item.technologies.split(",").length > 2 && (
                               <span className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-3 py-1 text-sm rounded-lg font-medium">
-                                +{item.technologies.split(",").length - 3} more
+                                +{item.technologies.split(",").length - 2} more
                               </span>
                             )}
                           </div>

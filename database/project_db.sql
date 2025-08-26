@@ -1,16 +1,8 @@
--- =====================================================
--- Blog & Portfolio Project - Database Schema
--- =====================================================
--- This file contains the database schema for the blog and portfolio project
--- based on the actual implementation in main.py
--- Includes: authentication, posts, portfolio, products, and media support
--- Create database
+
 CREATE DATABASE IF NOT EXISTS blog_portfolio;
 USE blog_portfolio;
--- =====================================================
--- CORE TABLES
--- =====================================================
--- Users table for authentication and authorization
+
+
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -23,7 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_email (email),
     INDEX idx_is_admin (is_admin)
 );
--- Posts table for blog functionality
+
 CREATE TABLE IF NOT EXISTS posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -54,8 +46,7 @@ CREATE TABLE IF NOT EXISTS portfolio (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
--- ==
-== == == == == == == == == == == == == == == == == == == == == == == == == = -- INTERACTION TABLES
+-- ==== == == == == == == == == == == == == == == == == == == == == == == == == = -- INTERACTION TABLES
 -- =====================================================
 -- Post interactions table (likes/dislikes for registered users)
 CREATE TABLE IF NOT EXISTS post_interactions (
@@ -106,8 +97,7 @@ CREATE TABLE IF NOT EXISTS anonymous_comments (
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
     INDEX idx_post_anonymous_comments (post_id, created_at DESC)
 );
--- =
-== == == == == == == == == == == == == == == == == == == == == == == == == == -- MEDIA SUPPORT TABLES
+-- === == == == == == == == == == == == == == == == == == == == == == == == == == -- MEDIA SUPPORT TABLES
 -- =====================================================
 -- Post media table (for multiple images/videos per post)
 CREATE TABLE IF NOT EXISTS post_media (
@@ -160,7 +150,8 @@ CREATE TABLE IF NOT EXISTS products (
         INDEX idx_stock (stock),
         FULLTEXT idx_name_description (name, description)
 );
-- - Product images table for multiple images per product CREATE TABLE IF NOT EXISTS product_images (
+-- Product images table for multiple images per product
+CREATE TABLE IF NOT EXISTS product_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INTEGER NOT NULL,
     image_url TEXT NOT NULL,
@@ -214,8 +205,7 @@ VALUES ('electronics', 'Electronic devices and gadgets'),
     ('clothing', 'Clothing and fashion items'),
     ('books', 'Books and educational materials'),
     ('accessories', 'Various accessories and add-ons');
--- I
-nsert sample posts
+-- Insert sample posts
 INSERT IGNORE INTO posts (title, content, category, tags, image_url)
 VALUES (
         'Getting Started with FastAPI',
@@ -344,8 +334,7 @@ VALUES (
         TRUE,
         1
     );
---
-== == == == == == == == == == == == == == == == == == == == == == == == == == = -- PERFORMANCE OPTIMIZATION
+-- == == == == == == == == == == == == == == == == == == == == == == == == == == = -- PERFORMANCE OPTIMIZATION
 -- =====================================================
 -- Additional indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_posts_category_created ON posts(category, created_at DESC);
