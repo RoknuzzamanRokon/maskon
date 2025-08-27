@@ -1,10 +1,10 @@
-import { 
-  fetchWithErrorHandling, 
-  ChatError, 
-  ValidationError, 
+import {
+  fetchWithErrorHandling,
+  ChatError,
+  ValidationError,
   NetworkError,
   withRetry,
-  ErrorHandlerOptions 
+  ErrorHandlerOptions
 } from './errorHandler';
 
 const API_BASE_URL = 'http://localhost:8000/api'
@@ -39,10 +39,10 @@ export async function getBlogPosts(limit?: number, category?: string) {
   try {
     let url = `${API_BASE_URL}/posts`
     const params = new URLSearchParams()
-    
+
     if (limit) params.append('limit', limit.toString())
     if (category) params.append('category', category)
-    
+
     if (params.toString()) {
       url += `?${params.toString()}`
     }
@@ -94,11 +94,11 @@ export async function login(username: string, password: string) {
       },
       body: JSON.stringify({ username, password }),
     })
-    
+
     if (!response.ok) {
       throw new Error('Invalid username or password')
     }
-    
+
     const data = await response.json()
     setAuthToken(data.access_token)
     localStorage.setItem('user_info', JSON.stringify({
@@ -106,7 +106,7 @@ export async function login(username: string, password: string) {
       username: data.username,
       is_admin: data.is_admin
     }))
-    
+
     return data
   } catch (error) {
     console.error('Error logging in:', error)
@@ -123,12 +123,12 @@ export async function register(username: string, email: string, password: string
       },
       body: JSON.stringify({ username, email, password }),
     })
-    
+
     if (!response.ok) {
       const error = await response.json()
       throw new Error(error.detail || 'Registration failed')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error registering:', error)
@@ -141,11 +141,11 @@ export async function getCurrentUser() {
     const response = await fetch(`${API_BASE_URL}/me`, {
       headers: getAuthHeaders(),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to get user info')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error getting current user:', error)
@@ -184,11 +184,11 @@ export async function createPost(postData: any) {
       },
       body: JSON.stringify(postData),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to create post')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error creating post:', error)
@@ -202,11 +202,11 @@ export async function deletePost(postId: number) {
       method: 'DELETE',
       headers: getAuthHeaders(),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to delete post')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error deleting post:', error)
@@ -270,11 +270,11 @@ export async function interactWithPost(postId: number, interactionType: 'like' |
       },
       body: JSON.stringify({ post_id: postId, interaction_type: interactionType }),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to interact with post')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error interacting with post:', error)
@@ -292,11 +292,11 @@ export async function addAnonymousComment(postId: number, content: string, usern
       },
       body: JSON.stringify({ content, username }),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to add comment')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error adding comment:', error)
@@ -307,11 +307,11 @@ export async function addAnonymousComment(postId: number, content: string, usern
 export async function getComments(postId: number) {
   try {
     const response = await fetch(`${API_BASE_URL}/posts/${postId}/comments`)
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch comments')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error fetching comments:', error)
@@ -325,11 +325,11 @@ export async function deleteComment(commentId: number) {
       method: 'DELETE',
       headers: getAuthHeaders(),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to delete comment')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error deleting comment:', error)
@@ -342,10 +342,10 @@ export async function getProducts(limit?: number, category?: string) {
   try {
     let url = `${API_BASE_URL}/products`
     const params = new URLSearchParams()
-    
+
     if (limit) params.append('limit', limit.toString())
     if (category && category !== 'all') params.append('category', category)
-    
+
     if (params.toString()) {
       url += `?${params.toString()}`
     }
@@ -384,11 +384,11 @@ export async function createProduct(productData: any) {
       },
       body: JSON.stringify(productData),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to create product')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error creating product:', error)
@@ -406,11 +406,11 @@ export async function updateProduct(productId: number, productData: any) {
       },
       body: JSON.stringify(productData),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to update product')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error updating product:', error)
@@ -424,11 +424,11 @@ export async function deleteProduct(productId: number) {
       method: 'DELETE',
       headers: getAuthHeaders(),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to delete product')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error deleting product:', error)
@@ -507,11 +507,11 @@ export async function startChatSession(productId: number, sessionData: {
         product_id: productId
       }),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to start chat session')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error starting chat session:', error)
@@ -520,8 +520,8 @@ export async function startChatSession(productId: number, sessionData: {
 }
 
 export async function getChatMessages(
-  productId: number, 
-  sessionId: string, 
+  productId: number,
+  sessionId: string,
   options: {
     limit?: number
     offset?: number
@@ -532,18 +532,18 @@ export async function getChatMessages(
   if (!productId || productId <= 0) {
     throw new ValidationError('Invalid product ID');
   }
-  
+
   if (!sessionId || !sessionId.trim()) {
     throw new ValidationError('Session ID is required');
   }
 
   const { limit = 50, offset = 0, order = 'asc' } = options;
-  
+
   // Validate pagination parameters
   if (limit <= 0 || limit > 100) {
     throw new ValidationError('Limit must be between 1 and 100');
   }
-  
+
   if (offset < 0) {
     throw new ValidationError('Offset must be non-negative');
   }
@@ -553,7 +553,7 @@ export async function getChatMessages(
     offset: offset.toString(),
     order
   });
-  
+
   const retryOptions: ErrorHandlerOptions = {
     maxRetries: 3,
     retryDelay: 1000,
@@ -572,14 +572,14 @@ export async function getChatMessages(
       },
       retryOptions
     );
-    
+
     const data = await response.json();
-    
+
     // Validate response structure
     if (!data || typeof data !== 'object') {
       throw new ChatError('Invalid response format from server');
     }
-    
+
     return {
       messages: Array.isArray(data.messages) ? data.messages : [],
       pagination: data.pagination || {
@@ -598,9 +598,9 @@ export async function getChatMessages(
     if (error instanceof ChatError) {
       throw error;
     }
-    
+
     console.error('Error fetching chat messages:', error);
-    
+
     // Return empty response for non-critical errors to prevent UI breaks
     return {
       messages: [],
@@ -619,9 +619,9 @@ export async function getChatMessages(
 }
 
 export async function getChatHistory(
-  productId: number, 
-  sessionId: string, 
-  page: number = 1, 
+  productId: number,
+  sessionId: string,
+  page: number = 1,
   pageSize: number = 50
 ): Promise<ChatMessageResponse> {
   const offset = (page - 1) * pageSize
@@ -633,9 +633,9 @@ export async function getChatHistory(
 }
 
 export async function loadMoreMessages(
-  productId: number, 
-  sessionId: string, 
-  currentOffset: number, 
+  productId: number,
+  sessionId: string,
+  currentOffset: number,
   limit: number = 50
 ): Promise<ChatMessageResponse> {
   return getChatMessages(productId, sessionId, {
@@ -656,15 +656,15 @@ export async function sendChatMessage(productId: number, sessionId: string, mess
   if (!productId || productId <= 0) {
     throw new ValidationError('Invalid product ID');
   }
-  
+
   if (!sessionId || !sessionId.trim()) {
     throw new ValidationError('Session ID is required');
   }
-  
+
   if (!messageData.message_text || !messageData.message_text.trim()) {
     throw new ValidationError('Message text is required');
   }
-  
+
   if (messageData.message_text.length > 2000) {
     throw new ValidationError('Message text cannot exceed 2000 characters');
   }
@@ -693,20 +693,20 @@ export async function sendChatMessage(productId: number, sessionId: string, mess
     },
     retryOptions
   );
-  
+
   const data = await response.json();
-  
+
   // Validate response
   if (!data || typeof data !== 'object') {
     throw new ChatError('Invalid response format from server');
   }
-  
+
   return data;
 }
 
 export async function markMessagesAsRead(
-  productId: number, 
-  sessionId: string, 
+  productId: number,
+  sessionId: string,
   options: {
     messageIds?: number[]
     markAll?: boolean
@@ -714,7 +714,7 @@ export async function markMessagesAsRead(
 ) {
   try {
     const { messageIds, markAll = false } = options
-    
+
     const response = await fetch(`${API_BASE_URL}/products/${productId}/chat/sessions/${sessionId}/messages/read`, {
       method: 'PUT',
       headers: {
@@ -725,11 +725,11 @@ export async function markMessagesAsRead(
         mark_all: markAll
       }),
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to mark messages as read')
     }
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error marking messages as read:', error)
