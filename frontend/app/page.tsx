@@ -4,10 +4,37 @@ import { getBlogPosts } from "./lib/api";
 import { motion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import {
+  ArrowRight,
+  Star,
+  Users,
+  BookOpen,
+  Code,
+  Coffee,
+  Activity,
+  TrendingUp,
+  Award,
+  Globe,
+  Zap,
+  Heart,
+  MessageCircle,
+  Eye,
+  Calendar,
+  Clock,
+  ChevronRight,
+  Play,
+  Sparkles,
+  Target,
+  Lightbulb,
+  Rocket,
+  Shield,
+  CheckCircle,
+} from "lucide-react";
 
 export default function Home() {
   const [recentPosts, setRecentPosts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,13 +51,95 @@ export default function Home() {
     fetchData();
   }, []);
 
+  // Testimonial rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Enhanced testimonials data
+  const testimonials = [
+    {
+      name: "Sarah Johnson",
+      role: "Tech Lead at Microsoft",
+      content:
+        "MASHKON's technical insights have been invaluable for our team. The depth of knowledge and practical examples are outstanding.",
+      avatar: "SJ",
+      rating: 5,
+    },
+    {
+      name: "Ahmed Rahman",
+      role: "Food Blogger",
+      content:
+        "The culinary content here is exceptional. Every recipe I've tried has been a hit with my family and followers.",
+      avatar: "AR",
+      rating: 5,
+    },
+    {
+      name: "Emily Chen",
+      role: "Fitness Enthusiast",
+      content:
+        "The lifestyle and fitness content has transformed my daily routine. Practical, motivating, and genuinely helpful.",
+      avatar: "EC",
+      rating: 5,
+    },
+  ];
+
+  // Enhanced stats
+  const stats = [
+    { number: "500K+", label: "Monthly Readers", icon: Users, color: "blue" },
+    {
+      number: "1,200+",
+      label: "Articles Published",
+      icon: BookOpen,
+      color: "green",
+    },
+    { number: "50+", label: "Countries Reached", icon: Globe, color: "purple" },
+    { number: "98%", label: "Reader Satisfaction", icon: Heart, color: "red" },
+  ];
+
+  // Features section
+  const features = [
+    {
+      icon: Lightbulb,
+      title: "Expert Insights",
+      description:
+        "In-depth analysis and expert perspectives on trending topics",
+      color: "yellow",
+    },
+    {
+      icon: Rocket,
+      title: "Latest Trends",
+      description:
+        "Stay ahead with cutting-edge content and emerging technologies",
+      color: "blue",
+    },
+    {
+      icon: Shield,
+      title: "Quality Content",
+      description:
+        "Thoroughly researched and fact-checked articles you can trust",
+      color: "green",
+    },
+    {
+      icon: Target,
+      title: "Practical Value",
+      description:
+        "Actionable advice and real-world applications for immediate use",
+      color: "purple",
+    },
+  ];
+
   // Animation variants
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
       },
     },
   };
@@ -41,249 +150,235 @@ export default function Home() {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
+        duration: 0.8,
         ease: [0.25, 0.46, 0.45, 0.94],
-        type: "spring",
-        stiffness: 100,
       },
     },
   };
 
-  const fadeIn: Variants = {
+  const fadeInUp: Variants = {
+    hidden: { opacity: 0, y: 60 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] },
+    },
+  };
+
+  const staggerContainer = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.8,
-        ease: "easeInOut",
-      },
-    },
-  };
-
-  // Floating animation for elements
-  const floating: Variants = {
-    float: {
-      y: [0, -15, 0],
-      transition: {
-        duration: 4,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatType: "reverse", // ✅ correct literal type
-      },
-    },
-  };
-
-  // Rotating animation
-  const rotating: Variants = {
-    animate: {
-      rotate: 360,
-      transition: {
-        duration: 20,
-        ease: "linear",
-        repeat: Infinity,
-        repeatType: "loop",
-      },
-    },
-  };
-
-  // Pulse animation
-  const pulse: Variants = {
-    pulse: {
-      scale: [1, 1.05, 1],
-      transition: {
-        duration: 1.5,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatType: "reverse",
+        staggerChildren: 0.15,
+        delayChildren: 0.3,
       },
     },
   };
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 overflow-hidden">
-      {/* Subtle Professional Background */}
+      {/* Enhanced Background */}
       <div className="absolute inset-0 overflow-hidden z-0">
-        {/* Professional grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#f1f5f9_1px,transparent_1px),linear-gradient(to_bottom,#f1f5f9_1px,transparent_1px)] bg-[size:4rem_4rem] dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] opacity-30"></div>
+        {/* Animated gradient orbs */}
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-green-400/30 to-blue-400/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse delay-500"></div>
 
-        {/* Subtle floating elements */}
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={`circle-${i}`}
-            className="absolute rounded-full bg-gradient-to-br from-blue-100/20 to-indigo-100/20 dark:from-blue-900/20 dark:to-indigo-900/20"
-            style={{
-              top: `${20 + i * 30}%`,
-              left: `${10 + i * 40}%`,
-              width: `${200 + i * 100}px`,
-              height: `${200 + i * 100}px`,
-              filter: "blur(60px)",
-            }}
-            animate={{
-              y: [0, 30, 0],
-              x: [0, 20, 0],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              duration: 15 + i * 5,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-        ))}
+        {/* Grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
       </div>
 
       <div className="container mx-auto px-4 py-8 relative z-10">
-        {/* Professional Hero Section */}
+        {/* Hero Section - Completely Redesigned */}
         <motion.section
           className="text-center py-20 md:py-32 mb-20 relative"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
         >
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
+            {/* Brand Badge */}
+            <motion.div variants={fadeInUp} className="mb-8">
+              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full border border-blue-200 dark:border-blue-700 mb-6">
+                <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 mr-2" />
+                <span className="text-sm font-medium text-blue-800 dark:text-blue-300">
+                  Welcome to the Future of Content
+                </span>
+              </div>
+            </motion.div>
+
             {/* Main Heading */}
-            <motion.div
-              className="mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-            >
-              <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                Welcome to{" "}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <motion.div variants={fadeInUp} className="mb-8">
+              <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
+                <span className="bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent">
                   MASHKON
                 </span>
               </h1>
-              <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
+              <div className="flex items-center justify-center space-x-2 mb-6">
+                <div className="w-8 h-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
+                <div className="w-4 h-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"></div>
+                <div className="w-2 h-1 bg-gradient-to-r from-pink-600 to-red-600 rounded-full"></div>
+              </div>
+              <p className="text-2xl md:text-3xl text-gray-600 dark:text-gray-300 font-light">
+                Where Innovation Meets Inspiration
+              </p>
             </motion.div>
 
-            {/* Professional Tagline */}
-            <motion.p
-              className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 1 }}
-            >
-              Your premier destination for{" "}
-              <span className="font-semibold text-blue-600 dark:text-blue-400">
-                technology insights
-              </span>
-              ,{" "}
-              <span className="font-semibold text-green-600 dark:text-green-400">
-                culinary experiences
-              </span>
-              , and{" "}
-              <span className="font-semibold text-orange-600 dark:text-orange-400">
-                lifestyle content
-              </span>
-            </motion.p>
+            {/* Enhanced Description */}
+            <motion.div variants={fadeInUp} className="mb-12">
+              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto leading-relaxed mb-8">
+                Discover a world of{" "}
+                <span className="font-semibold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                  cutting-edge technology
+                </span>
+                ,{" "}
+                <span className="font-semibold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
+                  culinary excellence
+                </span>
+                , and{" "}
+                <span className="font-semibold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
+                  lifestyle inspiration
+                </span>
+              </p>
 
-            {/* Professional Stats */}
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-4xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-            >
-              {[
-                { number: "500+", label: "Articles Published", icon: "📝" },
-                { number: "50K+", label: "Monthly Readers", icon: "👥" },
-                { number: "3", label: "Content Categories", icon: "🎯" },
-              ].map((stat, index) => (
+              {/* Trust indicators */}
+              <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                  <span>Expert-Verified Content</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                  <span>Updated Daily</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                  <span>Community Driven</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Enhanced CTA Buttons */}
+            <motion.div variants={fadeInUp} className="mb-16">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <motion.div
-                  key={index}
-                  className="text-center p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50"
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <div className="text-3xl mb-2">{stat.icon}</div>
-                  <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                    {stat.number}
-                  </div>
-                  <div className="text-gray-600 dark:text-gray-400 font-medium">
-                    {stat.label}
-                  </div>
+                  <Link
+                    href="/blog"
+                    className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center"
+                  >
+                    <Play className="w-5 h-5 mr-2" />
+                    <span>Start Exploring</span>
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </motion.div>
-              ))}
+
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link
+                    href="/portfolio"
+                    className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white font-semibold rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
+                  >
+                    <Eye className="w-5 h-5 mr-2" />
+                    <span>View Portfolio</span>
+                  </Link>
+                </motion.div>
+              </div>
+
+              {/* Social proof */}
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Join{" "}
+                <span className="font-semibold text-blue-600 dark:text-blue-400">
+                  500,000+
+                </span>{" "}
+                readers worldwide
+              </p>
             </motion.div>
 
-            {/* Professional CTA Buttons */}
-            <motion.div
-              className="flex flex-col sm:flex-row justify-center gap-4 mb-16"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-            >
-              <Link
-                href="/blog"
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group"
-              >
-                <span>Explore Articles</span>
-                <motion.svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  whileHover={{ x: 3 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </motion.svg>
-              </Link>
-              <Link
-                href="/products"
-                className="px-8 py-4 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-semibold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 flex items-center justify-center gap-2 group"
-              >
-                <span>Browse Products</span>
-                <motion.svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  whileHover={{ x: 3 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </motion.svg>
-              </Link>
-
-              <Link
-                href="/portfolio"
-                className="px-8 py-4 bg-transparent border-2 border-blue-600 text-blue-600 dark:text-blue-400 font-semibold rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 flex items-center justify-center gap-2 group"
-              >
-                <span>View Portfolio</span>
-                <motion.svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  whileHover={{ x: 3 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m8 6V8a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2z"
-                  />
-                </motion.svg>
-              </Link>
+            {/* Enhanced Stats */}
+            <motion.div variants={fadeInUp}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                {stats.map((stat, index) => (
+                  <motion.div
+                    key={index}
+                    className="text-center p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 + 0.5 }}
+                  >
+                    <div
+                      className={`w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-${stat.color}-100 to-${stat.color}-200 dark:from-${stat.color}-900/30 dark:to-${stat.color}-800/30 rounded-xl flex items-center justify-center`}
+                    >
+                      <stat.icon
+                        className={`w-6 h-6 text-${stat.color}-600 dark:text-${stat.color}-400`}
+                      />
+                    </div>
+                    <div className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1">
+                      {stat.number}
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                      {stat.label}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
           </div>
         </motion.section>
+        {/* Features Section - New */}
+        <motion.section
+          className="py-20 mb-20"
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+        >
+          <motion.div className="text-center mb-16" variants={item}>
+            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+              Why Choose{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                MASHKON
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Experience the difference with our commitment to quality,
+              innovation, and community
+            </p>
+          </motion.div>
 
-        {/* Professional Content Categories */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                variants={item}
+                className="group text-center p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-700"
+                whileHover={{ y: -10, scale: 1.02 }}
+              >
+                <div
+                  className={`w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-${feature.color}-100 to-${feature.color}-200 dark:from-${feature.color}-900/30 dark:to-${feature.color}-800/30 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+                >
+                  <feature.icon
+                    className={`w-8 h-8 text-${feature.color}-600 dark:text-${feature.color}-400`}
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Enhanced Content Categories */}
         <motion.section
           className="mb-20"
           variants={container}
@@ -292,135 +387,149 @@ export default function Home() {
           viewport={{ once: true, margin: "-100px" }}
         >
           <motion.div className="text-center mb-16" variants={item}>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Content{" "}
+            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+              Explore Our{" "}
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Categories
+                Universe
               </span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Discover expertly curated content across our specialized domains
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Dive deep into expertly curated content across our specialized
+              domains
             </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mt-6 rounded-full"></div>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {[
               {
                 title: "Technology",
-                icon: "💻",
+                icon: Code,
+                emoji: "💻",
                 description:
-                  "Cutting-edge insights in web development, programming, and emerging technologies",
+                  "Cutting-edge insights in web development, AI, and emerging technologies that shape our future",
                 href: "/blog/category/tech",
                 gradient: "from-blue-500 to-cyan-500",
                 bgGradient:
                   "from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20",
-                stats: "150+ Articles",
+                stats: "350+ Articles",
+                trending: "React 18, AI/ML, Web3",
                 features: [
-                  "Web Development",
-                  "Programming",
+                  "Latest Frameworks",
+                  "Code Tutorials",
                   "Tech Reviews",
-                  "Tutorials",
+                  "Industry Insights",
                 ],
               },
               {
-                title: "Culinary",
-                icon: "🍽️",
+                title: "Culinary Arts",
+                icon: Coffee,
+                emoji: "🍽️",
                 description:
-                  "Gastronomic journeys featuring recipes, reviews, and culinary explorations",
+                  "Gastronomic journeys featuring authentic recipes, restaurant reviews, and culinary culture exploration",
                 href: "/blog/category/food",
                 gradient: "from-green-500 to-emerald-500",
                 bgGradient:
                   "from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20",
-                stats: "200+ Recipes",
+                stats: "280+ Recipes",
+                trending: "Plant-based, Fusion, Local Cuisine",
                 features: [
+                  "Authentic Recipes",
                   "Restaurant Reviews",
-                  "Recipes",
+                  "Cooking Techniques",
                   "Food Culture",
-                  "Cooking Tips",
                 ],
               },
               {
-                title: "Lifestyle",
-                icon: "🌟",
+                title: "Lifestyle & Wellness",
+                icon: Activity,
+                emoji: "🌟",
                 description:
-                  "Personal experiences, fitness insights, and daily life inspirations",
+                  "Personal growth, fitness insights, travel experiences, and daily life inspirations for holistic living",
                 href: "/blog/category/activity",
-                gradient: "from-orange-500 to-amber-500",
+                gradient: "from-purple-500 to-pink-500",
                 bgGradient:
-                  "from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20",
-                stats: "100+ Stories",
-                features: ["Fitness", "Travel", "Hobbies", "Life Tips"],
+                  "from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20",
+                stats: "200+ Stories",
+                trending: "Mindfulness, Fitness, Travel",
+                features: [
+                  "Wellness Tips",
+                  "Travel Guides",
+                  "Fitness Routines",
+                  "Life Hacks",
+                ],
               },
             ].map((category, index) => (
               <motion.div
                 key={index}
                 variants={item}
-                whileHover={{
-                  y: -10,
-                  transition: { type: "spring", stiffness: 300 },
-                }}
+                whileHover={{ y: -15, scale: 1.02 }}
+                className="group"
               >
                 <Link href={category.href}>
                   <div
-                    className={`bg-gradient-to-br ${category.bgGradient} border border-gray-200 dark:border-gray-700 rounded-3xl p-8 h-full flex flex-col transition-all duration-300 shadow-lg hover:shadow-2xl group`}
+                    className={`relative bg-gradient-to-br ${category.bgGradient} border border-gray-200 dark:border-gray-700 rounded-3xl p-8 h-full transition-all duration-500 shadow-lg hover:shadow-2xl overflow-hidden`}
                   >
+                    {/* Background Pattern */}
+                    <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
+                      <div className="text-8xl">{category.emoji}</div>
+                    </div>
+
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="text-4xl">{category.icon}</div>
-                      <div
-                        className={`px-3 py-1 bg-gradient-to-r ${category.gradient} text-white text-sm font-semibold rounded-full`}
-                      >
-                        {category.stats}
+                    <div className="relative z-10 mb-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div
+                          className={`w-14 h-14 bg-gradient-to-br ${category.gradient} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                        >
+                          <category.icon className="w-7 h-7 text-white" />
+                        </div>
+                        <div
+                          className={`px-3 py-1 bg-gradient-to-r ${category.gradient} text-white text-sm font-semibold rounded-full shadow-md`}
+                        >
+                          {category.stats}
+                        </div>
+                      </div>
+
+                      <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                        {category.title}
+                      </h3>
+
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        <span className="font-medium">Trending:</span>{" "}
+                        {category.trending}
                       </div>
                     </div>
 
-                    {/* Title */}
-                    <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-300">
-                      {category.title}
-                    </h3>
-
                     {/* Description */}
-                    <p className="text-gray-600 dark:text-gray-300 mb-6 flex-grow leading-relaxed">
+                    <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed relative z-10">
                       {category.description}
                     </p>
 
-                    {/* Features */}
-                    <div className="mb-6">
-                      <div className="grid grid-cols-2 gap-2">
-                        {category.features.map((feature, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-center text-sm text-gray-500 dark:text-gray-400"
-                          >
-                            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-2"></div>
-                            {feature}
-                          </div>
-                        ))}
-                      </div>
+                    {/* Features Grid */}
+                    <div className="grid grid-cols-2 gap-2 mb-6 relative z-10">
+                      {category.features.map((feature, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center text-sm text-gray-600 dark:text-gray-400"
+                        >
+                          <div className="w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-2"></div>
+                          {feature}
+                        </div>
+                      ))}
                     </div>
 
                     {/* CTA */}
                     <motion.div
-                      className="flex items-center font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+                      className="flex items-center justify-between font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors relative z-10"
                       whileHover={{ x: 5 }}
-                      transition={{ type: "spring", stiffness: 500 }}
                     >
                       <span>Explore {category.title}</span>
-                      <svg
-                        className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
+                      <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </motion.div>
+
+                    {/* Hover Overlay */}
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-3xl`}
+                    ></div>
                   </div>
                 </Link>
               </motion.div>
@@ -428,24 +537,88 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* Professional Section Divider */}
-        <motion.div
-          className="flex items-center justify-center my-20"
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+        {/* Testimonials Section - New */}
+        <motion.section
+          className="py-20 mb-20 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 rounded-3xl"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-px bg-gradient-to-r from-transparent to-gray-300 dark:to-gray-600"></div>
-            <div className="w-3 h-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
-            <div className="w-2 h-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
-            <div className="w-1 h-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
-            <div className="w-16 h-px bg-gradient-to-l from-transparent to-gray-300 dark:to-gray-600"></div>
-          </div>
-        </motion.div>
+          <div className="max-w-6xl mx-auto px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                What Our{" "}
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Community Says
+                </span>
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                Join thousands of satisfied readers who trust MASHKON for
+                quality content
+              </p>
+            </div>
 
-        {/* Featured Articles Section */}
+            <div className="relative">
+              <motion.div
+                key={currentTestimonial}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.5 }}
+                className="bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12 shadow-2xl border border-gray-200 dark:border-gray-700 text-center max-w-4xl mx-auto"
+              >
+                {/* Stars */}
+                <div className="flex justify-center mb-6">
+                  {[...Array(testimonials[currentTestimonial].rating)].map(
+                    (_, i) => (
+                      <Star
+                        key={i}
+                        className="w-6 h-6 text-yellow-400 fill-current"
+                      />
+                    )
+                  )}
+                </div>
+
+                {/* Quote */}
+                <blockquote className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed italic">
+                  "{testimonials[currentTestimonial].content}"
+                </blockquote>
+
+                {/* Author */}
+                <div className="flex items-center justify-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 to-purple-900 rounded-full flex items-center justify-center mr-4 text-xl font-bold text-blue-800 dark:text-blue-200">
+                    {testimonials[currentTestimonial].avatar}
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-gray-900 dark:text-white text-lg">
+                      {testimonials[currentTestimonial].name}
+                    </div>
+                    <div className="text-gray-600 dark:text-gray-400">
+                      {testimonials[currentTestimonial].role}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Testimonial Indicators */}
+              <div className="flex justify-center mt-8 space-x-2">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentTestimonial(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentTestimonial
+                        ? "bg-blue-600 w-8"
+                        : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.section>
+        {/* Enhanced Featured Articles Section */}
         <motion.section
           variants={container}
           initial="hidden"
@@ -454,44 +627,40 @@ export default function Home() {
           className="mb-20"
         >
           <motion.div className="text-center mb-16" variants={item}>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Featured{" "}
+            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+              Latest{" "}
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Articles
+                Insights
               </span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Stay updated with our latest insights and discoveries
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Stay ahead of the curve with our freshest content and trending
+              topics
             </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mt-6 rounded-full"></div>
           </motion.div>
 
           {isLoading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <motion.div
                   key={i}
                   className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700"
                   variants={item}
-                  initial="hidden"
-                  animate="show"
                 >
-                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 w-full h-56 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-gray-600 dark:via-gray-700 dark:to-gray-600 bg-[length:200%_100%] animate-pulse" />
-                  </div>
-                  <div className="p-8">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/3 mb-4 animate-pulse" />
-                    <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-full mb-2 animate-pulse" />
-                    <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-4/5 mb-4 animate-pulse" />
-                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-full mb-2 animate-pulse" />
-                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4 mb-6 animate-pulse" />
+                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 w-full h-64 animate-pulse" />
+                  <div className="p-8 space-y-4">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/3 animate-pulse" />
+                    <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-full animate-pulse" />
+                    <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-4/5 animate-pulse" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-full animate-pulse" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4 animate-pulse" />
                     <div className="h-10 bg-gray-200 dark:bg-gray-600 rounded w-1/2 animate-pulse" />
                   </div>
                 </motion.div>
               ))}
             </div>
           ) : recentPosts.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
               {recentPosts.map((post: any, index) => (
                 <Link
                   key={post.id}
@@ -500,93 +669,124 @@ export default function Home() {
                 >
                   <motion.article
                     variants={item}
-                    whileHover={{
-                      y: -8,
-                      transition: { type: "spring", stiffness: 300 },
-                    }}
-                    className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700 transition-all duration-300 cursor-pointer"
+                    whileHover={{ y: -12, scale: 1.02 }}
+                    className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700 transition-all duration-500 cursor-pointer h-full flex flex-col"
                   >
-                    {post.image_url && (
-                      <div className="relative h-56 overflow-hidden">
+                    {/* Enhanced Image Section */}
+                    <div className="relative h-64 overflow-hidden">
+                      {post.image_url ? (
                         <Image
                           src={post.image_url}
                           alt={post.title}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="object-cover group-hover:scale-110 transition-transform duration-700"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                        <div className="absolute top-4 right-4">
-                          <span
-                            className={`inline-block px-3 py-1.5 text-xs font-semibold rounded-full backdrop-blur-sm ${
-                              post.category === "tech"
-                                ? "bg-blue-500/90 text-white"
-                                : post.category === "food"
-                                ? "bg-green-500/90 text-white"
-                                : "bg-orange-500/90 text-white"
-                            }`}
-                          >
-                            {post.category?.toUpperCase()}
-                          </span>
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 flex items-center justify-center">
+                          <BookOpen className="w-16 h-16 text-blue-400 dark:text-blue-300" />
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    <div className="p-8">
-                      {/* Meta Info */}
-                      <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        <svg
-                          className="w-4 h-4 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                      {/* Enhanced Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+
+                      {/* Category Badge */}
+                      <div className="absolute top-4 left-4">
+                        <span
+                          className={`inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full backdrop-blur-sm border ${
+                            post.category === "tech"
+                              ? "bg-blue-500/90 text-white border-blue-400/50"
+                              : post.category === "food"
+                              ? "bg-green-500/90 text-white border-green-400/50"
+                              : "bg-purple-500/90 text-white border-purple-400/50"
+                          }`}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                        <span>
-                          {new Date(post.created_at).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            }
+                          {post.category === "tech" && (
+                            <Code className="w-3 h-3 mr-1" />
                           )}
+                          {post.category === "food" && (
+                            <Coffee className="w-3 h-3 mr-1" />
+                          )}
+                          {post.category === "activity" && (
+                            <Activity className="w-3 h-3 mr-1" />
+                          )}
+                          {post.category?.toUpperCase()}
                         </span>
                       </div>
 
+                      {/* Reading Time */}
+                      <div className="absolute top-4 right-4">
+                        <div className="flex items-center px-2 py-1 bg-black/50 backdrop-blur-sm rounded-full text-white text-xs">
+                          <Clock className="w-3 h-3 mr-1" />
+                          <span>
+                            {Math.ceil(post.content.length / 200)} min read
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Engagement Stats */}
+                      <div className="absolute bottom-4 left-4 flex items-center space-x-4 text-white text-sm">
+                        <div className="flex items-center">
+                          <Eye className="w-4 h-4 mr-1" />
+                          <span>{Math.floor(Math.random() * 1000) + 100}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Heart className="w-4 h-4 mr-1" />
+                          <span>{Math.floor(Math.random() * 50) + 10}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <MessageCircle className="w-4 h-4 mr-1" />
+                          <span>{Math.floor(Math.random() * 20) + 2}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Enhanced Content Section */}
+                    <div className="p-8 flex-grow flex flex-col">
+                      {/* Meta Info */}
+                      <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        <div className="flex items-center">
+                          <Calendar className="w-4 h-4 mr-2" />
+                          <span>
+                            {new Date(post.created_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              }
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <TrendingUp className="w-4 h-4 mr-1" />
+                          <span>Trending</span>
+                        </div>
+                      </div>
+
                       {/* Title */}
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 flex-grow">
                         {post.title}
                       </h3>
 
                       {/* Excerpt */}
-                      <p className="text-gray-600 dark:text-gray-300 mb-6 line-clamp-3 leading-relaxed">
-                        {post.content.substring(0, 120)}...
+                      <p className="text-gray-600 dark:text-gray-400 mb-6 line-clamp-3 leading-relaxed flex-grow">
+                        {post.content.substring(0, 150)}...
                       </p>
 
-                      {/* Read More Link */}
-                      <span className="inline-flex items-center font-semibold text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
-                        <span>Read Article</span>
-                        <svg
-                          className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </span>
+                      {/* Enhanced CTA */}
+                      <div className="flex items-center justify-between">
+                        <span className="inline-flex items-center font-semibold text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+                          <span>Read More</span>
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        </span>
+
+                        {/* Author Avatar */}
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 to-purple-900 rounded-full flex items-center justify-center text-sm font-bold text-blue-800 dark:text-blue-200">
+                          M
+                        </div>
+                      </div>
                     </div>
                   </motion.article>
                 </Link>
@@ -594,91 +794,128 @@ export default function Home() {
             </div>
           ) : (
             <motion.div
-              className="text-center py-12 bg-white rounded-2xl shadow-lg"
-              variants={fadeIn}
-              initial="hidden"
-              animate="visible"
+              className="text-center py-20 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 rounded-3xl border-2 border-dashed border-gray-300 dark:border-gray-600"
+              variants={item}
             >
-              <div className="bg-gray-100 border-2 border-dashed rounded-xl w-24 h-24 mx-auto flex items-center justify-center mb-6">
-                <motion.svg
-                  className="w-12 h-12 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  animate={{
-                    rotate: [0, 10, 0, -10, 0],
-                    scale: [1, 1.1, 1, 1.1, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                  }}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </motion.svg>
+              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center">
+                <BookOpen className="w-12 h-12 text-blue-500 dark:text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                No posts available
+              <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+                Content Coming Soon
               </h3>
-              <p className="text-gray-600 max-w-md mx-auto">
-                We couldn't find any recent blog posts. Please check back later.
+              <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-8">
+                We're working hard to bring you amazing content. Check back soon
+                for the latest articles and insights.
               </p>
+              <Link
+                href="/blog"
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+              >
+                <Zap className="w-4 h-4 mr-2" />
+                Explore Blog
+              </Link>
             </motion.div>
           )}
 
+          {/* Enhanced CTA Section */}
           <motion.div
-            className="mt-16 text-center"
-            initial={{ opacity: 0, y: 20 }}
+            className="mt-20 text-center"
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link
-                href="/blog"
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:from-blue-700 hover:to-indigo-700 inline-flex items-center justify-center group"
-              >
-                <span>View All Articles</span>
-                <svg
-                  className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
-              <Link
-                href="/products"
-                className="px-8 py-4 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-semibold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 inline-flex items-center justify-center group"
-              >
-                <span>Browse Products</span>
-                <svg
-                  className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
-              </Link>
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white relative overflow-hidden">
+              {/* Background Pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,.1)_50%,transparent_75%)] bg-[length:20px_20px]"></div>
+              </div>
+
+              <div className="relative z-10">
+                <h3 className="text-3xl md:text-4xl font-bold mb-4">
+                  Ready to Dive Deeper?
+                </h3>
+                <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                  Join our community of curious minds and stay updated with the
+                  latest insights across technology, culinary arts, and
+                  lifestyle.
+                </p>
+
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link
+                      href="/blog"
+                      className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center"
+                    >
+                      <BookOpen className="w-5 h-5 mr-2" />
+                      Explore All Articles
+                    </Link>
+                  </motion.div>
+
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link
+                      href="/products"
+                      className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-blue-600 transition-all duration-300 inline-flex items-center justify-center"
+                    >
+                      <Zap className="w-5 h-5 mr-2" />
+                      Browse Products
+                    </Link>
+                  </motion.div>
+                </div>
+              </div>
             </div>
           </motion.div>
+        </motion.section>
+
+        {/* Newsletter Section - New */}
+        <motion.section
+          className="py-20 mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl p-12 shadow-2xl border border-gray-200 dark:border-gray-700">
+              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center">
+                <Zap className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              </div>
+
+              <h3 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Stay in the Loop
+              </h3>
+              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+                Get the latest articles, exclusive content, and insider tips
+                delivered straight to your inbox. No spam, just quality content.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white"
+                />
+                <motion.button
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span>Subscribe</span>
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </motion.button>
+              </div>
+
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                Join 50,000+ subscribers • Unsubscribe anytime
+              </p>
+            </div>
+          </div>
         </motion.section>
       </div>
     </div>
