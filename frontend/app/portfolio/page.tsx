@@ -408,104 +408,106 @@ export default function PortfolioPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: index * 0.2 }}
                 >
-                  <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-200 dark:border-gray-700">
-                    {/* Header with Gradient */}
-                    <div className="relative h-32 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600">
-                      <div className="absolute inset-0 bg-black/10"></div>
+                  <Link href={`/portfolio/${member.name.toLowerCase()}`}>
+                    <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-200 dark:border-gray-700 cursor-pointer group-hover:scale-105">
+                      {/* Header with Gradient */}
+                      <div className="relative h-32 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600">
+                        <div className="absolute inset-0 bg-black/10"></div>
 
-                      {/* Profile Image */}
-                      <div className="absolute -bottom-16 left-8">
-                        <div className="w-32 h-32 rounded-3xl border-4 border-white dark:border-gray-900 overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
-                          <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 to-purple-900 flex items-center justify-center">
-                            <span className="text-3xl font-bold text-blue-800 dark:text-blue-200">
-                              {member.name.charAt(0)}
-                            </span>
+                        {/* Profile Image */}
+                        <div className="absolute -bottom-16 left-8">
+                          <div className="w-32 h-32 rounded-3xl border-4 border-white dark:border-gray-900 overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+                            <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 to-purple-900 flex items-center justify-center">
+                              <span className="text-3xl font-bold text-blue-800 dark:text-blue-200">
+                                {member.name.charAt(0)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Quick Stats */}
+                        <div className="absolute top-4 right-4 flex space-x-2">
+                          <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-sm">
+                            {member.experience}
+                          </div>
+                          <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-sm">
+                            {member.projects} Projects
                           </div>
                         </div>
                       </div>
 
-                      {/* Quick Stats */}
-                      <div className="absolute top-4 right-4 flex space-x-2">
-                        <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-sm">
-                          {member.experience}
+                      <div className="pt-20 pb-8 px-8">
+                        {/* Name and Role */}
+                        <div className="mb-6">
+                          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            {member.name}
+                          </h3>
+                          <p className="text-blue-600 dark:text-blue-400 font-semibold text-lg mb-1">
+                            {member.role}
+                          </p>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm">
+                            {member.title}
+                          </p>
                         </div>
-                        <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-sm">
-                          {member.projects} Projects
+
+                        {/* Bio */}
+                        <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                          {member.bio}
+                        </p>
+
+                        {/* Skills */}
+                        <div className="mb-8">
+                          <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <Code className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" />
+                            Core Skills
+                          </h4>
+                          <div className="flex flex-wrap gap-2">
+                            {member.skills.map((skill, skillIndex) => (
+                              <motion.span
+                                key={skillIndex}
+                                className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-xl text-sm font-medium border border-blue-100 dark:border-blue-800 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-800/50 dark:hover:to-purple-800/50 transition-all duration-300"
+                                whileHover={{ scale: 1.05 }}
+                              >
+                                {skill}
+                              </motion.span>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Contact & Social */}
+                        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center text-gray-600 dark:text-gray-400">
+                              <Mail className="w-4 h-4 mr-2" />
+                              <span className="text-sm">{member.email}</span>
+                            </div>
+                            <div className="flex space-x-3">
+                              <motion.a
+                                href={member.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                <Linkedin className="w-4 h-4" />
+                              </motion.a>
+                              <motion.a
+                                href={member.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                <Github className="w-4 h-4" />
+                              </motion.a>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-
-                    <div className="pt-20 pb-8 px-8">
-                      {/* Name and Role */}
-                      <div className="mb-6">
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                          {member.name}
-                        </h3>
-                        <p className="text-blue-600 dark:text-blue-400 font-semibold text-lg mb-1">
-                          {member.role}
-                        </p>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">
-                          {member.title}
-                        </p>
-                      </div>
-
-                      {/* Bio */}
-                      <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                        {member.bio}
-                      </p>
-
-                      {/* Skills */}
-                      <div className="mb-8">
-                        <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
-                          <Code className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" />
-                          Core Skills
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {member.skills.map((skill, skillIndex) => (
-                            <motion.span
-                              key={skillIndex}
-                              className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-xl text-sm font-medium border border-blue-100 dark:border-blue-800 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-800/50 dark:hover:to-purple-800/50 transition-all duration-300"
-                              whileHover={{ scale: 1.05 }}
-                            >
-                              {skill}
-                            </motion.span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Contact & Social */}
-                      <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center text-gray-600 dark:text-gray-400">
-                            <Mail className="w-4 h-4 mr-2" />
-                            <span className="text-sm">{member.email}</span>
-                          </div>
-                          <div className="flex space-x-3">
-                            <motion.a
-                              href={member.linkedin}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors"
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <Linkedin className="w-4 h-4" />
-                            </motion.a>
-                            <motion.a
-                              href={member.github}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <Github className="w-4 h-4" />
-                            </motion.a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  </Link>
                 </motion.div>
               ))}
             </div>
