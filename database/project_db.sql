@@ -1,9 +1,5 @@
 
-CREATE DATABASE IF NOT EXISTS blog_portfolio;
-USE blog_portfolio;
-
-
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS admin_users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -48,7 +44,7 @@ CREATE TABLE IF NOT EXISTS portfolio (
 );
 -- ==== == == == == == == == == == == == == == == == == == == == == == == == == = -- INTERACTION TABLES
 -- =====================================================
--- Post interactions table (likes/dislikes for registered users)
+-- Post interactions table (likes/dislikes for registered admin_users)
 CREATE TABLE IF NOT EXISTS post_interactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT NOT NULL,
@@ -56,7 +52,7 @@ CREATE TABLE IF NOT EXISTS post_interactions (
     interaction_type ENUM('like', 'dislike') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES admin_users(id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_post (user_id, post_id),
     INDEX idx_post_interaction (post_id, interaction_type)
 );
@@ -72,7 +68,7 @@ CREATE TABLE IF NOT EXISTS anonymous_interactions (
     UNIQUE KEY unique_anonymous_interaction (post_id, user_identifier),
     INDEX idx_post_anonymous (post_id, interaction_type)
 );
--- Comments table for registered users
+-- Comments table for registered admin_users
 CREATE TABLE IF NOT EXISTS comments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT NOT NULL,
@@ -81,7 +77,7 @@ CREATE TABLE IF NOT EXISTS comments (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES admin_users(id) ON DELETE CASCADE,
     INDEX idx_post_comments (post_id, created_at DESC)
 );
 -- Anonymous comments table (for visitors without accounts)
@@ -141,7 +137,7 @@ CREATE TABLE IF NOT EXISTS products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_by INTEGER DEFAULT NULL,
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE
+    FOREIGN KEY (created_by) REFERENCES admin_users(id) ON DELETE
     SET NULL,
         INDEX idx_category (category),
         INDEX idx_is_active (is_active),
@@ -184,21 +180,28 @@ CREATE TABLE IF NOT EXISTS product_inquiries (
 -- =====================================================
 -- Create default admin user (password: admin123)
 -- Note: Change this password in production!
-INSERT IGNORE INTO users (username, email, password_hash, is_admin)
-VALUES (
-        'admin',
-        'admin@example.com',
-        '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3L3jzZvUxO',
-        TRUE
-    );
--- Create a regular user for testing (password: user123)
-INSERT IGNORE INTO users (username, email, password_hash, is_admin)
-VALUES (
-        'testuser',
-        'user@example.com',
-        '$2b$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-        FALSE
-    );
+
+
+-- INSERT IGNORE INTO admin_users (username, email, password_hash, is_admin)
+-- VALUES (
+--         'admin',
+--         'admin@example.com',
+--         '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3L3jzZvUxO',
+--         TRUE
+--     );
+-- -- Create a regular user for testing (password: user123)
+-- INSERT IGNORE INTO admin_users (username, email, password_hash, is_admin)
+-- VALUES (
+--         'testuser',
+--         'user@example.com',
+--         '$2b$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+--         FALSE
+--     );
+
+
+
+
+
 -- Insert default product categories
 INSERT IGNORE INTO product_categories (name, description)
 VALUES ('electronics', 'Electronic devices and gadgets'),
@@ -343,7 +346,7 @@ CREATE INDEX IF NOT EXISTS idx_products_category_active ON products(category, is
 -- COMMENTS AND DOCUMENTATION
 -- =====================================================
 -- Table comments for documentation
-ALTER TABLE users COMMENT = 'User accounts for authentication and authorization';
+ALTER TABLE admin_users COMMENT = 'User accounts for authentication and authorization';
 ALTER TABLE posts COMMENT = 'Blog posts with categories and media support';
 ALTER TABLE portfolio COMMENT = 'Portfolio items showcasing projects and skills';
 ALTER TABLE products COMMENT = 'Product catalog for e-commerce functionality';
@@ -372,12 +375,12 @@ ALTER TABLE product_inquiries COMMENT = 'Customer inquiries for products';
  5. Monitor database size and optimize storage
  */
 -- Show table information for verification
-SELECT TABLE_NAME,
-    TABLE_COMMENT,
-    TABLE_ROWS
-FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_SCHEMA = 'blog_portfolio'
-ORDER BY TABLE_NAME;
+-- SELECT TABLE_NAME,
+--     TABLE_COMMENT,
+--     TABLE_ROWS
+-- FROM INFORMATION_SCHEMA.TABLES
+-- WHERE TABLE_SCHEMA = 'blog_portfolio'
+-- ORDER BY TABLE_NAME;
 -- =====================================================
 -- END OF SCHEMA
 -- =====================================================
