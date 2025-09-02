@@ -146,7 +146,6 @@ load_dotenv()
 app = FastAPI(title="Blog & Portfolio API", version="1.0.0")
 
 
-
 # Set up logging
 logger = logging.getLogger(__name__)
 
@@ -244,11 +243,15 @@ app.add_middleware(
 # Database connection
 def get_db_connection():
     try:
+        # Azure MySQL connection with SSL
         connection = mysql.connector.connect(
             host=os.getenv("DB_HOST", "localhost"),
             database=os.getenv("DB_NAME", "blog_portfolio"),
             user=os.getenv("DB_USER", "root"),
             password=os.getenv("DB_PASSWORD", ""),
+            ssl_disabled=False,
+            port=3306,
+            autocommit=True,
         )
         return connection
     except Error as e:
@@ -494,7 +497,7 @@ def get_current_admin(user_id: int = Depends(get_current_user)):
     cursor = connection.cursor(dictionary=True)
 
     try:
-        cursor.execute("SELECT is_admin FROM users WHERE id = %s", (user_id,))
+        cursor.execute("SELECT is_admin FROM admin_users WHERE id = %s", (user_id,))
         user = cursor.fetchone()
         if not user or not user["is_admin"]:
             raise HTTPException(status_code=403, detail="Admin access required")
@@ -708,7 +711,7 @@ async def login(user: UserLogin):
 
     try:
         cursor.execute(
-            "SELECT id, username, password_hash, is_admin FROM users WHERE username = %s",
+            "SELECT id, username, password_hash, is_admin FROM admin_users WHERE username = %s",
             (user.username,),
         )
         db_user = cursor.fetchone()
@@ -755,7 +758,8 @@ async def get_current_user_info(user_id: int = Depends(get_current_user)):
 
     try:
         cursor.execute(
-            "SELECT id, username, email, is_admin FROM users WHERE id = %s", (user_id,)
+            "SELECT id, username, email, is_admin FROM admin_users WHERE id = %s",
+            (user_id,),
         )
         user = cursor.fetchone()
         if not user:
@@ -774,7 +778,8 @@ async def debug_auth_info(user_id: int = Depends(get_current_user)):
 
     try:
         cursor.execute(
-            "SELECT id, username, email, is_admin FROM users WHERE id = %s", (user_id,)
+            "SELECT id, username, email, is_admin FROM admin_users WHERE id = %s",
+            (user_id,),
         )
         user = cursor.fetchone()
         return {
@@ -1116,7 +1121,7 @@ async def delete_comment(comment_id: int, user_id: int = Depends(get_current_use
         if not comment:
             raise HTTPException(status_code=404, detail="Comment not found")
 
-        cursor.execute("SELECT is_admin FROM users WHERE id = %s", (user_id,))
+        cursor.execute("SELECT is_admin FROM admin_users WHERE id = %s", (user_id,))
         user = cursor.fetchone()
 
         if comment["user_id"] != user_id and not user["is_admin"]:
@@ -1657,10 +1662,7 @@ async def get_product_images(product_id: int):
         connection.close()
 
 
-
-
 if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
