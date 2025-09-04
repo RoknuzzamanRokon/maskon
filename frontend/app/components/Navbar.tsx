@@ -156,6 +156,14 @@ export default function Navbar() {
             </Link>
 
             <Link
+              href="/projects"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group"
+            >
+              Projects
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
+            </Link>
+
+            <Link
               href="/products"
               className="relative text-gray-600 dark:text-gray-300 
              hover:text-gray-900 dark:hover:text-white 
@@ -465,6 +473,14 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               Portfolio
+            </Link>
+
+            <Link
+              href="/projects"
+              className="block py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Projects
             </Link>
 
             <Link

@@ -692,15 +692,17 @@ export default function PortfolioPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <motion.button
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center mx-auto"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Briefcase className="w-5 h-5 mr-2" />
-                View All Projects
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </motion.button>
+              <Link href="/projects">
+                <motion.button
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center mx-auto"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Briefcase className="w-5 h-5 mr-2" />
+                  View All Projects
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </motion.button>
+              </Link>
             </motion.div>
           </div>
         </div>
