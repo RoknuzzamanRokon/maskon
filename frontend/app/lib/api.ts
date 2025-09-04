@@ -84,6 +84,68 @@ export async function getPortfolio() {
   }
 }
 
+export async function createPortfolioItem(portfolioData: any) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/portfolio`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(portfolioData),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to create portfolio item')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error creating portfolio item:', error)
+    throw error
+  }
+}
+
+export async function updatePortfolioItem(id: number, portfolioData: any) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/portfolio/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(portfolioData),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to update portfolio item')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error updating portfolio item:', error)
+    throw error
+  }
+}
+
+export async function deletePortfolioItem(id: number) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/portfolio/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to delete portfolio item')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error deleting portfolio item:', error)
+    throw error
+  }
+}
+
 // Authentication API functions
 export async function login(username: string, password: string) {
   try {
