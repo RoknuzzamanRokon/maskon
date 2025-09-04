@@ -6,18 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Grid, Search, Filter, Briefcase } from "lucide-react";
 import { getPortfolio } from "../lib/api";
 import ProjectCard from "../components/ProjectCard";
-
-interface PortfolioItem {
-  id: number;
-  title: string;
-  description: string;
-  technologies: string;
-  project_url?: string;
-  github_url?: string;
-  image_url?: string;
-  created_at: string;
-  updated_at?: string;
-}
+import { PortfolioItem } from "../types/portfolio";
 
 // Animation variants
 const containerVariants = {

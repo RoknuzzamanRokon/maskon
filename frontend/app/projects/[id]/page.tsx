@@ -15,18 +15,7 @@ import {
   Tag,
 } from "lucide-react";
 import { getPortfolio } from "../../lib/api";
-
-interface PortfolioItem {
-  id: number;
-  title: string;
-  description: string;
-  technologies: string;
-  project_url?: string;
-  github_url?: string;
-  image_url?: string;
-  created_at: string;
-  updated_at?: string;
-}
+import { PortfolioItem } from "../../types/portfolio";
 
 export default function ProjectDetailPage() {
   const router = useRouter();

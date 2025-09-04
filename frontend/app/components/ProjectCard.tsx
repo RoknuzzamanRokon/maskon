@@ -5,26 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ExternalLink, Github, Code, Calendar } from "lucide-react";
-
-interface PortfolioItem {
-  id: number;
-  title: string;
-  description: string;
-  technologies: string;
-  project_url?: string;
-  github_url?: string;
-  image_url?: string;
-  created_at: string;
-  updated_at?: string;
-}
-
-interface ProjectCardProps {
-  project: PortfolioItem;
-  onClick?: () => void;
-  showFullDescription?: boolean;
-  size?: "small" | "medium" | "large";
-  className?: string;
-}
+import { PortfolioItem, ProjectCardProps } from "../types/portfolio";
 
 export default function ProjectCard({
   project,
