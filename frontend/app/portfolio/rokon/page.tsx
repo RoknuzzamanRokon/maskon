@@ -37,21 +37,20 @@ import { motion } from "framer-motion";
 export default function RokonPortfolio() {
   // Rokon's detailed information
   const rokonData = {
-    name: "Rokon Raz",
-    title: "Lead Full Stack Developer & UI/UX Designer",
+    name: "Md Roknuzzaman Rokon",
+    title: "Lead Full Stack Developer & Data Engineer",
     tagline: "Crafting Digital Excellence Through Code & Design",
-    bio: "Passionate full-stack developer with 5+ years of experience in creating exceptional web applications. I specialize in React ecosystem, Python backend development, and modern UI/UX design. My goal is to bridge the gap between beautiful design and robust functionality.",
+    bio: "Passionate full-stack developer with 6+ years of experience in creating exceptional web applications. I specialize in React ecosystem, Python backend development. My goal is to bridge the gap between beautiful design and robust functionality.",
     location: "Dhaka, Bangladesh",
     email: "rokon.raz@gmail.com",
-    phone: "+880 1234-567890",
+    phone: "+880 1739-933258",
     linkedin: "https://www.linkedin.com/in/rokon-raz/",
-    github: "https://github.com/rokon-raz",
+    github: "https://github.com/RoknuzzamanRokon",
     website: "https://rokonraz.dev",
     avatar: "/team/rokon.jpg",
-    experience: "5+ Years",
+    experience: "6+ Years",
     projectsCompleted: "48+",
     clientsSatisfied: "32+",
-    githubStars: "1.2K+",
   };
 
   // Skills with proficiency levels
@@ -62,10 +61,10 @@ export default function RokonPortfolio() {
       color: "blue",
       skills: [
         { name: "React.js", level: 95, experience: "4 years" },
-        { name: "Next.js", level: 90, experience: "3 years" },
-        { name: "TypeScript", level: 88, experience: "3 years" },
-        { name: "Tailwind CSS", level: 92, experience: "3 years" },
-        { name: "JavaScript", level: 94, experience: "5 years" },
+        { name: "Next.js", level: 90, experience: "2 years" },
+        { name: "TypeScript", level: 88, experience: "2 years" },
+        { name: "Tailwind CSS", level: 92, experience: "2 years" },
+        { name: "JavaScript", level: 94, experience: "4 years" },
         { name: "HTML5/CSS3", level: 96, experience: "5 years" },
       ],
     },
@@ -74,12 +73,12 @@ export default function RokonPortfolio() {
       icon: Database,
       color: "green",
       skills: [
-        { name: "Python", level: 90, experience: "4 years" },
-        { name: "FastAPI", level: 85, experience: "2 years" },
-        { name: "Node.js", level: 80, experience: "3 years" },
+        { name: "Python", level: 90, experience: "6 years" },
+        { name: "FastAPI", level: 85, experience: "3 years" },
+        { name: "Node.js", level: 80, experience: "2 years" },
         { name: "PostgreSQL", level: 82, experience: "3 years" },
         { name: "MySQL", level: 85, experience: "4 years" },
-        { name: "REST APIs", level: 90, experience: "4 years" },
+        { name: "REST APIs", level: 90, experience: "3 years" },
       ],
     },
     {
@@ -87,12 +86,12 @@ export default function RokonPortfolio() {
       icon: Palette,
       color: "purple",
       skills: [
-        { name: "Figma", level: 88, experience: "3 years" },
-        { name: "UI/UX Design", level: 85, experience: "3 years" },
-        { name: "Adobe XD", level: 75, experience: "2 years" },
+        { name: "Figma", level: 88, experience: "1 years" },
+        { name: "UI/UX Design", level: 85, experience: "1 years" },
+        { name: "Adobe XD", level: 75, experience: ".5 years" },
         { name: "Photoshop", level: 70, experience: "2 years" },
         { name: "Framer Motion", level: 80, experience: "2 years" },
-        { name: "Responsive Design", level: 92, experience: "4 years" },
+        { name: "Responsive Design", level: 92, experience: "2 years" },
       ],
     },
   ];
@@ -100,11 +99,53 @@ export default function RokonPortfolio() {
   // Featured projects
   const featuredProjects = [
     {
+      id: 3,
+      title: "Hotel Integration Technologies",
+      description:
+        "The Hotel API is a FastAPI-based application designed to manage hotels, users, and related entities. It provides endpoints for authentication, hotel management, and provider mappings. The application uses SQLAlchemy for database interactions and Alembic for migrations.",
+      image: "/projects/hita_tech.png",
+      technologies: ["FastAPI", "React", "Tailwind", "mysql", "Contabo"],
+      liveUrl: "https://portfolio-builder.com",
+      githubUrl: "https://github.com/RoknuzzamanRokon/HITA-with-FASTapi",
+      category: "SaaS",
+      year: "2024",
+      status: "In Progress",
+      features: [
+        "Hotel mapping api service",
+        "Give Uniq hotel mapping.",
+        "Give content for B2B and B2C",
+        "Mapping with ML",
+        "Verified with AI.",
+        "Add new hotel with API",
+      ],
+    },
+    {
+      id: 2,
+      title: "Story Teller AI",
+      description:
+        "Collaborative task management application with real-time updates, team collaboration features, and advanced project tracking capabilities.",
+      image: "/projects/storyteller.png",
+      technologies: ["Python", "AWS", "MySQL"],
+      liveUrl: "https://taskmanager-demo.com",
+      githubUrl: "https://github.com/RoknuzzamanRokon/storytellerai",
+      category: "Web App",
+      year: "2024",
+      status: "Completed",
+      features: [
+        "Real-time Story Generator",
+        "Generate full story base Your prompt",
+        "Unlimited prompt accept",
+        "Notification System",
+        "Mobile Responsive",
+        "Desktop exe file also available",
+      ],
+    },
+    {
       id: 1,
       title: "E-Commerce Platform",
       description:
         "Full-stack e-commerce solution with React, Next.js, and Python backend. Features include user authentication, payment integration, inventory management, and admin dashboard.",
-      image: "/projects/ecommerce.jpg",
+      image: "/projects/ecommerce.png",
       technologies: [
         "React",
         "Next.js",
@@ -114,7 +155,8 @@ export default function RokonPortfolio() {
         "Stripe",
       ],
       liveUrl: "https://ecommerce-demo.com",
-      githubUrl: "https://github.com/rokon-raz/ecommerce",
+      githubUrl:
+        "https://github.com/RoknuzzamanRokon/ursam_roko_ecomarce_shop?tab=readme-ov-file",
       category: "Full Stack",
       year: "2024",
       status: "Completed",
@@ -125,48 +167,6 @@ export default function RokonPortfolio() {
         "Admin Dashboard",
         "Responsive Design",
         "SEO Optimized",
-      ],
-    },
-    {
-      id: 2,
-      title: "Task Management App",
-      description:
-        "Collaborative task management application with real-time updates, team collaboration features, and advanced project tracking capabilities.",
-      image: "/projects/taskapp.jpg",
-      technologies: ["React", "TypeScript", "Node.js", "Socket.io", "MongoDB"],
-      liveUrl: "https://taskmanager-demo.com",
-      githubUrl: "https://github.com/rokon-raz/taskmanager",
-      category: "Web App",
-      year: "2023",
-      status: "Completed",
-      features: [
-        "Real-time Collaboration",
-        "Project Timeline Tracking",
-        "Team Management",
-        "File Sharing",
-        "Notification System",
-        "Mobile Responsive",
-      ],
-    },
-    {
-      id: 3,
-      title: "Portfolio Website Builder",
-      description:
-        "SaaS platform for creating professional portfolio websites with drag-and-drop interface, custom themes, and integrated analytics.",
-      image: "/projects/portfolio-builder.jpg",
-      technologies: ["Next.js", "TypeScript", "Tailwind", "Prisma", "Vercel"],
-      liveUrl: "https://portfolio-builder.com",
-      githubUrl: "https://github.com/rokon-raz/portfolio-builder",
-      category: "SaaS",
-      year: "2024",
-      status: "In Progress",
-      features: [
-        "Drag & Drop Builder",
-        "Custom Themes",
-        "Analytics Dashboard",
-        "SEO Tools",
-        "Custom Domain",
-        "Export Options",
       ],
     },
   ];
@@ -182,24 +182,17 @@ export default function RokonPortfolio() {
     },
     {
       title: "React Advanced Certification",
-      issuer: "Meta",
+      issuer: "My self",
       date: "2022",
       icon: Code,
       color: "blue",
     },
     {
-      title: "UI/UX Design Specialization",
-      issuer: "Google",
+      title: "Python 100 Days challenge",
+      issuer: "Dr. Anglea U",
       date: "2022",
-      icon: Palette,
-      color: "purple",
-    },
-    {
-      title: "Best Developer Award",
-      issuer: "Tech Conference 2023",
-      date: "2023",
-      icon: Star,
-      color: "yellow",
+      icon: Code,
+      color: "blue",
     },
   ];
 
@@ -278,8 +271,12 @@ export default function RokonPortfolio() {
                   {/* Profile Image */}
                   <div className="relative w-48 h-48 mx-auto lg:mx-0 mb-8">
                     <div className="w-full h-full rounded-3xl bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 to-purple-900 flex items-center justify-center shadow-2xl">
-                      <span className="text-6xl font-bold text-blue-800 dark:text-blue-200">
-                        {rokonData.name.charAt(0)}
+                      <span className="text-6xl font-bold text-blue-800 dark:text-blue-200 rounded-3xl overflow-hidden">
+                        <img
+                          src={rokonData.avatar}
+                          alt={rokonData.name}
+                          className="w-full h-full object-cover"
+                        />
                       </span>
                     </div>
                     <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl flex items-center justify-center shadow-lg">
@@ -357,12 +354,6 @@ export default function RokonPortfolio() {
                       value: rokonData.clientsSatisfied,
                       icon: Users,
                       color: "purple",
-                    },
-                    {
-                      label: "GitHub Stars",
-                      value: rokonData.githubStars,
-                      icon: Star,
-                      color: "yellow",
                     },
                   ].map((stat, index) => (
                     <motion.div
@@ -530,7 +521,14 @@ export default function RokonPortfolio() {
                       whileHover={{ scale: 1.02 }}
                     >
                       <div className="aspect-video flex items-center justify-center">
-                        <Code className="w-24 h-24 text-blue-400 dark:text-blue-300" />
+                        <span className="text-6xl font-bold text-blue-800 dark:text-blue-200 h-96 overflow-hidden w-full inline-block">
+                          <img
+                            src={project.image}
+                            alt={rokonData.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </span>
+                        <Code className="w-24 h-24 text-blue-400 dark:text-blue-300 absolute" />
                       </div>
 
                       {/* Project Status Badge */}
