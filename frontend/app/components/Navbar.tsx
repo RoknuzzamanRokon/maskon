@@ -60,7 +60,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-md sticky top-0 z-50 border-b border-gray-100 dark:border-gray-800">
+    <nav className="sticky top-0 z-50 border-b border-white/20 dark:border-white/10 bg-white/10 dark:bg-gray-900/20 backdrop-blur-xl supports-[backdrop-filter]:bg-white/10 supports-[backdrop-filter]:backdrop-blur-xl shadow-lg">
+      {/* Decorative liquid glass blobs */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <span className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-gradient-to-br from-blue-500/50 to-purple-500/10 blur-3xl opacity-90" />
+        <span className="absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-gradient-to-br from-indigo-500/100 to-emerald-500/20 blur-3xl opacity-60" />
+      </div>
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-3">
           <Link
@@ -614,7 +619,7 @@ export default function Navbar() {
               <div className="border-t border-gray-200 pt-4 mt-4 px-4">
                 <Link
                   href="/login"
-                  className="block w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-4 py-3 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all text-center flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-4 py-3 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all text-center flex items-center justify-center gap-2"
                   onClick={() => setIsOpen(false)}
                 >
                   <svg
