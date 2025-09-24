@@ -256,7 +256,7 @@ export default function RokonPortfolio() {
         </div>
       </header>
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-800/20">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <motion.div
@@ -270,7 +270,7 @@ export default function RokonPortfolio() {
                 <div className="text-center lg:text-left">
                   {/* Profile Image */}
                   <div className="relative w-48 h-48 mx-auto lg:mx-0 mb-8">
-                    <div className="w-full h-full rounded-3xl bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 to-purple-900 flex items-center justify-center shadow-2xl">
+                    <div className="w-full h-full rounded-3xl bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-800 flex items-center justify-center shadow-2xl">
                       <span className="text-6xl font-bold text-blue-800 dark:text-blue-200 rounded-3xl overflow-hidden">
                         <img
                           src={rokonData.avatar}
@@ -517,7 +517,7 @@ export default function RokonPortfolio() {
                   {/* Project Image */}
                   <div className={`${index % 2 === 1 ? "lg:col-start-2" : ""}`}>
                     <motion.div
-                      className="relative bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-3xl overflow-hidden shadow-2xl"
+                      className="relative bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-800/30 rounded-3xl overflow-hidden shadow-2xl"
                       whileHover={{ scale: 1.02 }}
                     >
                       <div className="aspect-video flex items-center justify-center">
@@ -726,7 +726,7 @@ export default function RokonPortfolio() {
       {/* Contact Section */}
       <section
         id="contact"
-        className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-800 dark:via-blue-900/20 dark:to-purple-900/20"
+        className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-800 dark:via-blue-900/20 dark:to-purple-800/20"
       >
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">

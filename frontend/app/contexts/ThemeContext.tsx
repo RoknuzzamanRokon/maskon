@@ -12,17 +12,24 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
+
+  // Apply dark theme immediately to prevent flash
+  useEffect(() => {
+    document.documentElement.classList.add("dark");
+  }, []);
 
   useEffect(() => {
     setMounted(true);
-    // Check for saved theme preference or default to 'light'
+    // Check for saved theme preference or default to 'dark'
     const savedTheme = localStorage.getItem("theme") as Theme;
     if (savedTheme) {
       setTheme(savedTheme);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    } else {
+      // Always default to dark theme and save it
       setTheme("dark");
+      localStorage.setItem("theme", "dark");
     }
   }, []);
 
