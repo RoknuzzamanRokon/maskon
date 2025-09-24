@@ -199,15 +199,6 @@ export default function Home() {
         >
           <div className="max-w-7xl mx-auto">
             {/* Brand Badge */}
-            <motion.div variants={fadeInUp} className="mb-8">
-              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full border border-blue-200 dark:border-blue-700 mb-6">
-                <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 mr-2" />
-                <span className="text-sm font-medium text-blue-800 dark:text-blue-300">
-                  Welcome to the Future of Content
-                </span>
-              </div>
-            </motion.div>
-
             {/* Main Heading */}
             <motion.div variants={fadeInUp} className="mb-8">
               <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">

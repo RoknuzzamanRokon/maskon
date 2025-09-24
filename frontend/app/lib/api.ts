@@ -1373,3 +1373,67 @@ class DashboardCache {
 }
 
 export const dashboardCache = new DashboardCache();
+
+// Admin Notifications API
+export async function getAdminNotifications(): Promise<any> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notifications`, {
+      headers: {
+        ...getAuthHeaders(),
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch notifications: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching admin notifications:', error);
+    throw error;
+  }
+}
+
+// Admin Settings API
+export async function getAdminSettings(): Promise<any> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/settings`, {
+      headers: {
+        ...getAuthHeaders(),
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch settings: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching admin settings:', error);
+    throw error;
+  }
+}
+
+export async function updateAdminSettings(settings: any): Promise<any> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/settings`, {
+      method: 'PUT',
+      headers: {
+        ...getAuthHeaders(),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(settings),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update settings: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating admin settings:', error);
+    throw error;
+  }
+}

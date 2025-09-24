@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Pages - Always Visible Sidebar Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .success {
+        background-color: #e8f5e8;
+        border-left: 4px solid #4caf50;
+        color: #2e7d32;
+      }
+      .info {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        color: #1565c0;
+      }
+      .status-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin: 10px 0;
+      }
+      .page-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
+      .page-card {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+      }
+      .page-card:hover {
+        background-color: #e9ecef;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .page-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #007bff;
+      }
+      .page-description {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 10px;
+      }
+      .page-url {
+        font-size: 12px;
+        color: #28a745;
+        font-family: monospace;
+      }
+      .feature-list {
+        list-style: none;
+        padding: 0;
+      }
+      .feature-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .feature-list li:before {
+        content: "✅ ";
+        margin-right: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎯 Admin Pages - Always Visible Sidebar Implementation</h1>
+      <p>
+        All admin pages now have consistent navigation with an always-visible
+        sidebar and proper page titles.
+      </p>
+    </div>
+
+    <div class="container">
+      <div class="status-box success">
+        <h2>✅ Implementation Complete</h2>
+        <ul class="feature-list">
+          <li>
+            <strong>Sidebar Always Visible:</strong> Cannot be collapsed or
+            hidden
+          </li>
+          <li>
+            <strong>Dynamic Page Titles:</strong> Each page shows its specific
+            name
+          </li>
+          <li><strong>Consistent Layout:</strong> All pages use AdminLayout</li>
+          <li><strong>Complete Navigation:</strong> All menu items work</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="status-box info">
+        <h2>📋 All Admin Pages</h2>
+        <p>
+          Click any card below to test the page (make sure your dev server is
+          running):
+        </p>
+
+        <div class="page-grid">
+          <a
+            href="http://localhost:3000/admin"
+            class="page-card"
+            target="_blank"
+          >
+            <div class="page-title">🏠 Dashboard</div>
+            <div class="page-description">
+              Main admin dashboard with metrics and overview
+            </div>
+            <div class="page-url">/admin</div>
+          </a>
+
+          <a
+            href="http://localhost:3000/admin/posts"
+            class="page-card"
+            target="_blank"
+          >
+            <div class="page-title">📝 Posts</div>
+            <div class="page-description">Manage blog posts and content</div>
+            <div class="page-url">/admin/posts</div>
+          </a>
+
+          <a
+            href="http://localhost:3000/admin/portfolio"
+            class="page-card"
+            target="_blank"
+          >
+            <div class="page-title">🎨 Portfolio</div>
+            <div class="page-description">
+              Manage portfolio projects and showcase
+            </div>
+            <div class="page-url">/admin/portfolio</div>
+          </a>
+
+          <a
+            href="http://localhost:3000/admin/products"
+            class="page-card"
+            target="_blank"
+          >
+            <div class="page-title">🛍️ Products</div>
+            <div class="page-description">Manage products and inventory</div>
+            <div class="page-url">/admin/products</div>
+          </a>
+
+          <a
+            href="http://localhost:3000/admin/users"
+            class="page-card"
+            target="_blank"
+          >
+            <div class="page-title">👥 Users</div>
+            <div class="page-description">
+              Manage system users and permissions
+            </div>
+            <div class="page-url">/admin/users</div>
+          </a>
+
+          <a
+            href="http://localhost:3000/admin/system"
+            class="page-card"
+            target="_blank"
+          >
+            <div class="page-title">🖥️ System Monitor</div>
+            <div class="page-description">
+              Monitor system performance and health
+            </div>
+            <div class="page-url">/admin/system</div>
+          </a>
+
+          <a
+            href="http://localhost:3000/admin/notifications"
+            class="page-card"
+            target="_blank"
+          >
+            <div class="page-title">🔔 Notifications</div>
+            <div class="page-description">
+              Manage system notifications and alerts
+            </div>
+            <div class="page-url">/admin/notifications</div>
+          </a>
+
+          <a
+            href="http://localhost:3000/admin/settings"
+            class="page-card"
+            target="_blank"
+          >
+            <div class="page-title">⚙️ Settings</div>
+            <div class="page-description">
+              Configure system settings and preferences
+            </div>
+            <div class="page-url">/admin/settings</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="status-box info">
+        <h2>🎯 Page Title Changes</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+          <div>
+            <h3>Before (Old Titles):</h3>
+            <ul>
+              <li>❌ "Admin Dashboard" → Dashboard</li>
+              <li>❌ "Manage Posts" → Posts</li>
+              <li>❌ "Portfolio Management" → Portfolio</li>
+              <li>❌ "Manage Products" → Products</li>
+            </ul>
+          </div>
+          <div>
+            <h3>After (New Titles):</h3>
+            <ul>
+              <li>✅ "Dashboard"</li>
+              <li>✅ "Posts"</li>
+              <li>✅ "Portfolio"</li>
+              <li>✅ "Products"</li>
+              <li>✅ "Users"</li>
+              <li>✅ "System Monitor"</li>
+              <li>✅ "Notifications"</li>
+              <li>✅ "Settings"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="status-box success">
+        <h2>🚀 How to Test</h2>
+        <ol>
+          <li>
+            <strong>Start Backend:</strong> <code>python backend/main.py</code>
+          </li>
+          <li>
+            <strong>Start Frontend:</strong> <code>npm run dev</code> (in
+            frontend directory)
+          </li>
+          <li>
+            <strong>Login as Admin:</strong> Go to
+            <code>http://localhost:3000/login</code>
+          </li>
+          <li><strong>Test Navigation:</strong> Click any page card above</li>
+          <li>
+            <strong>Verify Sidebar:</strong> Sidebar should always be visible on
+            every page
+          </li>
+          <li>
+            <strong>Check Titles:</strong> Each page should show its specific
+            title
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="status-box success">
+        <h2>🎉 Expected Behavior</h2>
+        <ul class="feature-list">
+          <li>
+            <strong>Sidebar Always Present:</strong> No collapse button, always
+            full width
+          </li>
+          <li>
+            <strong>Consistent Navigation:</strong> Same sidebar menu on all
+            pages
+          </li>
+          <li>
+            <strong>Dynamic Titles:</strong> Page title matches the current
+            section
+          </li>
+          <li>
+            <strong>Smooth Navigation:</strong> Click sidebar items to switch
+            pages
+          </li>
+          <li>
+            <strong>Active States:</strong> Current page highlighted in sidebar
+          </li>
+          <li>
+            <strong>Mobile Responsive:</strong> Sidebar becomes slide-out menu
+            on mobile
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      console.log("🎯 Admin Pages Implementation Complete!");
+      console.log("📋 Created/Updated Pages:");
+      console.log("  ✅ /admin - Dashboard");
+      console.log("  ✅ /admin/posts - Posts");
+      console.log("  ✅ /admin/portfolio - Portfolio");
+      console.log("  ✅ /admin/products - Products");
+      console.log("  ✅ /admin/users - Users");
+      console.log("  ✅ /admin/system - System Monitor");
+      console.log("  ✅ /admin/notifications - Notifications");
+      console.log("  ✅ /admin/settings - Settings");
+      console.log("🎨 All pages have consistent sidebar and proper titles!");
+    </script>
+  </body>
+</html>

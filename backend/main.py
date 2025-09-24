@@ -1784,6 +1784,247 @@ async def get_product_images(product_id: int):
         connection.close()
 
 
+# Admin Notifications endpoint
+@app.get("/api/admin/notifications")
+async def get_admin_notifications(admin_id: int = Depends(get_current_admin)):
+    """Get admin notifications including unread messages, system alerts, and activity summaries"""
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        notifications = []
+
+        # Get unread chat messages count
+        cursor.execute(
+            """
+            SELECT COUNT(*) as unread_count 
+            FROM product_chat_messages cm
+            JOIN product_chat_sessions cs ON cm.session_id = cs.id
+            WHERE cm.sender_type = 'customer' AND cm.is_read = FALSE
+        """
+        )
+        unread_messages = cursor.fetchone()
+
+        if unread_messages and unread_messages["unread_count"] > 0:
+            notifications.append(
+                {
+                    "id": "unread_messages",
+                    "type": "chat",
+                    "title": "Unread Messages",
+                    "message": f"You have {unread_messages['unread_count']} unread customer messages",
+                    "count": unread_messages["unread_count"],
+                    "priority": (
+                        "high" if unread_messages["unread_count"] > 10 else "medium"
+                    ),
+                    "created_at": datetime.utcnow(),
+                    "action_url": "/admin/chat",
+                }
+            )
+
+        # Get pending product inquiries
+        cursor.execute(
+            """
+            SELECT COUNT(*) as pending_count 
+            FROM product_inquiries 
+            WHERE status = 'pending'
+        """
+        )
+        pending_inquiries = cursor.fetchone()
+
+        if pending_inquiries and pending_inquiries["pending_count"] > 0:
+            notifications.append(
+                {
+                    "id": "pending_inquiries",
+                    "type": "inquiry",
+                    "title": "Pending Inquiries",
+                    "message": f"{pending_inquiries['pending_count']} product inquiries need attention",
+                    "count": pending_inquiries["pending_count"],
+                    "priority": "medium",
+                    "created_at": datetime.utcnow(),
+                    "action_url": "/admin/inquiries",
+                }
+            )
+
+        # Get recent system activity (last 24 hours)
+        cursor.execute(
+            """
+            SELECT COUNT(*) as new_sessions 
+            FROM product_chat_sessions 
+            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        """
+        )
+        new_sessions = cursor.fetchone()
+
+        if new_sessions and new_sessions["new_sessions"] > 0:
+            notifications.append(
+                {
+                    "id": "new_sessions",
+                    "type": "activity",
+                    "title": "New Chat Sessions",
+                    "message": f"{new_sessions['new_sessions']} new chat sessions started today",
+                    "count": new_sessions["new_sessions"],
+                    "priority": "low",
+                    "created_at": datetime.utcnow(),
+                    "action_url": "/admin/chat",
+                }
+            )
+
+        return {
+            "notifications": notifications,
+            "total_count": len(notifications),
+            "unread_count": sum(
+                1 for n in notifications if n["priority"] in ["high", "medium"]
+            ),
+            "last_updated": datetime.utcnow(),
+        }
+
+    except Exception as e:
+        logger.error(f"Error fetching admin notifications: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch notifications")
+    finally:
+        cursor.close()
+        connection.close()
+
+
+# Admin Settings endpoint
+@app.get("/api/admin/settings")
+async def get_admin_settings(admin_id: int = Depends(get_current_admin)):
+    """Get admin settings and system configuration"""
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        # Get admin user info
+        cursor.execute(
+            """
+            SELECT id, username, email, is_admin, created_at, last_login
+            FROM admin_users 
+            WHERE id = %s
+        """,
+            (admin_id,),
+        )
+        admin_info = cursor.fetchone()
+
+        # Get system statistics
+        cursor.execute("SELECT COUNT(*) as total_posts FROM posts")
+        posts_count = cursor.fetchone()
+
+        cursor.execute("SELECT COUNT(*) as total_products FROM products")
+        products_count = cursor.fetchone()
+
+        cursor.execute("SELECT COUNT(*) as total_sessions FROM product_chat_sessions")
+        sessions_count = cursor.fetchone()
+
+        cursor.execute("SELECT COUNT(*) as total_messages FROM product_chat_messages")
+        messages_count = cursor.fetchone()
+
+        # Get recent activity stats
+        cursor.execute(
+            """
+            SELECT 
+                DATE(created_at) as date,
+                COUNT(*) as count
+            FROM product_chat_sessions 
+            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            GROUP BY DATE(created_at)
+            ORDER BY date DESC
+        """
+        )
+        recent_activity = cursor.fetchall()
+
+        settings = {
+            "admin_info": admin_info,
+            "system_stats": {
+                "total_posts": posts_count["total_posts"] if posts_count else 0,
+                "total_products": (
+                    products_count["total_products"] if products_count else 0
+                ),
+                "total_chat_sessions": (
+                    sessions_count["total_sessions"] if sessions_count else 0
+                ),
+                "total_messages": (
+                    messages_count["total_messages"] if messages_count else 0
+                ),
+            },
+            "recent_activity": recent_activity,
+            "system_config": {
+                "chat_enabled": True,
+                "file_uploads_enabled": True,
+                "max_file_size_mb": 50,
+                "supported_file_types": [
+                    "image/jpeg",
+                    "image/png",
+                    "image/gif",
+                    "image/webp",
+                    "video/mp4",
+                    "video/webm",
+                ],
+                "rate_limiting_enabled": True,
+                "websocket_enabled": True,
+            },
+            "security_settings": {
+                "session_timeout_minutes": ACCESS_TOKEN_EXPIRE_MINUTES,
+                "max_login_attempts": 5,
+                "password_min_length": 8,
+                "require_admin_approval": True,
+            },
+            "last_updated": datetime.utcnow(),
+        }
+
+        return settings
+
+    except Exception as e:
+        logger.error(f"Error fetching admin settings: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch admin settings")
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.put("/api/admin/settings")
+async def update_admin_settings(
+    settings_update: dict, admin_id: int = Depends(get_current_admin)
+):
+    """Update admin settings (limited to safe configuration options)"""
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Only allow updating specific safe settings
+        allowed_updates = ["email", "notification_preferences"]
+
+        if "email" in settings_update and "email" in allowed_updates:
+            # Update admin email
+            new_email = settings_update["email"]
+            if not new_email or "@" not in new_email:
+                raise HTTPException(status_code=400, detail="Invalid email format")
+
+            cursor.execute(
+                """
+                UPDATE admin_users 
+                SET email = %s, updated_at = NOW() 
+                WHERE id = %s
+            """,
+                (new_email, admin_id),
+            )
+
+        connection.commit()
+
+        return {
+            "message": "Settings updated successfully",
+            "updated_at": datetime.utcnow(),
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating admin settings: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update settings")
+    finally:
+        cursor.close()
+        connection.close()
+
+
 if __name__ == "__main__":
     import uvicorn
 

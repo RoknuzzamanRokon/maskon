@@ -110,7 +110,7 @@ export default function DashboardOverview() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="min-w-0 flex-1">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
-            Dashboard Overview
+            Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">
             Welcome back! Here's what's happening with your site.

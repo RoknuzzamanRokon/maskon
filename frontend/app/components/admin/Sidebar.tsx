@@ -173,31 +173,16 @@ export default function Sidebar({
     );
   }
 
-  // Desktop sidebar
+  // Desktop sidebar - always full width (w-64)
   return (
-    <div
-      className={`hidden md:flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${
-        isCollapsed ? "w-16" : "w-64"
-      }`}
-    >
+    <div className="hidden md:flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64">
+      {/* Removed transition and conditional width - always w-64 */}
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        {!isCollapsed && (
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Admin Panel
-          </h2>
-        )}
-        <button
-          onClick={onToggle}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {isCollapsed ? (
-            <ChevronRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          ) : (
-            <ChevronLeft className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          )}
-        </button>
+      <div className="flex items-center justify-center p-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          Admin Panel
+        </h2>
+        {/* Removed toggle button - sidebar always visible */}
       </div>
 
       {/* Navigation */}
@@ -219,16 +204,8 @@ export default function Sidebar({
               aria-label={`Navigate to ${item.label}`}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
-              {!isCollapsed && (
-                <span className="ml-3 font-medium">{item.label}</span>
-              )}
-
-              {/* Tooltip for collapsed state */}
-              {isCollapsed && (
-                <div className="absolute left-16 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap">
-                  {item.label}
-                </div>
-              )}
+              <span className="ml-3 font-medium">{item.label}</span>
+              {/* Always show labels since sidebar is always expanded */}
             </button>
           );
         })}

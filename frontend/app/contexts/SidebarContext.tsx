@@ -23,31 +23,38 @@ interface SidebarProviderProps {
 }
 
 export function SidebarProvider({ children }: SidebarProviderProps) {
+  // Always keep sidebar expanded (not collapsed)
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Load collapsed state from localStorage on mount
+  // Force sidebar to always be expanded on desktop
   useEffect(() => {
-    try {
-      const savedState = localStorage.getItem("sidebar-collapsed");
-      if (savedState !== null) {
-        setIsCollapsed(JSON.parse(savedState));
-      }
-    } catch (error) {
-      // Ignore localStorage errors and use default state
-      console.warn("Failed to load sidebar state from localStorage:", error);
-    }
+    setIsCollapsed(false);
   }, []);
 
+  // Disable localStorage saving/loading for collapsed state since we want it always expanded
+  // Load collapsed state from localStorage on mount
+  // useEffect(() => {
+  //   try {
+  //     const savedState = localStorage.getItem("sidebar-collapsed");
+  //     if (savedState !== null) {
+  //       setIsCollapsed(JSON.parse(savedState));
+  //     }
+  //   } catch (error) {
+  //     // Ignore localStorage errors and use default state
+  //     console.warn("Failed to load sidebar state from localStorage:", error);
+  //   }
+  // }, []);
+
   // Save collapsed state to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem("sidebar-collapsed", JSON.stringify(isCollapsed));
-    } catch (error) {
-      // Ignore localStorage errors
-      console.warn("Failed to save sidebar state to localStorage:", error);
-    }
-  }, [isCollapsed]);
+  // useEffect(() => {
+  //   try {
+  //     localStorage.setItem("sidebar-collapsed", JSON.stringify(isCollapsed));
+  //   } catch (error) {
+  //     // Ignore localStorage errors
+  //     console.warn("Failed to save sidebar state to localStorage:", error);
+  //   }
+  // }, [isCollapsed]);
 
   // Close mobile menu on window resize to desktop
   useEffect(() => {
@@ -62,7 +69,8 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
   }, [isMobileOpen]);
 
   const toggleCollapsed = () => {
-    setIsCollapsed((prev) => !prev);
+    // Disable toggle functionality - keep sidebar always expanded
+    // setIsCollapsed((prev) => !prev);
   };
 
   const toggleMobileOpen = () => {
