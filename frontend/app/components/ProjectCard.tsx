@@ -26,8 +26,7 @@ export default function ProjectCard({
     : [];
 
   // Truncate description based on size
-  const getDescriptionLength = () => {
-    if (showFullDescription) return project.description;
+  const getDescriptionLength = (): number => {
     switch (size) {
       case "small":
         return 80;

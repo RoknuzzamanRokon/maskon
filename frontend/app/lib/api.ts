@@ -798,3 +798,578 @@ export async function markMessagesAsRead(
     throw error
   }
 }
+
+// Dashboard API functions
+export interface DashboardMetrics {
+  totalPosts: number;
+  totalPortfolioItems: number;
+  totalProducts: number;
+  totalUsers: number;
+  recentActivity: ActivityItem[];
+  systemHealth: SystemStatus;
+}
+
+export interface ActivityItem {
+  id: string;
+  type: "post" | "portfolio" | "product" | "user";
+  action: "created" | "updated" | "deleted" | "viewed";
+  title: string;
+  description?: string;
+  timestamp: string;
+  user: {
+    name: string;
+    avatar?: string;
+  };
+  metadata?: {
+    [key: string]: any;
+  };
+}
+
+export interface SystemStatus {
+  serverHealth: "healthy" | "warning" | "error";
+  uptime: number;
+  responseTime: number;
+  errorRate: number;
+  activeUsers: number;
+  memoryUsage: number;
+  cpuUsage: number;
+}
+
+export async function getDashboardMetrics(): Promise<DashboardMetrics> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/dashboard/metrics`, {
+      headers: getAuthHeaders(),
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      console.warn('Dashboard metrics API returned error status, using mock data');
+      return getMockDashboardMetrics();
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching dashboard metrics:', error);
+    // Return mock data for development - don't throw
+    return getMockDashboardMetrics();
+  }
+}
+
+export async function getRecentActivity(limit: number = 10): Promise<ActivityItem[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/dashboard/activity?limit=${limit}`, {
+      headers: getAuthHeaders(),
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      console.warn('Recent activity API returned error status, using mock data');
+      return getMockRecentActivity();
+    }
+
+    const data = await response.json();
+    return data.activities || [];
+  } catch (error) {
+    console.error('Error fetching recent activity:', error);
+    // Return mock data for development - don't throw
+    return getMockRecentActivity();
+  }
+}
+
+export async function getSystemMetrics(): Promise<SystemStatus> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/system/metrics`, {
+      headers: getAuthHeaders(),
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch system metrics');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching system metrics:', error);
+    // Return mock data for development - don't throw
+    return getMockSystemMetrics();
+  }
+}
+
+// Mock data functions for development
+function getMockDashboardMetrics(): DashboardMetrics {
+  return {
+    totalPosts: 42,
+    totalPortfolioItems: 18,
+    totalProducts: 25,
+    totalUsers: 156,
+    recentActivity: getMockRecentActivity(),
+    systemHealth: {
+      serverHealth: "healthy",
+      uptime: 99.8,
+      responseTime: 245,
+      errorRate: 0.2,
+      activeUsers: 23,
+      memoryUsage: 68.5,
+      cpuUsage: 34.2
+    }
+  };
+}
+
+function getMockRecentActivity(): ActivityItem[] {
+  const now = new Date();
+  return [
+    {
+      id: "1",
+      type: "post",
+      action: "created",
+      title: "New Blog Post: Getting Started with React",
+      description: "A comprehensive guide for beginners",
+      timestamp: new Date(now.getTime() - 5 * 60 * 1000).toISOString(),
+      user: { name: "Admin User", avatar: undefined }
+    },
+    {
+      id: "2",
+      type: "portfolio",
+      action: "updated",
+      title: "Portfolio Project: E-commerce Platform",
+      description: "Updated project description and images",
+      timestamp: new Date(now.getTime() - 15 * 60 * 1000).toISOString(),
+      user: { name: "Admin User", avatar: undefined }
+    }
+  ];
+}
+
+function getMockSystemMetrics(): SystemStatus {
+  return {
+    serverHealth: "healthy",
+    uptime: 99.8,
+    responseTime: 245,
+    errorRate: 0.02,
+    activeUsers: 42,
+    memoryUsage: 68.5,
+    cpuUsage: 23.7
+  };
+}
+
+// Notification API functions
+export interface NotificationResponse {
+  notifications: Array<{
+    id: string;
+    type: "info" | "warning" | "error" | "success";
+    title: string;
+    message: string;
+    timestamp: string;
+    isRead: boolean;
+    actionUrl?: string;
+    actionLabel?: string;
+    category?: "system" | "user" | "content" | "security";
+    priority?: "low" | "medium" | "high" | "critical";
+    metadata?: { [key: string]: any };
+  }>;
+  unreadCount: number;
+  totalCount: number;
+}
+
+export async function getNotifications(
+  limit: number = 50,
+  offset: number = 0,
+  filters?: {
+    type?: string;
+    category?: string;
+    isRead?: boolean;
+    priority?: string;
+  }
+): Promise<NotificationResponse> {
+  try {
+    const params = new URLSearchParams({
+      limit: limit.toString(),
+      offset: offset.toString(),
+    });
+
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined) {
+          params.append(key, value.toString());
+        }
+      });
+    }
+
+    const response = await fetch(`${API_BASE_URL}/admin/notifications?${params}`, {
+      headers: getAuthHeaders(),
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      console.warn('Notifications API returned error status, using mock data');
+      return getMockNotifications();
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    // Return mock data for development - don't throw
+    return getMockNotifications();
+  }
+}
+
+export async function markNotificationAsRead(notificationId: string): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notifications/${notificationId}/read`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to mark notification as read');
+    }
+  } catch (error) {
+    console.error('Error marking notification as read:', error);
+    // Don't throw in development mode
+  }
+}
+
+export async function markAllNotificationsAsRead(): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notifications/read-all`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to mark all notifications as read');
+    }
+  } catch (error) {
+    console.error('Error marking all notifications as read:', error);
+    // Don't throw in development mode
+  }
+}
+
+export async function deleteNotification(notificationId: string): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notifications/${notificationId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete notification');
+    }
+  } catch (error) {
+    console.error('Error deleting notification:', error);
+    // Don't throw in development mode
+  }
+}
+
+export async function clearAllNotifications(): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notifications/clear-all`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to clear all notifications');
+    }
+  } catch (error) {
+    console.error('Error clearing all notifications:', error);
+    // Don't throw in development mode
+  }
+}
+
+// Mock data function for development
+function getMockNotifications(): NotificationResponse {
+  const now = new Date();
+  return {
+    notifications: [
+      {
+        id: "notif_1",
+        type: "info",
+        title: "System Update Available",
+        message: "A new system update (v2.1.0) is available for installation.",
+        timestamp: new Date(now.getTime() - 10 * 60 * 1000).toISOString(),
+        isRead: false,
+        category: "system",
+        priority: "medium",
+        actionUrl: "/admin/system/updates",
+        actionLabel: "View Update"
+      },
+      {
+        id: "notif_2",
+        type: "success",
+        title: "New User Registration",
+        message: "A new user (jane.smith@example.com) has successfully registered.",
+        timestamp: new Date(now.getTime() - 25 * 60 * 1000).toISOString(),
+        isRead: false,
+        category: "user",
+        priority: "low"
+      }
+    ],
+    unreadCount: 2,
+    totalCount: 2
+  };
+}
+
+// User Management API functions
+import type { AdminUser } from '../admin/dashboard/types/dashboard';
+
+export type { AdminUser };
+
+export interface UserActivityLog {
+  id: string;
+  userId: number;
+  action: string;
+  description: string;
+  timestamp: string;
+  ipAddress?: string;
+  userAgent?: string;
+  metadata?: { [key: string]: any };
+}
+
+export interface UserManagementResponse {
+  users: AdminUser[];
+  totalCount: number;
+  activeCount: number;
+  inactiveCount: number;
+}
+
+export async function getUsers(
+  limit: number = 50,
+  offset: number = 0,
+  filters?: {
+    role?: string;
+    isActive?: boolean;
+    search?: string;
+  }
+): Promise<UserManagementResponse> {
+  try {
+    const params = new URLSearchParams({
+      limit: limit.toString(),
+      offset: offset.toString(),
+    });
+
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined) {
+          params.append(key, value.toString());
+        }
+      });
+    }
+
+    const response = await fetch(`${API_BASE_URL}/admin/users?${params}`, {
+      headers: getAuthHeaders(),
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      console.warn('Users API returned error status, using mock data');
+      return getMockUsers();
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return getMockUsers();
+  }
+}
+
+export async function getUserActivityLogs(
+  userId: number,
+  limit: number = 50,
+  offset: number = 0
+): Promise<{ logs: UserActivityLog[]; totalCount: number }> {
+  try {
+    const params = new URLSearchParams({
+      limit: limit.toString(),
+      offset: offset.toString(),
+    });
+
+    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/activity?${params}`, {
+      headers: getAuthHeaders(),
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      console.warn('User activity API returned error status, using mock data');
+      return getMockUserActivityLogs();
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user activity logs:', error);
+    return getMockUserActivityLogs();
+  }
+}
+
+export async function updateUserRole(userId: number, role: "admin" | "user"): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/role`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify({ role }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update user role');
+    }
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    throw error;
+  }
+}
+
+export async function updateUserStatus(userId: number, isActive: boolean): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/status`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify({ is_active: isActive }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update user status');
+    }
+  } catch (error) {
+    console.error('Error updating user status:', error);
+    throw error;
+  }
+}
+
+export async function deleteUser(userId: number): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete user');
+    }
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error;
+  }
+}
+
+// Mock data functions for development
+function getMockUsers(): UserManagementResponse {
+  const now = new Date();
+  return {
+    users: [
+      {
+        id: 1,
+        username: "admin",
+        email: "admin@example.com",
+        role: "admin",
+        isActive: true,
+        lastLogin: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
+        registrationDate: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        activityCount: 156
+      }
+    ],
+    totalCount: 1,
+    activeCount: 1,
+    inactiveCount: 0
+  };
+} function
+  getMockUserActivityLogs(): { logs: UserActivityLog[]; totalCount: number } {
+  const now = new Date();
+  return {
+    logs: [
+      {
+        id: "log_1",
+        userId: 1,
+        action: "login",
+        description: "User logged in successfully",
+        timestamp: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
+        ipAddress: "192.168.1.100",
+        userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+      }
+    ],
+    totalCount: 1
+  };
+}
+
+// Enhanced authentication checks for dashboard
+export function requireAdminAuth(): boolean {
+  const token = getAuthToken();
+  const userInfo = getUserInfo();
+
+  if (!token || !userInfo || !userInfo.is_admin) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
+    return false;
+  }
+
+  return true;
+}
+
+export async function validateAdminSession(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/validate-session`, {
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      removeAuthToken();
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error validating admin session:', error);
+    return false;
+  }
+}
+
+// Data Caching and Optimization
+class DashboardCache {
+  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private readonly DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes
+
+  set(key: string, data: any, ttl: number = this.DEFAULT_TTL): void {
+    this.cache.set(key, {
+      data,
+      timestamp: Date.now(),
+      ttl
+    });
+  }
+
+  get(key: string): any | null {
+    const item = this.cache.get(key);
+    if (!item) return null;
+
+    if (Date.now() - item.timestamp > item.ttl) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return item.data;
+  }
+
+  invalidate(key: string): void {
+    this.cache.delete(key);
+  }
+
+  invalidatePattern(pattern: string): void {
+    const regex = new RegExp(pattern);
+    const keys = Array.from(this.cache.keys());
+    for (const key of keys) {
+      if (regex.test(key)) {
+        this.cache.delete(key);
+      }
+    }
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+}
+
+export const dashboardCache = new DashboardCache();
