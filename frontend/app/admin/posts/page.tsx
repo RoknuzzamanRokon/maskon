@@ -92,7 +92,7 @@ function PostsManagementContent() {
               Total posts: <span className="font-semibold">{posts.length}</span>
             </p>
             <Link
-              href="/admin"
+              href="/admin/posts/create"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               ➕ Create New Post
@@ -179,6 +179,12 @@ function PostsManagementContent() {
                         >
                           👁️ View
                         </Link>
+                        <Link
+                          href={`/admin/posts/edit/${post.id}`}
+                          className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300"
+                        >
+                          ✏️ Edit
+                        </Link>
                         <button
                           onClick={() => handleDeletePost(post.id, post.title)}
                           className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
@@ -203,7 +209,7 @@ function PostsManagementContent() {
                 Create your first blog post to get started.
               </p>
               <Link
-                href="/admin"
+                href="/admin/posts/create"
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 ➕ Create New Post
