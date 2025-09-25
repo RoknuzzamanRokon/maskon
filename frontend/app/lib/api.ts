@@ -217,6 +217,10 @@ export async function getCurrentUser() {
 
 export function logout() {
   removeAuthToken()
+  // Redirect to home page after logout
+  if (typeof window !== 'undefined') {
+    window.location.href = '/'
+  }
 }
 
 export function getUserInfo() {
