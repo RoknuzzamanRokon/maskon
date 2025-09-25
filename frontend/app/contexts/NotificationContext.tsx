@@ -299,25 +299,6 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     }
   }, []);
 
-  // Set up real-time updates (mock implementation)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Mock real-time notification
-      if (Math.random() < 0.1) {
-        // 10% chance every 30 seconds
-        const mockNotification = {
-          type: "info" as const,
-          title: "Real-time Update",
-          message: `System check completed at ${new Date().toLocaleTimeString()}`,
-          category: "system" as const,
-          priority: "low" as const,
-        };
-        addNotification(mockNotification);
-      }
-    }, 30000); // Check every 30 seconds
-
-    return () => clearInterval(interval);
-  }, [addNotification]);
 
   const contextValue: NotificationContextType = {
     state,
