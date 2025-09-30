@@ -11,6 +11,7 @@ export default function Navbar() {
   const [isBlogOpen, setIsBlogOpen] = useState(false);
   const [userInfo, setUserInfo] = useState<any>(null);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
   const blogDropdownRef = useRef<HTMLDivElement>(null);
@@ -28,7 +29,10 @@ export default function Navbar() {
     checkAuth();
     window.addEventListener("storage", checkAuth);
 
-    // Close dropdowns when clicking outside
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
     const handleClickOutside = (event: MouseEvent) => {
       if (
         blogDropdownRef.current &&
@@ -44,9 +48,12 @@ export default function Navbar() {
       }
     };
 
+    window.addEventListener("scroll", handleScroll);
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
@@ -60,44 +67,61 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/20 dark:border-white/10 bg-white/10 dark:bg-gray-900/20 backdrop-blur-xl supports-[backdrop-filter]:bg-white/10 supports-[backdrop-filter]:backdrop-blur-xl shadow-lg">
-      {/* Decorative liquid glass blobs */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <span className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-gradient-to-br from-blue-500/50 to-purple-500/10 blur-3xl opacity-90" />
-        <span className="absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-gradient-to-br from-indigo-500/100 to-emerald-500/20 blur-3xl opacity-60" />
+    <nav
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        isScrolled
+          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-lg"
+          : "bg-transparent"
+      }`}
+    >
+      {/* Animated background gradient */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div
+          className={`absolute inset-0 transition-opacity duration-500 ${
+            isScrolled ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-emerald-400/20 to-blue-400/20 rounded-full blur-3xl"></div>
+        </div>
       </div>
+
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-3">
-          <Link
-            href="/"
-            className="group relative text-3xl font-extrabold text-gray-800 tracking-wide"
-          >
-            <span className="relative z-10 inline-block py-1">
-              <span className="block text-animate bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-600 bg-clip-text text-transparent">
-                Mashkon
+        <div className="flex justify-between items-center py-4">
+          {/* Logo */}
+          <Link href="/" className="group relative flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-violet-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+              <span className="text-white font-bold text-lg">M</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                MASHKON
               </span>
-              <span className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-600 w-full underline-animate scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-            </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wider">
+                INNOVATION & DESIGN
+              </span>
+            </div>
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-1">
             <Link
               href="/"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group"
+              className="group relative px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300"
             >
-              Home
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
+              <span className="relative z-10">Home</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/0 rounded-xl group-hover:from-blue-500/5 group-hover:to-violet-500/5 transition-all duration-300"></div>
             </Link>
 
+            {/* Blog Dropdown */}
             <div className="relative" ref={blogDropdownRef}>
               <button
                 onClick={() => setIsBlogOpen(!isBlogOpen)}
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 transition-colors duration-300 py-2 px-1 relative group"
+                className="group relative px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center space-x-1 transition-all duration-300"
               >
-                Blog
+                <span>Blog</span>
                 <svg
-                  className={`w-4 h-4 transition-transform ${
+                  className={`w-4 h-4 transition-transform duration-300 ${
                     isBlogOpen ? "rotate-180" : ""
                   }`}
                   fill="none"
@@ -111,117 +135,119 @@ export default function Navbar() {
                     d="M19 9l-7 7-7-7"
                   />
                 </svg>
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/0 rounded-xl group-hover:from-blue-500/5 group-hover:to-violet-500/5 transition-all duration-300"></div>
               </button>
 
               {isBlogOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl py-2 z-20 animate-fadeIn">
+                <div className="absolute top-full left-0 mt-2 w-56 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-2xl py-3 z-50 animate-fadeIn">
+                  <div className="px-4 py-2">
+                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Categories
+                    </span>
+                  </div>
+                  <div className="border-t border-gray-200/50 dark:border-gray-700/50 mb-2"></div>
+
                   <Link
                     href="/blog"
-                    className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
                     onClick={() => setIsBlogOpen(false)}
                   >
-                    All Posts
+                    <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-violet-500 rounded-full mr-3"></div>
+                    <span>All Posts</span>
+                    <svg
+                      className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
                   </Link>
-                  <div className="border-t my-1 border-gray-200 dark:border-gray-600"></div>
-                  <Link
-                    href="/blog/category/tech"
-                    className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    onClick={() => setIsBlogOpen(false)}
-                  >
-                    <span className="inline-block w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
-                    Tech
-                  </Link>
-                  <Link
-                    href="/blog/category/food"
-                    className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    onClick={() => setIsBlogOpen(false)}
-                  >
-                    <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                    Food
-                  </Link>
-                  <Link
-                    href="/blog/category/activity"
-                    className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    onClick={() => setIsBlogOpen(false)}
-                  >
-                    <span className="inline-block w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
-                    Activity
-                  </Link>
+
+                  {[
+                    {
+                      href: "/blog/category/tech",
+                      label: "Technology",
+                      color: "blue",
+                    },
+                    {
+                      href: "/blog/category/food",
+                      label: "Culinary Arts",
+                      color: "emerald",
+                    },
+                    {
+                      href: "/blog/category/activity",
+                      label: "Lifestyle",
+                      color: "violet",
+                    },
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
+                      onClick={() => setIsBlogOpen(false)}
+                    >
+                      <div
+                        className={`w-2 h-2 bg-gradient-to-r from-${item.color}-500 to-${item.color}-600 rounded-full mr-3`}
+                      ></div>
+                      <span>{item.label}</span>
+                      <svg
+                        className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>
 
-            <Link
-              href="/portfolio"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group"
-            >
-              Portfolio
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
-            </Link>
+            {["Portfolio", "Projects", "Contact"].map((item) => (
+              <Link
+                key={item}
+                href={`/${item.toLowerCase()}`}
+                className="group relative px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300"
+              >
+                <span className="relative z-10">{item}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/0 rounded-xl group-hover:from-blue-500/5 group-hover:to-violet-500/5 transition-all duration-300"></div>
+              </Link>
+            ))}
 
-            <Link
-              href="/projects"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group"
-            >
-              Projects
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-
+            {/* Products with special styling */}
             <Link
               href="/products"
-              className="relative text-gray-600 dark:text-gray-300 
-             hover:text-gray-900 dark:hover:text-white 
-             transition-all duration-300 py-2 px-3 rounded-lg
-             group overflow-hidden"
+              className="group relative px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300"
             >
-              {/* Red pulse animation that triggers every 3 seconds */}
-              <span className="absolute inset-0 rounded-lg bg-red-500/0 animate-red-bip"></span>
-
-              <span className="relative z-10 flex items-center">
-                <svg
-                  className="w-4 h-4 mr-1.5 text-red-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-                  />
-                </svg>
-                Products
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-500 to-pink-500 transition-all duration-300 group-hover:w-full"></span>
+              <span className="relative z-10 flex items-center space-x-2">
+                <span>Products</span>
+                <span className="px-1.5 py-0.5 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full animate-pulse">
+                  New
+                </span>
               </span>
-
-              {/* Enhanced red shimmer underline */}
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-red-400/30 via-red-500 to-pink-400/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer-sweep"></span>
-              </span>
-
-              {/* Red notification dot with pulse every 3 seconds */}
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-red-bip-dot"></span>
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 to-pink-500/0 rounded-xl group-hover:from-red-500/5 group-hover:to-pink-500/5 transition-all duration-300"></div>
             </Link>
+          </div>
 
-            <Link
-              href="/contact"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group"
-            >
-              Contact
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-
-            {/* Theme Toggle Button */}
+          {/* Right side actions */}
+          <div className="hidden lg:flex items-center space-x-3">
+            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 flex items-center justify-center"
-              title={
-                theme === "light"
-                  ? "Switch to dark mode"
-                  : "Switch to light mode"
-              }
+              className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 group"
+              title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
             >
               {theme === "light" ? (
                 <svg
@@ -255,28 +281,30 @@ export default function Navbar() {
             </button>
 
             {loggedIn ? (
-              <div className="flex items-center space-x-4 ml-4">
-                <div className="flex items-center">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
+              <div className="flex items-center space-x-4">
+                {/* User menu */}
+                <div className="flex items-center space-x-3 p-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/50 dark:border-gray-700/50">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold shadow-lg">
                     {userInfo?.username.charAt(0).toUpperCase()}
                   </div>
-                  <div className="ml-3">
-                    <p className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2 px-1 relative group">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-800 dark:text-white">
                       {userInfo?.username}
-                      {userInfo?.is_admin && (
-                        <span className="ml-1.5 bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">
-                          Admin
-                        </span>
-                      )}
-                    </p>
+                    </span>
+                    {userInfo?.is_admin && (
+                      <span className="text-xs bg-gradient-to-r from-blue-500 to-violet-500 text-white px-2 py-0.5 rounded-full">
+                        Admin
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex space-x-2">
+                {/* Action buttons */}
+                <div className="flex items-center space-x-2">
                   {userInfo?.is_admin && (
                     <Link
                       href="/admin"
-                      className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-4 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-1.5"
+                      className="px-4 py-2.5 bg-gradient-to-r from-blue-500 to-violet-500 text-white rounded-xl hover:from-blue-600 hover:to-violet-600 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 font-medium"
                     >
                       <svg
                         className="w-4 h-4"
@@ -297,13 +325,13 @@ export default function Navbar() {
                           d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                         />
                       </svg>
-                      Admin
+                      <span>Dashboard</span>
                     </Link>
                   )}
 
                   <button
                     onClick={handleLogout}
-                    className="bg-red-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-1.5 border border-gray-200"
+                    className="px-4 py-2.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-300/50 dark:border-gray-600/50 transition-all duration-300 flex items-center space-x-2 font-medium"
                   >
                     <svg
                       className="w-4 h-4"
@@ -318,17 +346,17 @@ export default function Navbar() {
                         d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                       />
                     </svg>
-                    Logout
+                    <span>Logout</span>
                   </button>
                 </div>
               </div>
             ) : (
               <Link
                 href="/login"
-                className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-5 py-2.5 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-2 ml-4"
+                className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-violet-500 text-white rounded-xl hover:from-blue-600 hover:to-violet-600 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 font-medium group"
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-4 h-4 group-hover:scale-110 transition-transform"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -340,19 +368,19 @@ export default function Navbar() {
                     d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
                   />
                 </svg>
-                Login
+                <span>Sign In</span>
               </Link>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="lg:hidden p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? (
               <svg
-                className="w-6 h-6 text-gray-700 dark:text-gray-300"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -366,7 +394,7 @@ export default function Navbar() {
               </svg>
             ) : (
               <svg
-                className="w-6 h-6 text-gray-700 dark:text-gray-300"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -385,27 +413,58 @@ export default function Navbar() {
         {/* Mobile Menu */}
         <div
           ref={mobileMenuRef}
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isOpen ? "max-h-screen opacity-100 py-4" : "max-h-0 opacity-0"
+          className={`lg:hidden overflow-hidden transition-all duration-500 ease-in-out ${
+            isOpen
+              ? "max-h-screen opacity-100 py-4 border-t border-gray-200/50 dark:border-gray-700/50"
+              : "max-h-0 opacity-0"
           }`}
         >
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-            <Link
-              href="/"
-              className="block py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Home
-            </Link>
+          <div className="space-y-2">
+            {/* Main navigation links */}
+            {[
+              { href: "/", label: "Home" },
+              { href: "/portfolio", label: "Portfolio" },
+              { href: "/projects", label: "Projects" },
+              { href: "/products", label: "Products", badge: "New" },
+              { href: "/contact", label: "Contact" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center justify-between p-4 rounded-xl bg-gray-50/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 group"
+                onClick={() => setIsOpen(false)}
+              >
+                <span className="font-medium">{item.label}</span>
+                {item.badge && (
+                  <span className="px-2 py-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full">
+                    {item.badge}
+                  </span>
+                )}
+                <svg
+                  className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </Link>
+            ))}
 
-            <div className="py-3 px-4">
+            {/* Blog dropdown for mobile */}
+            <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-800/50">
               <button
-                className="w-full flex justify-between items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                className="w-full flex items-center justify-between text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 onClick={() => setIsBlogOpen(!isBlogOpen)}
               >
-                Blog
+                <span className="font-medium">Blog Categories</span>
                 <svg
-                  className={`w-4 h-4 transition-transform ${
+                  className={`w-4 h-4 transition-transform duration-300 ${
                     isBlogOpen ? "rotate-180" : ""
                   }`}
                   fill="none"
@@ -423,94 +482,63 @@ export default function Navbar() {
 
               <div
                 className={`overflow-hidden transition-all duration-300 ${
-                  isBlogOpen ? "max-h-40 opacity-100 mt-2" : "max-h-0 opacity-0"
+                  isBlogOpen ? "max-h-40 opacity-100 mt-3" : "max-h-0 opacity-0"
                 }`}
               >
-                <Link
-                  href="/blog"
-                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  onClick={() => {
-                    setIsOpen(false);
-                    setIsBlogOpen(false);
-                  }}
-                >
-                  All Posts
-                </Link>
-                <Link
-                  href="/blog/category/tech"
-                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  onClick={() => {
-                    setIsOpen(false);
-                    setIsBlogOpen(false);
-                  }}
-                >
-                  <span className="inline-block w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
-                  Tech
-                </Link>
-                <Link
-                  href="/blog/category/food"
-                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  onClick={() => {
-                    setIsOpen(false);
-                    setIsBlogOpen(false);
-                  }}
-                >
-                  <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                  Food
-                </Link>
-                <Link
-                  href="/blog/category/activity"
-                  className="block py-2 pl-6 pr-4 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  onClick={() => {
-                    setIsOpen(false);
-                    setIsBlogOpen(false);
-                  }}
-                >
-                  <span className="inline-block w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
-                  Activity
-                </Link>
+                <div className="space-y-2 pl-4 border-l-2 border-gray-200 dark:border-gray-700">
+                  <Link
+                    href="/blog"
+                    className="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    onClick={() => {
+                      setIsOpen(false);
+                      setIsBlogOpen(false);
+                    }}
+                  >
+                    All Posts
+                  </Link>
+                  {[
+                    {
+                      href: "/blog/category/tech",
+                      label: "Technology",
+                      color: "blue",
+                    },
+                    {
+                      href: "/blog/category/food",
+                      label: "Culinary Arts",
+                      color: "emerald",
+                    },
+                    {
+                      href: "/blog/category/activity",
+                      label: "Lifestyle",
+                      color: "violet",
+                    },
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center"
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsBlogOpen(false);
+                      }}
+                    >
+                      <div
+                        className={`w-1.5 h-1.5 bg-${item.color}-500 rounded-full mr-3`}
+                      ></div>
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <Link
-              href="/portfolio"
-              className="block py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Portfolio
-            </Link>
-
-            <Link
-              href="/projects"
-              className="block py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Projects
-            </Link>
-
-            <Link
-              href="/products"
-              className="block py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Products
-            </Link>
-
-            <Link
-              href="/contact"
-              className="block py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Contact
-            </Link>
-
-            {/* Theme Toggle Button - Mobile */}
+            {/* Theme toggle for mobile */}
             <button
               onClick={toggleTheme}
-              className="flex items-center justify-between w-full py-3 px-4 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="w-full flex items-center justify-between p-4 rounded-xl bg-gray-50/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300"
             >
-              <span>Theme</span>
-              <div className="flex items-center gap-2">
+              <span className="font-medium">Theme</span>
+              <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-500">
                   {theme === "light" ? "Light" : "Dark"}
                 </span>
@@ -546,98 +574,51 @@ export default function Navbar() {
               </div>
             </button>
 
+            {/* User section for mobile */}
             {loggedIn ? (
-              <div className="border-t border-gray-200 pt-4 mt-4">
-                <div className="flex items-center px-4 py-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
+              <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-800/50 space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold shadow-lg">
                     {userInfo?.username.charAt(0).toUpperCase()}
                   </div>
-                  <div className="ml-4">
-                    <p className="font-medium text-gray-800">
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-800 dark:text-white">
                       {userInfo?.username}
-                      {userInfo?.is_admin && (
-                        <span className="ml-1.5 bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">
-                          Admin
-                        </span>
-                      )}
                     </p>
+                    {userInfo?.is_admin && (
+                      <span className="text-xs bg-gradient-to-r from-blue-500 to-violet-500 text-white px-2 py-1 rounded-full">
+                        Admin
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 px-4 mt-4">
+                <div className="grid grid-cols-2 gap-3">
                   {userInfo?.is_admin && (
                     <Link
                       href="/admin"
-                      className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-4 py-2.5 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all text-center flex items-center justify-center gap-1.5"
+                      className="px-4 py-2.5 bg-gradient-to-r from-blue-500 to-violet-500 text-white rounded-xl hover:from-blue-600 hover:to-violet-600 shadow-lg transition-all duration-300 text-center font-medium"
                       onClick={() => setIsOpen(false)}
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      Admin
+                      Dashboard
                     </Link>
                   )}
-
                   <button
                     onClick={handleLogout}
-                    className="text-gray-600 hover:text-gray-900 px-4 py-2.5 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 border border-gray-200"
+                    className="px-4 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300 font-medium"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
                     Logout
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="border-t border-gray-200 pt-4 mt-4 px-4">
-                <Link
-                  href="/login"
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-4 py-3 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all text-center flex items-center justify-center gap-2"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                    />
-                  </svg>
-                  Login to Account
-                </Link>
-              </div>
+              <Link
+                href="/login"
+                className="block w-full p-4 text-center bg-gradient-to-r from-blue-500 to-violet-500 text-white rounded-xl hover:from-blue-600 hover:to-violet-600 shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                Sign In to Account
+              </Link>
             )}
           </div>
         </div>
