@@ -350,27 +350,7 @@ export default function Navbar() {
                   </button>
                 </div>
               </div>
-            ) : (
-              <Link
-                href="/login"
-                className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-violet-500 text-white rounded-xl hover:from-blue-600 hover:to-violet-600 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 font-medium group"
-              >
-                <svg
-                  className="w-4 h-4 group-hover:scale-110 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                  />
-                </svg>
-                <span>Sign In</span>
-              </Link>
-            )}
+            ) : null}
           </div>
 
           {/* Mobile menu button */}
@@ -611,15 +591,7 @@ export default function Navbar() {
                   </button>
                 </div>
               </div>
-            ) : (
-              <Link
-                href="/login"
-                className="block w-full p-4 text-center bg-gradient-to-r from-blue-500 to-violet-500 text-white rounded-xl hover:from-blue-600 hover:to-violet-600 shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign In to Account
-              </Link>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
