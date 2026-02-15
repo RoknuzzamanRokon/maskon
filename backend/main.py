@@ -94,11 +94,18 @@ app.add_middleware(
 
 
 # Create static directory if it doesn't exist
-os.makedirs(STATIC_DIR, exist_ok=True)
-os.makedirs(os.path.join(STATIC_DIR, "uploads"), exist_ok=True)
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+static_path = os.path.join(backend_dir, STATIC_DIR)
+uploads_path = os.path.join(static_path, "uploads")
+
+os.makedirs(static_path, exist_ok=True)
+os.makedirs(uploads_path, exist_ok=True)
+
+logger.info(f"Static directory: {static_path}")
+logger.info(f"Uploads directory: {uploads_path}")
 
 # Mount static files
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/static", StaticFiles(directory=static_path), name="static")
 
 
 app.include_router(health.router)

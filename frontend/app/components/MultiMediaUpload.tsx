@@ -36,6 +36,9 @@ export default function MultiMediaUpload({
       });
 
       const token = localStorage.getItem("auth_token");
+
+      console.log("Uploading files:", files.length);
+
       const response = await fetch("http://localhost:8000/api/upload-media", {
         method: "POST",
         headers: {
@@ -44,20 +47,31 @@ export default function MultiMediaUpload({
         body: formData,
       });
 
+      console.log("Response status:", response.status);
+
       if (!response.ok) {
-        throw new Error("Failed to upload files");
+        const errorData = await response
+          .json()
+          .catch(() => ({ detail: "Upload failed" }));
+        throw new Error(
+          errorData.detail || `Upload failed with status ${response.status}`,
+        );
       }
 
       const result = await response.json();
+      console.log("Upload result:", result);
+
       const newMediaFiles = [...mediaFiles, ...result.uploaded_files];
       setMediaFiles(newMediaFiles);
       onMediaSelect(newMediaFiles);
       setUploadMessage(
-        `${result.uploaded_files.length} file(s) uploaded successfully!`
+        `${result.uploaded_files.length} file(s) uploaded successfully!`,
       );
     } catch (error) {
       console.error("Error uploading files:", error);
-      setUploadMessage("Error uploading files. Please try again.");
+      setUploadMessage(
+        `Error: ${error instanceof Error ? error.message : "Upload failed. Please try again."}`,
+      );
     } finally {
       setIsUploading(false);
     }
@@ -85,7 +99,7 @@ export default function MultiMediaUpload({
       const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
       if (file.size > maxSize) {
         errors.push(
-          `${file.name}: File too large (max ${isVideo ? "50MB" : "10MB"})`
+          `${file.name}: File too large (max ${isVideo ? "50MB" : "10MB"})`,
         );
         return;
       }
