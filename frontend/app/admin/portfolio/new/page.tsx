@@ -9,6 +9,7 @@ import {
   logout,
 } from "../../../lib/api";
 import ProtectedRoute from "../../../components/ProtectedRoute";
+import AdminLayout from "../../../components/admin/AdminLayout";
 
 interface PortfolioFormData {
   title: string;
@@ -445,7 +446,9 @@ function NewPortfolioContent() {
 export default function NewPortfolioPage() {
   return (
     <ProtectedRoute requireAdmin={true}>
-      <NewPortfolioContent />
+      <AdminLayout>
+        <NewPortfolioContent />
+      </AdminLayout>
     </ProtectedRoute>
   );
 }

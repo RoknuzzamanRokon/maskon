@@ -133,7 +133,7 @@ export default function Sidebar({
 
         {/* Mobile sidebar */}
         <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out md:hidden">
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="sticky top-0 z-40 flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               Admin Panel
             </h2>
@@ -175,10 +175,10 @@ export default function Sidebar({
 
   // Desktop sidebar - always full width (w-64)
   return (
-    <div className="hidden md:flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64">
+    <div className="hidden md:flex sticky top-0 h-screen flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64">
       {/* Removed transition and conditional width - always w-64 */}
       {/* Header */}
-      <div className="flex items-center justify-center p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="sticky top-0 z-40 flex items-center justify-center p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           Admin Panel
         </h2>
@@ -186,7 +186,7 @@ export default function Sidebar({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = isActiveRoute(item.path);
