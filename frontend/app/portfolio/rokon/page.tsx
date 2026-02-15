@@ -1,46 +1,52 @@
 "use client";
+import type { CSSProperties } from "react";
 import {
   ArrowLeft,
+  Award,
+  BookOpen,
+  Briefcase,
+  Calendar,
+  CheckCircle,
+  Code,
   ExternalLink,
   Github,
   Linkedin,
   Mail,
-  Phone,
   MapPin,
-  Calendar,
-  Star,
-  Code,
-  Zap,
-  Users,
-  Award,
-  Download,
-  Eye,
-  Heart,
-  MessageCircle,
-  Briefcase,
-  Target,
-  Lightbulb,
-  Rocket,
-  CheckCircle,
-  Globe,
-  Coffee,
-  BookOpen,
-  Cpu,
-  Database,
-  Palette,
   Monitor,
+  Palette,
+  Phone,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Manrope, Space_Grotesk } from "next/font/google";
+
+const headingFont = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const bodyFont = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export default function RokonPortfolio() {
-  // Rokon's detailed information
+  const themeVars = {
+    "--ink": "#0f172a",
+    "--accent": "#0ea5a4",
+    "--accent-strong": "#0f766e",
+    "--sand": "#f6f4ee",
+    "--mist": "#edf6f5",
+  } as CSSProperties;
+
   const rokonData = {
     name: "Md Roknuzzaman Rokon",
     title: "Lead Full Stack Developer & Data Engineer",
-    tagline: "Crafting Digital Excellence Through Code & Design",
-    bio: "Passionate full-stack developer with 6+ years of experience in creating exceptional web applications. I specialize in React ecosystem, Python backend development. My goal is to bridge the gap between beautiful design and robust functionality.",
+    tagline: "Crafting digital systems that are fast, elegant, and reliable.",
+    bio: "Full-stack developer with 6+ years of experience building high-performance web products. I focus on React ecosystems, Python services, and data-driven delivery, translating complex requirements into delightful user experiences.",
     location: "Dhaka, Bangladesh",
     email: "rokon.raz@gmail.com",
     phone: "+880 1739-933258",
@@ -53,12 +59,16 @@ export default function RokonPortfolio() {
     clientsSatisfied: "32+",
   };
 
-  // Skills with proficiency levels
   const skillCategories = [
     {
       category: "Frontend Development",
       icon: Monitor,
-      color: "blue",
+      tone: {
+        chip: "bg-emerald-100 text-emerald-800",
+        icon: "text-emerald-700",
+        bar: "from-emerald-500 to-teal-500",
+        track: "bg-emerald-100/70",
+      },
       skills: [
         { name: "React.js", level: 95, experience: "4 years" },
         { name: "Next.js", level: 90, experience: "2 years" },
@@ -70,8 +80,13 @@ export default function RokonPortfolio() {
     },
     {
       category: "Backend Development",
-      icon: Database,
-      color: "green",
+      icon: Code,
+      tone: {
+        chip: "bg-amber-100 text-amber-800",
+        icon: "text-amber-700",
+        bar: "from-amber-500 to-orange-500",
+        track: "bg-amber-100/70",
+      },
       skills: [
         { name: "Python", level: 90, experience: "6 years" },
         { name: "FastAPI", level: 85, experience: "3 years" },
@@ -84,11 +99,16 @@ export default function RokonPortfolio() {
     {
       category: "Design & Tools",
       icon: Palette,
-      color: "purple",
+      tone: {
+        chip: "bg-slate-200 text-slate-800",
+        icon: "text-slate-700",
+        bar: "from-slate-500 to-slate-700",
+        track: "bg-slate-200/70",
+      },
       skills: [
-        { name: "Figma", level: 88, experience: "1 years" },
-        { name: "UI/UX Design", level: 85, experience: "1 years" },
-        { name: "Adobe XD", level: 75, experience: ".5 years" },
+        { name: "Figma", level: 88, experience: "1 year" },
+        { name: "UI/UX Design", level: 85, experience: "1 year" },
+        { name: "Adobe XD", level: 75, experience: "0.5 year" },
         { name: "Photoshop", level: 70, experience: "2 years" },
         { name: "Framer Motion", level: 80, experience: "2 years" },
         { name: "Responsive Design", level: 92, experience: "2 years" },
@@ -96,34 +116,33 @@ export default function RokonPortfolio() {
     },
   ];
 
-  // Featured projects
   const featuredProjects = [
     {
       id: 3,
       title: "Hotel Integration Technologies",
       description:
-        "The Hotel API is a FastAPI-based application designed to manage hotels, users, and related entities. It provides endpoints for authentication, hotel management, and provider mappings. The application uses SQLAlchemy for database interactions and Alembic for migrations.",
+        "FastAPI service for hotel management, provider mappings, and intelligent data normalization with performance-focused queries.",
       image: "/projects/hita_tech.png",
-      technologies: ["FastAPI", "React", "Tailwind", "mysql", "Contabo"],
+      technologies: ["FastAPI", "React", "Tailwind", "MySQL", "Contabo"],
       liveUrl: "https://portfolio-builder.com",
       githubUrl: "https://github.com/RoknuzzamanRokon/HITA-with-FASTapi",
       category: "SaaS",
       year: "2024",
       status: "In Progress",
       features: [
-        "Hotel mapping api service",
-        "Give Uniq hotel mapping.",
-        "Give content for B2B and B2C",
-        "Mapping with ML",
-        "Verified with AI.",
-        "Add new hotel with API",
+        "Hotel mapping API service",
+        "Unique hotel matching",
+        "B2B & B2C content feeds",
+        "ML-powered mapping",
+        "AI verification",
+        "API-first onboarding",
       ],
     },
     {
       id: 2,
       title: "Story Teller AI",
       description:
-        "Collaborative task management application with real-time updates, team collaboration features, and advanced project tracking capabilities.",
+        "AI story generation platform with real-time prompts, notifications, and desktop-ready distribution.",
       image: "/projects/storyteller.png",
       technologies: ["Python", "AWS", "MySQL"],
       liveUrl: "https://taskmanager-demo.com",
@@ -132,19 +151,19 @@ export default function RokonPortfolio() {
       year: "2024",
       status: "Completed",
       features: [
-        "Real-time Story Generator",
-        "Generate full story base Your prompt",
-        "Unlimited prompt accept",
-        "Notification System",
-        "Mobile Responsive",
-        "Desktop exe file also available",
+        "Real-time story generator",
+        "Long-form story output",
+        "Unlimited prompts",
+        "Notification system",
+        "Mobile responsive",
+        "Desktop app build",
       ],
     },
     {
       id: 1,
       title: "E-Commerce Platform",
       description:
-        "Full-stack e-commerce solution with React, Next.js, and Python backend. Features include user authentication, payment integration, inventory management, and admin dashboard.",
+        "Full-stack commerce suite with payment integration, inventory automation, and admin analytics.",
       image: "/projects/ecommerce.png",
       technologies: [
         "React",
@@ -161,624 +180,563 @@ export default function RokonPortfolio() {
       year: "2024",
       status: "Completed",
       features: [
-        "User Authentication & Authorization",
-        "Payment Gateway Integration",
-        "Real-time Inventory Management",
-        "Admin Dashboard",
-        "Responsive Design",
-        "SEO Optimized",
+        "User authentication",
+        "Payment gateway integration",
+        "Inventory automation",
+        "Admin dashboard",
+        "Responsive UI",
+        "SEO-ready pages",
       ],
     },
   ];
 
-  // Achievements and certifications
   const achievements = [
     {
       title: "AWS Certified Developer",
       issuer: "Amazon Web Services",
       date: "2023",
       icon: Award,
-      color: "orange",
     },
     {
       title: "React Advanced Certification",
-      issuer: "My self",
+      issuer: "Self-guided",
       date: "2022",
       icon: Code,
-      color: "blue",
     },
     {
-      title: "Python 100 Days challenge",
-      issuer: "Dr. Anglea U",
+      title: "Python 100 Days Challenge",
+      issuer: "Dr. Angela Yu",
       date: "2022",
       icon: Code,
-      color: "blue",
     },
   ];
 
-  // Animation variants
   const fadeInUp = {
-    hidden: { opacity: 0, y: 60 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: "easeOut" as const },
-    },
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
   };
 
-  const staggerContainer = {
+  const stagger = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.3,
-      },
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
     },
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      {/* Header with Back Button */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+    <div
+      className={`${bodyFont.className} min-h-screen bg-[color:var(--sand)] text-[color:var(--ink)]`}
+      style={themeVars}
+    >
+      <div className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-40 right-0 h-72 w-72 rounded-full bg-[color:var(--mist)] blur-3xl" />
+          <div className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-emerald-100/60 blur-3xl" />
+        </div>
+
+        <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur">
+          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
             <Link href="/portfolio">
               <motion.button
-                className="flex items-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                whileHover={{ x: -5 }}
+                className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-[color:var(--accent-strong)]"
+                whileHover={{ x: -4 }}
               >
-                <ArrowLeft className="w-5 h-5 mr-2" />
+                <ArrowLeft className="h-4 w-4" />
                 Back to Portfolio
               </motion.button>
             </Link>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-3">
               <motion.a
                 href={rokonData.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors"
-                whileHover={{ scale: 1.1 }}
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-[color:var(--accent-strong)]"
+                whileHover={{ scale: 1.05 }}
               >
-                <Linkedin className="w-4 h-4" />
+                <Linkedin className="h-4 w-4" />
               </motion.a>
               <motion.a
                 href={rokonData.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                whileHover={{ scale: 1.1 }}
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-[color:var(--accent-strong)]"
+                whileHover={{ scale: 1.05 }}
               >
-                <Github className="w-4 h-4" />
+                <Github className="h-4 w-4" />
+              </motion.a>
+              <motion.a
+                href="#contact"
+                className="hidden items-center gap-2 rounded-full bg-[color:var(--accent)] px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-[color:var(--accent-strong)] md:inline-flex"
+                whileHover={{ y: -2 }}
+              >
+                <Sparkles className="h-4 w-4" />
+                Book a Call
               </motion.a>
             </div>
           </div>
-        </div>
-      </header>
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-800/20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              className="grid lg:grid-cols-2 gap-12 items-center"
-              initial="hidden"
-              animate="visible"
-              variants={staggerContainer}
-            >
-              {/* Profile Info */}
-              <motion.div variants={fadeInUp}>
-                <div className="text-center lg:text-left">
-                  {/* Profile Image */}
-                  <div className="relative w-48 h-48 mx-auto lg:mx-0 mb-8">
-                    <div className="w-full h-full rounded-3xl bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-800 flex items-center justify-center shadow-2xl">
-                      <span className="text-6xl font-bold text-blue-800 dark:text-blue-200 rounded-3xl overflow-hidden">
-                        <img
-                          src={rokonData.avatar}
-                          alt={rokonData.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </span>
-                    </div>
-                    <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl flex items-center justify-center shadow-lg">
-                      <CheckCircle className="w-8 h-8 text-white" />
-                    </div>
+        </header>
+
+        <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+          <motion.div
+            className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center"
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+          >
+            <motion.div variants={fadeInUp}>
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                Available for projects
+              </div>
+              <h1
+                className={`${headingFont.className} mt-6 text-4xl font-semibold leading-tight text-slate-900 md:text-5xl`}
+              >
+                {rokonData.name}
+              </h1>
+              <p className="mt-3 text-lg font-semibold text-[color:var(--accent-strong)]">
+                {rokonData.title}
+              </p>
+              <p className="mt-6 text-lg text-slate-600">
+                {rokonData.tagline}
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-4 text-sm text-slate-600">
+                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
+                  <MapPin className="h-4 w-4" />
+                  {rokonData.location}
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
+                  <Mail className="h-4 w-4" />
+                  {rokonData.email}
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
+                  <Phone className="h-4 w-4" />
+                  {rokonData.phone}
+                </span>
+              </div>
+
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                <motion.a
+                  href="#contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[color:var(--accent)] px-6 py-4 text-base font-semibold text-white shadow-lg transition hover:bg-[color:var(--accent-strong)]"
+                  whileHover={{ y: -2 }}
+                >
+                  <Mail className="h-5 w-5" />
+                  Start a Project
+                </motion.a>
+                <motion.a
+                  href="/resume-rokon.pdf"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-800 shadow-lg transition hover:border-slate-300"
+                  whileHover={{ y: -2 }}
+                >
+                  <ExternalLink className="h-5 w-5" />
+                  Download Resume
+                </motion.a>
+              </div>
+            </motion.div>
+
+            <motion.div variants={fadeInUp}>
+              <div className="relative rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
+                <div className="flex items-center gap-6">
+                  <div className="relative h-28 w-28 overflow-hidden rounded-2xl">
+                    <Image
+                      src={rokonData.avatar}
+                      alt={rokonData.name}
+                      fill
+                      sizes="112px"
+                      className="object-cover"
+                    />
                   </div>
-
-                  {/* Name and Title */}
-                  <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-                    {rokonData.name}
-                  </h1>
-                  <h2 className="text-xl md:text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-4">
-                    {rokonData.title}
-                  </h2>
-                  <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 italic">
-                    "{rokonData.tagline}"
-                  </p>
-
-                  {/* Contact Info */}
-                  <div className="space-y-3 mb-8">
-                    <div className="flex items-center justify-center lg:justify-start text-gray-600 dark:text-gray-400">
-                      <MapPin className="w-4 h-4 mr-2" />
-                      <span>{rokonData.location}</span>
+                  <div>
+                    <h2 className={`${headingFont.className} text-2xl font-semibold`}>
+                      {rokonData.name}
+                    </h2>
+                    <p className="mt-1 text-sm text-slate-500">
+                      {rokonData.website}
+                    </p>
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                      <CheckCircle className="h-3 w-3" />
+                      Trusted by 30+ clients
                     </div>
-                    <div className="flex items-center justify-center lg:justify-start text-gray-600 dark:text-gray-400">
-                      <Mail className="w-4 h-4 mr-2" />
-                      <span>{rokonData.email}</span>
-                    </div>
-                    <div className="flex items-center justify-center lg:justify-start text-gray-600 dark:text-gray-400">
-                      <Phone className="w-4 h-4 mr-2" />
-                      <span>{rokonData.phone}</span>
-                    </div>
-                  </div>
-
-                  {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <motion.a
-                      href="#contact"
-                      className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
-                      whileHover={{ scale: 1.05, y: -2 }}
-                    >
-                      <MessageCircle className="w-5 h-5 mr-2" />
-                      Hire Me
-                    </motion.a>
-                    <motion.a
-                      href="/resume-rokon.pdf"
-                      className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white font-semibold rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
-                      whileHover={{ scale: 1.05, y: -2 }}
-                    >
-                      <Download className="w-5 h-5 mr-2" />
-                      Download CV
-                    </motion.a>
                   </div>
                 </div>
-              </motion.div>
 
-              {/* Stats and Quick Info */}
-              <motion.div variants={fadeInUp}>
-                <div className="grid grid-cols-2 gap-6 mb-8">
+                <p className="mt-6 text-sm leading-relaxed text-slate-600">
+                  {rokonData.bio}
+                </p>
+
+                <div className="mt-6 grid gap-4 sm:grid-cols-3">
                   {[
                     {
                       label: "Experience",
                       value: rokonData.experience,
-                      icon: Briefcase,
-                      color: "blue",
                     },
                     {
                       label: "Projects",
                       value: rokonData.projectsCompleted,
-                      icon: Code,
-                      color: "green",
                     },
                     {
                       label: "Happy Clients",
                       value: rokonData.clientsSatisfied,
-                      icon: Users,
-                      color: "purple",
                     },
-                  ].map((stat, index) => (
-                    <motion.div
-                      key={index}
-                      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center"
-                      whileHover={{ y: -5, scale: 1.02 }}
+                  ].map((stat) => (
+                    <div
+                      key={stat.label}
+                      className="rounded-2xl border border-slate-200 bg-[color:var(--mist)] px-4 py-4 text-center"
                     >
-                      <div
-                        className={`w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-${stat.color}-100 to-${stat.color}-200 dark:from-${stat.color}-900/30 dark:to-${stat.color}-800/30 rounded-xl flex items-center justify-center`}
-                      >
-                        <stat.icon
-                          className={`w-6 h-6 text-${stat.color}-600 dark:text-${stat.color}-400`}
-                        />
-                      </div>
-                      <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                      <p className="text-lg font-semibold text-slate-900">
                         {stat.value}
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      </p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
                         {stat.label}
-                      </div>
-                    </motion.div>
+                      </p>
+                    </div>
                   ))}
                 </div>
-
-                {/* Bio */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                    <BookOpen className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" />
-                    About Me
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    {rokonData.bio}
-                  </p>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-      {/* Skills Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              className="text-center mb-16"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Technical{" "}
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Expertise
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                Comprehensive skill set with hands-on experience in modern
-                technologies
-              </p>
-            </motion.div>
-
-            <div className="grid lg:grid-cols-3 gap-8">
-              {skillCategories.map((category, categoryIndex) => (
-                <motion.div
-                  key={categoryIndex}
-                  className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-700"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: categoryIndex * 0.2 }}
-                  whileHover={{ y: -10 }}
-                >
-                  {/* Category Header */}
-                  <div className="flex items-center mb-6">
-                    <div
-                      className={`w-12 h-12 bg-gradient-to-br from-${category.color}-500 to-${category.color}-600 rounded-2xl flex items-center justify-center mr-4`}
-                    >
-                      <category.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                      {category.category}
-                    </h3>
-                  </div>
-
-                  {/* Skills List */}
-                  <div className="space-y-4">
-                    {category.skills.map((skill, skillIndex) => (
-                      <div key={skillIndex} className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-gray-800 dark:text-gray-200">
-                            {skill.name}
-                          </span>
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              {skill.experience}
-                            </span>
-                            <span
-                              className={`text-sm font-semibold text-${category.color}-600 dark:text-${category.color}-400`}
-                            >
-                              {skill.level}%
-                            </span>
-                          </div>
-                        </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                          <motion.div
-                            className={`h-2 bg-gradient-to-r from-${category.color}-500 to-${category.color}-600 rounded-full`}
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${skill.level}%` }}
-                            viewport={{ once: true }}
-                            transition={{
-                              duration: 1,
-                              delay: skillIndex * 0.1,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>{" "}
-      {/*
- Featured Projects Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
-        <div className="container mx-auto px-4">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              className="text-center mb-16"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Featured{" "}
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Projects
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                Showcasing my best work and innovative solutions
-              </p>
-            </motion.div>
-
-            <div className="space-y-12">
-              {featuredProjects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  className={`grid lg:grid-cols-2 gap-12 items-center ${
-                    index % 2 === 1 ? "lg:grid-flow-col-dense" : ""
-                  }`}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                >
-                  {/* Project Image */}
-                  <div className={`${index % 2 === 1 ? "lg:col-start-2" : ""}`}>
-                    <motion.div
-                      className="relative bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-800/30 rounded-3xl overflow-hidden shadow-2xl"
-                      whileHover={{ scale: 1.02 }}
-                    >
-                      <div className="aspect-video flex items-center justify-center">
-                        <span className="text-6xl font-bold text-blue-800 dark:text-blue-200 h-96 overflow-hidden w-full inline-block">
-                          <img
-                            src={project.image}
-                            alt={rokonData.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </span>
-                        <Code className="w-24 h-24 text-blue-400 dark:text-blue-300 absolute" />
-                      </div>
-
-                      {/* Project Status Badge */}
-                      <div className="absolute top-4 right-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium ${
-                            project.status === "Completed"
-                              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                              : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
-                          }`}
-                        >
-                          {project.status}
-                        </span>
-                      </div>
-
-                      {/* Overlay with Links */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-6">
-                        <div className="flex space-x-4">
-                          <motion.a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl text-white hover:bg-white/30 transition-colors flex items-center"
-                            whileHover={{ scale: 1.05 }}
-                          >
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Live Demo
-                          </motion.a>
-                          <motion.a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl text-white hover:bg-white/30 transition-colors flex items-center"
-                            whileHover={{ scale: 1.05 }}
-                          >
-                            <Github className="w-4 h-4 mr-2" />
-                            Code
-                          </motion.a>
-                        </div>
-                      </div>
-                    </motion.div>
-                  </div>
-
-                  {/* Project Details */}
-                  <div
-                    className={`${
-                      index % 2 === 1 ? "lg:col-start-1 lg:row-start-1" : ""
-                    }`}
-                  >
-                    <div className="space-y-6">
-                      {/* Project Header */}
-                      <div>
-                        <div className="flex items-center space-x-4 mb-4">
-                          <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-lg text-sm font-medium">
-                            {project.category}
-                          </span>
-                          <span className="text-gray-500 dark:text-gray-400 text-sm">
-                            {project.year}
-                          </span>
-                        </div>
-                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                          {project.title}
-                        </h3>
-                        <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                          {project.description}
-                        </p>
-                      </div>
-
-                      {/* Technologies */}
-                      <div>
-                        <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">
-                          Technologies Used:
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {project.technologies.map((tech, techIndex) => (
-                            <span
-                              key={techIndex}
-                              className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-xl text-sm font-medium"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Key Features */}
-                      <div>
-                        <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">
-                          Key Features:
-                        </h4>
-                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {project.features.map((feature, featureIndex) => (
-                            <li
-                              key={featureIndex}
-                              className="flex items-center text-gray-600 dark:text-gray-400"
-                            >
-                              <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                              <span className="text-sm">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Project Links */}
-                      <div className="flex space-x-4 pt-4">
-                        <motion.a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center"
-                          whileHover={{ scale: 1.05, y: -2 }}
-                        >
-                          <Eye className="w-4 h-4 mr-2" />
-                          View Live
-                        </motion.a>
-                        <motion.a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-6 py-3 bg-white dark:bg-gray-800 text-gray-800 dark:text-white font-semibold rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center"
-                          whileHover={{ scale: 1.05, y: -2 }}
-                        >
-                          <Github className="w-4 h-4 mr-2" />
-                          Source Code
-                        </motion.a>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* Achievements Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              className="text-center mb-16"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Achievements &{" "}
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Certifications
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                Recognition and continuous learning in the field of technology
-              </p>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {achievements.map((achievement, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-700"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                >
-                  <div className="flex items-start">
-                    <div
-                      className={`w-12 h-12 bg-gradient-to-br from-${achievement.color}-100 to-${achievement.color}-200 dark:from-${achievement.color}-900/30 dark:to-${achievement.color}-800/30 rounded-xl flex items-center justify-center mr-4 flex-shrink-0`}
-                    >
-                      <achievement.icon
-                        className={`w-6 h-6 text-${achievement.color}-600 dark:text-${achievement.color}-400`}
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                        {achievement.title}
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-400 mb-2">
-                        {achievement.issuer}
-                      </p>
-                      <div className="flex items-center text-sm text-gray-500 dark:text-gray-500">
-                        <Calendar className="w-4 h-4 mr-1" />
-                        {achievement.date}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* Contact Section */}
-      <section
-        id="contact"
-        className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-800 dark:via-blue-900/20 dark:to-purple-800/20"
-      >
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Let's Work{" "}
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Together
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
-                Ready to bring your ideas to life? I'm available for freelance
-                projects and full-time opportunities.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <motion.a
-                  href={`mailto:${rokonData.email}`}
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                >
-                  <Mail className="w-5 h-5 mr-2" />
-                  Send Email
-                </motion.a>
-
-                <motion.a
-                  href={rokonData.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white font-semibold rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                >
-                  <Linkedin className="w-5 h-5 mr-2" />
-                  Connect on LinkedIn
-                </motion.a>
-
-                <motion.a
-                  href={`tel:${rokonData.phone}`}
-                  className="px-8 py-4 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 font-semibold rounded-2xl border-2 border-green-200 dark:border-green-700 hover:border-green-300 dark:hover:border-green-500 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                >
-                  <Phone className="w-5 h-5 mr-2" />
-                  Call Me
-                </motion.a>
               </div>
             </motion.div>
+          </motion.div>
+        </section>
+      </div>
+
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <motion.div
+          className="grid gap-10 lg:grid-cols-[0.4fr_0.6fr] lg:items-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={stagger}
+        >
+          <motion.div variants={fadeInUp}>
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Craft & Focus
+            </div>
+            <h2
+              className={`${headingFont.className} mt-6 text-3xl font-semibold text-slate-900 md:text-4xl`}
+            >
+              Building experiences that feel effortless
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-slate-600">
+              I blend product strategy with engineering to ship reliable software
+              systems. From architecture to UI polish, I focus on outcomes that
+              help teams scale.
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={fadeInUp}
+            className="grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg md:grid-cols-2"
+          >
+            {[
+              {
+                title: "Product-led Development",
+                description: "Strategy-driven builds with measurable impact.",
+                icon: Briefcase,
+              },
+              {
+                title: "Data-ready Architecture",
+                description: "Reliable, clean, and scalable backend systems.",
+                icon: Code,
+              },
+              {
+                title: "Design-conscious UI",
+                description: "Interfaces that feel refined and consistent.",
+                icon: Monitor,
+              },
+              {
+                title: "Collaboration",
+                description: "Clear communication and fast iteration loops.",
+                icon: BookOpen,
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="rounded-2xl border border-slate-100 bg-[color:var(--mist)] p-4"
+              >
+                <item.icon className="h-5 w-5 text-[color:var(--accent-strong)]" />
+                <h3 className="mt-3 text-sm font-semibold text-slate-900">
+                  {item.title}
+                </h3>
+                <p className="mt-1 text-sm text-slate-600">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </section>
+
+      <section className="bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <motion.div
+            className="mb-12 text-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <h2
+              className={`${headingFont.className} text-3xl font-semibold text-slate-900 md:text-4xl`}
+            >
+              Technical Expertise
+            </h2>
+            <p className="mt-3 text-base text-slate-600">
+              Balanced skills across product engineering, backend, and design.
+            </p>
+          </motion.div>
+
+          <div className="grid gap-8 lg:grid-cols-3">
+            {skillCategories.map((category, categoryIndex) => (
+              <motion.div
+                key={category.category}
+                className="rounded-3xl border border-slate-200 bg-[color:var(--sand)] p-6 shadow-lg"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: categoryIndex * 0.15 }}
+              >
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${category.tone.chip}`}
+                  >
+                    <category.icon className={`h-5 w-5 ${category.tone.icon}`} />
+                  </span>
+                  <h3 className="text-lg font-semibold text-slate-900">
+                    {category.category}
+                  </h3>
+                </div>
+                <div className="mt-6 space-y-4">
+                  {category.skills.map((skill) => (
+                    <div key={skill.name}>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-slate-800">
+                          {skill.name}
+                        </span>
+                        <span className="text-slate-500">
+                          {skill.experience}
+                        </span>
+                      </div>
+                      <div
+                        className={`mt-2 h-2 w-full rounded-full ${category.tone.track}`}
+                      >
+                        <motion.div
+                          className={`h-2 rounded-full bg-gradient-to-r ${category.tone.bar}`}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.level}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1 }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <motion.div
+          className="mb-12 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+        >
+          <h2
+            className={`${headingFont.className} text-3xl font-semibold text-slate-900 md:text-4xl`}
+          >
+            Featured Projects
+          </h2>
+          <p className="mt-3 text-base text-slate-600">
+            A selection of delivery-focused builds and product launches.
+          </p>
+        </motion.div>
+
+        <div className="space-y-12">
+          {featuredProjects.map((project, index) => (
+            <motion.div
+              key={project.id}
+              className="grid gap-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg lg:grid-cols-[1.2fr_1fr]"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: index * 0.1 }}
+            >
+              <div className="relative h-60 overflow-hidden rounded-2xl">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 60vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-slate-700">
+                  <Calendar className="h-3 w-3" />
+                  {project.year}
+                </div>
+              </div>
+
+              <div className="flex flex-col justify-between">
+                <div>
+                  <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    <span>{project.category}</span>
+                    <span className="h-1 w-1 rounded-full bg-slate-400" />
+                    <span>{project.status}</span>
+                  </div>
+                  <h3
+                    className={`${headingFont.className} mt-4 text-2xl font-semibold text-slate-900`}
+                  >
+                    {project.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                    {project.description}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {project.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="rounded-full border border-slate-200 bg-[color:var(--mist)] px-3 py-1 text-xs font-medium text-slate-600"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  <ul className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+                    {project.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-emerald-600" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mt-6 flex flex-wrap gap-4">
+                  <motion.a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[color:var(--accent)] px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-[color:var(--accent-strong)]"
+                    whileHover={{ y: -2 }}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Live Demo
+                  </motion.a>
+                  <motion.a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-lg"
+                    whileHover={{ y: -2 }}
+                  >
+                    <Github className="h-4 w-4" />
+                    Source Code
+                  </motion.a>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <motion.div
+            className="mb-12 text-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <h2
+              className={`${headingFont.className} text-3xl font-semibold text-slate-900 md:text-4xl`}
+            >
+              Achievements & Certifications
+            </h2>
+            <p className="mt-3 text-base text-slate-600">
+              Continuous learning with industry-recognized credentials.
+            </p>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {achievements.map((achievement) => (
+              <motion.div
+                key={achievement.title}
+                className="rounded-2xl border border-slate-200 bg-[color:var(--sand)] p-6 shadow-lg"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7 }}
+              >
+                <achievement.icon className="h-6 w-6 text-[color:var(--accent-strong)]" />
+                <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                  {achievement.title}
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  {achievement.issuer}
+                </p>
+                <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-500">
+                  <Calendar className="h-3 w-3" />
+                  {achievement.date}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="contact"
+        className="scroll-mt-24 bg-[color:var(--mist)]"
+      >
+        <div className="mx-auto max-w-5xl px-4 py-16">
+          <motion.div
+            className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl md:p-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <h2
+              className={`${headingFont.className} text-3xl font-semibold text-slate-900 md:text-4xl`}
+            >
+              Let’s build something exceptional
+            </h2>
+            <p className="mt-4 text-base text-slate-600">
+              Share your vision and I will help turn it into a high-performing
+              product.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <motion.a
+                href={`mailto:${rokonData.email}`}
+                className="inline-flex items-center gap-2 rounded-2xl bg-[color:var(--accent)] px-6 py-4 text-sm font-semibold text-white shadow-lg transition hover:bg-[color:var(--accent-strong)]"
+                whileHover={{ y: -2 }}
+              >
+                <Mail className="h-4 w-4" />
+                Send Email
+              </motion.a>
+              <motion.a
+                href={rokonData.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-700 shadow-lg"
+                whileHover={{ y: -2 }}
+              >
+                <Linkedin className="h-4 w-4" />
+                Connect on LinkedIn
+              </motion.a>
+              <motion.a
+                href={`tel:${rokonData.phone}`}
+                className="inline-flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-4 text-sm font-semibold text-emerald-700 shadow-lg"
+                whileHover={{ y: -2 }}
+              >
+                <Phone className="h-4 w-4" />
+                Call Me
+              </motion.a>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>
