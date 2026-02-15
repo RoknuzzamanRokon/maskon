@@ -235,48 +235,6 @@ export default function RokonPortfolio() {
           <div className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-emerald-100/60 blur-3xl" />
         </div>
 
-        <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-            <Link href="/portfolio">
-              <motion.button
-                className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-[color:var(--accent-strong)]"
-                whileHover={{ x: -4 }}
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Portfolio
-              </motion.button>
-            </Link>
-            <div className="flex items-center gap-3">
-              <motion.a
-                href={rokonData.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-[color:var(--accent-strong)]"
-                whileHover={{ scale: 1.05 }}
-              >
-                <Linkedin className="h-4 w-4" />
-              </motion.a>
-              <motion.a
-                href={rokonData.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-[color:var(--accent-strong)]"
-                whileHover={{ scale: 1.05 }}
-              >
-                <Github className="h-4 w-4" />
-              </motion.a>
-              <motion.a
-                href="#contact"
-                className="hidden items-center gap-2 rounded-full bg-[color:var(--accent)] px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-[color:var(--accent-strong)] md:inline-flex"
-                whileHover={{ y: -2 }}
-              >
-                <Sparkles className="h-4 w-4" />
-                Book a Call
-              </motion.a>
-            </div>
-          </div>
-        </header>
-
         <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
           <motion.div
             className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center"

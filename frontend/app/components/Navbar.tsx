@@ -282,23 +282,6 @@ export default function Navbar() {
 
             {loggedIn ? (
               <div className="flex items-center space-x-4">
-                {/* User menu */}
-                <div className="flex items-center space-x-3 p-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/50 dark:border-gray-700/50">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold shadow-lg">
-                    {userInfo?.username.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-gray-800 dark:text-white">
-                      {userInfo?.username}
-                    </span>
-                    {userInfo?.is_admin && (
-                      <span className="text-xs bg-gradient-to-r from-blue-500 to-violet-500 text-white px-2 py-0.5 rounded-full">
-                        Admin
-                      </span>
-                    )}
-                  </div>
-                </div>
-
                 {/* Action buttons */}
                 {!userInfo?.is_admin ? (
                   <div className="flex items-center space-x-2">
