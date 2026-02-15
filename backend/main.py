@@ -515,7 +515,7 @@ def get_current_admin(user_id: int = Depends(get_current_user)):
     cursor = connection.cursor(dictionary=True)
 
     try:
-        cursor.execute("SELECT is_admin FROM admin_users WHERE id = %s", (user_id,))
+        cursor.execute("SELECT is_admin FROM users WHERE id = %s", (user_id,))
         user = cursor.fetchone()
         if not user or not user["is_admin"]:
             raise HTTPException(status_code=403, detail="Admin access required")
@@ -729,7 +729,7 @@ async def login(user: UserLogin):
 
     try:
         cursor.execute(
-            "SELECT id, username, password_hash, is_admin FROM admin_users WHERE username = %s",
+            "SELECT id, username, password_hash, is_admin FROM users WHERE username = %s",
             (user.username,),
         )
         db_user = cursor.fetchone()
@@ -776,7 +776,7 @@ async def get_current_user_info(user_id: int = Depends(get_current_user)):
 
     try:
         cursor.execute(
-            "SELECT id, username, email, is_admin FROM admin_users WHERE id = %s",
+            "SELECT id, username, email, is_admin FROM users WHERE id = %s",
             (user_id,),
         )
         user = cursor.fetchone()
@@ -796,7 +796,7 @@ async def debug_auth_info(user_id: int = Depends(get_current_user)):
 
     try:
         cursor.execute(
-            "SELECT id, username, email, is_admin FROM admin_users WHERE id = %s",
+            "SELECT id, username, email, is_admin FROM users WHERE id = %s",
             (user_id,),
         )
         user = cursor.fetchone()
@@ -1139,7 +1139,7 @@ async def delete_comment(comment_id: int, user_id: int = Depends(get_current_use
         if not comment:
             raise HTTPException(status_code=404, detail="Comment not found")
 
-        cursor.execute("SELECT is_admin FROM admin_users WHERE id = %s", (user_id,))
+        cursor.execute("SELECT is_admin FROM users WHERE id = %s", (user_id,))
         user = cursor.fetchone()
 
         if comment["user_id"] != user_id and not user["is_admin"]:
@@ -1897,8 +1897,8 @@ async def get_admin_settings(admin_id: int = Depends(get_current_admin)):
         # Get admin user info
         cursor.execute(
             """
-            SELECT id, username, email, is_admin, created_at, last_login
-            FROM admin_users 
+            SELECT id, username, email, is_admin, created_at
+            FROM users 
             WHERE id = %s
         """,
             (admin_id,),
@@ -2001,8 +2001,8 @@ async def update_admin_settings(
 
             cursor.execute(
                 """
-                UPDATE admin_users 
-                SET email = %s, updated_at = NOW() 
+                UPDATE users 
+                SET email = %s 
                 WHERE id = %s
             """,
                 (new_email, admin_id),

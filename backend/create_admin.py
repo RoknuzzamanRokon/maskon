@@ -57,7 +57,7 @@ def create_admin_user(username: str, email: str, password: str):
     try:
         # Check if user already exists
         cursor.execute(
-            "SELECT id FROM admin_users WHERE username = %s OR email = %s",
+            "SELECT id FROM users WHERE username = %s OR email = %s",
             (username, email),
         )
         existing_user = cursor.fetchone()
@@ -71,8 +71,8 @@ def create_admin_user(username: str, email: str, password: str):
 
         # Insert new admin user
         query = """
-        INSERT INTO admin_users (username, email, password_hash, is_admin, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, NOW(), NOW())
+        INSERT INTO users (username, email, password_hash, is_admin, created_at)
+        VALUES (%s, %s, %s, %s, NOW())
         """
 
         cursor.execute(query, (username, email, password_hash, True))
