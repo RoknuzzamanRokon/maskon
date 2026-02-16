@@ -96,11 +96,6 @@ export default function Sidebar({
 }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -116,10 +111,6 @@ export default function Sidebar({
     }
     return pathname.startsWith(itemPath);
   };
-
-  if (!mounted) {
-    return null;
-  }
 
   // Mobile overlay
   if (isMobileOpen) {
