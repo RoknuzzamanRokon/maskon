@@ -54,11 +54,11 @@ const bodyFont = Manrope({
 
 export default function MasrufaPortfolio() {
   const themeVars = {
-    "--ink": "#0f172a",
-    "--accent": "#0ea5a4",
-    "--accent-strong": "#0f766e",
-    "--sand": "#f6f4ee",
-    "--mist": "#edf6f5",
+    "--ink": "#2d1b1f",
+    "--accent": "#f43f5e",
+    "--accent-strong": "#e11d48",
+    "--sand": "#fff8f6",
+    "--mist": "#fff1f2",
   } as CSSProperties;
   // Masrufa's detailed information
   const masrufaData = {
@@ -299,8 +299,8 @@ export default function MasrufaPortfolio() {
       style={themeVars}
     >
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-40 right-0 h-72 w-72 rounded-full bg-[color:var(--mist)] dark:bg-emerald-900/20 blur-3xl" />
-        <div className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-emerald-100/60 dark:bg-slate-800/40 blur-3xl" />
+        <div className="absolute -top-40 right-0 h-72 w-72 rounded-full bg-[color:var(--mist)] dark:bg-rose-900/20 blur-3xl" />
+        <div className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-rose-100/60 dark:bg-slate-800/40 blur-3xl" />
       </div>
       {/* Hero Section */}
       <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
@@ -510,12 +510,12 @@ export default function MasrufaPortfolio() {
                           </span>
                         </div>
                       </div>
-                      <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
-                        <motion.div
-                          className="h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${skill.level}%` }}
-                          viewport={{ once: true }}
+                        <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
+                          <motion.div
+                            className="h-2 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full"
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${skill.level}%` }}
+                            viewport={{ once: true }}
                           transition={{
                             duration: 1,
                             delay: skillIndex * 0.1,
@@ -593,7 +593,7 @@ export default function MasrufaPortfolio() {
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-medium ${
                             project.status === "Completed"
-                              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200"
+                              ? "bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-200"
                               : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200"
                           }`}
                         >
@@ -620,7 +620,7 @@ export default function MasrufaPortfolio() {
                       {/* Project Header */}
                       <div>
                         <div className="flex items-center space-x-4 mb-4">
-                          <span className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-200 px-3 py-1 rounded-lg text-sm font-medium">
+                          <span className="bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-200 px-3 py-1 rounded-lg text-sm font-medium">
                             {project.category}
                           </span>
                           <span className="text-slate-500 dark:text-slate-400 text-sm">
@@ -665,7 +665,7 @@ export default function MasrufaPortfolio() {
                               key={resultIndex}
                               className="flex items-center text-slate-600 dark:text-slate-300"
                             >
-                              <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-300 mr-2 flex-shrink-0" />
+                              <CheckCircle className="w-4 h-4 text-rose-600 dark:text-rose-300 mr-2 flex-shrink-0" />
                               <span className="text-sm">{result}</span>
                             </li>
                           ))}
@@ -865,7 +865,7 @@ export default function MasrufaPortfolio() {
 
                 <motion.a
                   href={`tel:${masrufaData.phone}`}
-                  className="px-8 py-4 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-200 font-semibold rounded-2xl border border-emerald-200 dark:border-emerald-800 hover:border-emerald-300 dark:hover:border-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center"
+                  className="px-8 py-4 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-200 font-semibold rounded-2xl border border-rose-200 dark:border-rose-800 hover:border-rose-300 dark:hover:border-rose-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center"
                   whileHover={{ scale: 1.05, y: -2 }}
                 >
                   <Phone className="w-5 h-5 mr-2" />

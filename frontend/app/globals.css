@@ -222,19 +222,32 @@ body {
   }
 }
 
+.typing-gradient {
+  font-weight: 600;
+  font-size: 18px;
+  background: linear-gradient(90deg, #8b5cf6, #ec4899, #3b82f6);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 
-@keyframes fadeSlide {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+
+  animation: typing 2s steps(14) forwards;
+}
+
+@keyframes typing {
   0% {
-    opacity: 0;
-    transform: translateY(-10px);
+    width: 0
   }
 
   100% {
-    opacity: 1;
-    transform: translateY(0);
+    width: 14ch
   }
 }
 
-.animate-fade-slide {
-  animation: fadeSlide 0.8s ease-out;
+.typing-gradient {
+  animation: typing 2s steps(14) forwards;
+  display: inline-block;
 }

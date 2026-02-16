@@ -179,9 +179,7 @@ export default function Sidebar({
       {/* Removed transition and conditional width - always w-64 */}
       {/* Header */}
       <div className="sticky top-0 z-40 flex items-center justify-center p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white animate-fade-slide">
-          Mashkon Vibes
-        </h2>
+        <h2 className="text-lg font-semibold typing-gradient">Mashkon Vibes</h2>
       </div>
 
       {/* Navigation */}
