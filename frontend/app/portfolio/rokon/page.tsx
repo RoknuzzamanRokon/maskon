@@ -22,6 +22,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Manrope, Space_Grotesk } from "next/font/google";
+import BackButton from "../../components/BackButton";
 
 const headingFont = Space_Grotesk({
   subsets: ["latin"],
@@ -236,6 +237,14 @@ export default function RokonPortfolio() {
         </div>
 
         <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+          <div className="mb-8">
+            <BackButton className="inline-flex items-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium group transition-all duration-300">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              <span className="text-sm uppercase tracking-[0.2em]">
+                Back to Portfolio
+              </span>
+            </BackButton>
+          </div>
           <motion.div
             className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center"
             initial="hidden"

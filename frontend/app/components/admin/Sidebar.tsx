@@ -135,7 +135,7 @@ export default function Sidebar({
         <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out md:hidden">
           <div className="sticky top-0 z-40 flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Admin Panel
+              Mashkon Vibes
             </h2>
             <button
               onClick={onMobileToggle}
@@ -179,10 +179,9 @@ export default function Sidebar({
       {/* Removed transition and conditional width - always w-64 */}
       {/* Header */}
       <div className="sticky top-0 z-40 flex items-center justify-center p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Admin Panel
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white animate-fade-slide">
+          Mashkon Vibes
         </h2>
-        {/* Removed toggle button - sidebar always visible */}
       </div>
 
       {/* Navigation */}
