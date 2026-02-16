@@ -320,12 +320,16 @@ export default async function ProductDetailPage({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {product.stock > 0 ? (
-                  <Link
-                    href={`/contact?product=${product.name}&price=${product.price}`}
-                    className="flex items-center justify-center px-6 py-3.5 bg-[color:var(--ink)] text-white rounded-lg hover:bg-slate-800 transition-colors font-medium text-center"
+                  <a
+                    href={`https://wa.me/8801739933258?text=${encodeURIComponent(
+                      `I need a "${product.name}" how can i get this?`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center px-6 py-3.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium text-center"
                   >
                     Request Purchase
-                  </Link>
+                  </a>
                 ) : (
                   <button
                     className="flex items-center justify-center px-6 py-3.5 bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-lg cursor-not-allowed font-medium"
