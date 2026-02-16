@@ -65,17 +65,17 @@ export default async function ProductDetailPage({
 
   return (
     <div
-      className={`${bodyFont.className} min-h-screen bg-[color:var(--paper)] text-[color:var(--ink)]`}
+      className={`${bodyFont.className} min-h-screen bg-[color:var(--paper)] text-[color:var(--ink)] dark:bg-slate-950 dark:text-slate-100`}
       style={themeVars}
     >
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-32 right-10 h-72 w-72 rounded-full bg-emerald-100/70 blur-3xl" />
-        <div className="absolute bottom-10 left-10 h-72 w-72 rounded-full bg-slate-200/70 blur-3xl" />
+        <div className="absolute -top-32 right-10 h-72 w-72 rounded-full bg-emerald-100/70 dark:bg-emerald-900/20 blur-3xl" />
+        <div className="absolute bottom-10 left-10 h-72 w-72 rounded-full bg-slate-200/70 dark:bg-slate-800/40 blur-3xl" />
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
         <div className="mb-10 flex flex-wrap items-center justify-between gap-4">
           <BackButton
-            className="inline-flex items-center text-[color:var(--muted)] hover:text-[color:var(--ink)] transition-colors font-medium"
+            className="inline-flex items-center text-[color:var(--muted)] hover:text-[color:var(--ink)] dark:text-slate-300 dark:hover:text-white transition-colors font-medium"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +91,7 @@ export default async function ProductDetailPage({
             </svg>
             Back to Collection
           </BackButton>
-          <span className="text-xs uppercase tracking-[0.2em] text-[color:var(--muted)]">
+          <span className="text-xs uppercase tracking-[0.2em] text-[color:var(--muted)] dark:text-slate-400">
             Product Detail
           </span>
         </div>
@@ -105,7 +105,7 @@ export default async function ProductDetailPage({
           {/* Product Details */}
           <div className="space-y-8">
             {/* Header Section */}
-            <div className="border-b border-[color:var(--line)] pb-6">
+            <div className="border-b border-[color:var(--line)] dark:border-slate-800 pb-6">
               <div className="flex flex-wrap items-center gap-3 mb-5">
                 <span
                   className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] rounded-full ${
@@ -138,7 +138,7 @@ export default async function ProductDetailPage({
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm text-[color:var(--muted)] ml-2">
+                  <span className="text-sm text-[color:var(--muted)] dark:text-slate-400 ml-2">
                     {product.rating || "4.8"} (24 reviews)
                   </span>
                 </div>
@@ -160,7 +160,7 @@ export default async function ProductDetailPage({
                           2
                         )}
                       </span>
-                      <span className="text-lg text-[color:var(--muted)] line-through">
+                      <span className="text-lg text-[color:var(--muted)] dark:text-slate-400 line-through">
                         ${product.price}
                       </span>
                     </>
@@ -178,22 +178,22 @@ export default async function ProductDetailPage({
               </div>
 
               <div className="mb-2">
-                <span
-                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-                    product.stock > 10
-                      ? "bg-emerald-100 text-emerald-800"
-                      : product.stock > 0
-                      ? "bg-amber-100 text-amber-800"
-                      : "bg-slate-200 text-slate-700"
-                  }`}
-                >
+                    <span
+                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
+                        product.stock > 10
+                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200"
+                          : product.stock > 0
+                          ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200"
+                          : "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      }`}
+                    >
                   <span
                     className={`w-2 h-2 rounded-full mr-2 ${
                       product.stock > 10
-                        ? "bg-emerald-500"
+                        ? "bg-emerald-500 dark:bg-emerald-300"
                         : product.stock > 0
-                        ? "bg-amber-500"
-                        : "bg-slate-500"
+                        ? "bg-amber-500 dark:bg-amber-300"
+                        : "bg-slate-500 dark:bg-slate-400"
                     }`}
                   ></span>
                   {product.stock > 0
@@ -204,13 +204,13 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Description */}
-            <div className="pb-6 border-b border-[color:var(--line)]">
+            <div className="pb-6 border-b border-[color:var(--line)] dark:border-slate-800">
               <h3
                 className={`${headingFont.className} text-xl font-semibold mb-4`}
               >
                 Product Details
               </h3>
-              <p className="text-[color:var(--muted)] leading-relaxed">
+              <p className="text-[color:var(--muted)] dark:text-slate-300 leading-relaxed">
                 {product.description}
               </p>
             </div>
@@ -223,7 +223,7 @@ export default async function ProductDetailPage({
                 >
                   Technical Specifications
                 </h3>
-                <div className="bg-white border border-[color:var(--line)] rounded-xl p-5">
+                <div className="bg-white dark:bg-slate-900 border border-[color:var(--line)] dark:border-slate-800 rounded-xl p-5">
                   {(() => {
                     // Check if specifications is a valid string
                     if (
@@ -231,7 +231,7 @@ export default async function ProductDetailPage({
                       typeof product.specifications !== "string"
                     ) {
                       return (
-                        <p className="text-sm text-[color:var(--muted)] italic">
+                        <p className="text-sm text-[color:var(--muted)] dark:text-slate-400 italic">
                           No specifications available
                         </p>
                       );
@@ -243,7 +243,7 @@ export default async function ProductDetailPage({
                     // Check if it's empty after trimming
                     if (!cleanSpecs) {
                       return (
-                        <p className="text-sm text-[color:var(--muted)] italic">
+                        <p className="text-sm text-[color:var(--muted)] dark:text-slate-400 italic">
                           No specifications available
                         </p>
                       );
@@ -262,12 +262,12 @@ export default async function ProductDetailPage({
                               ) => (
                                 <div
                                   key={index}
-                                  className="flex border-b border-[color:var(--line)] pb-3 last:border-0 last:pb-0"
+                                  className="flex border-b border-[color:var(--line)] dark:border-slate-800 pb-3 last:border-0 last:pb-0"
                                 >
-                                  <div className="w-1/3 text-[color:var(--muted)] font-medium">
+                                  <div className="w-1/3 text-[color:var(--muted)] dark:text-slate-400 font-medium">
                                     {spec.key || "N/A"}
                                   </div>
-                                  <div className="w-2/3 text-[color:var(--ink)]">
+                                  <div className="w-2/3 text-[color:var(--ink)] dark:text-slate-100">
                                     {spec.value || "N/A"}
                                   </div>
                                 </div>
@@ -287,7 +287,7 @@ export default async function ProductDetailPage({
                     // Check if it looks like invalid JSON (contains random characters)
                     if (cleanSpecs.length < 10 && !/^[\[\{]/.test(cleanSpecs)) {
                       return (
-                        <p className="text-sm text-[color:var(--muted)] italic">
+                        <p className="text-sm text-[color:var(--muted)] dark:text-slate-400 italic">
                           Specifications data is being updated
                         </p>
                       );
@@ -295,7 +295,7 @@ export default async function ProductDetailPage({
 
                     // Default display for non-JSON specs
                     return (
-                      <div className="text-sm text-[color:var(--muted)]">
+                      <div className="text-sm text-[color:var(--muted)] dark:text-slate-300">
                         <p className="whitespace-pre-wrap break-words">
                           {cleanSpecs}
                         </p>
@@ -307,13 +307,13 @@ export default async function ProductDetailPage({
             )}
 
             {/* Purchase Section */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-[color:var(--line)]">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-lg border border-[color:var(--line)] dark:border-slate-800">
               <h3
                 className={`${headingFont.className} text-xl font-semibold mb-4`}
               >
                 Purchase Options
               </h3>
-              <p className="text-[color:var(--muted)] mb-6">
+              <p className="text-[color:var(--muted)] dark:text-slate-300 mb-6">
                 For inquiries or to complete your purchase, contact our sales
                 team.
               </p>
@@ -328,7 +328,7 @@ export default async function ProductDetailPage({
                   </Link>
                 ) : (
                   <button
-                    className="flex items-center justify-center px-6 py-3.5 bg-slate-200 text-slate-500 rounded-lg cursor-not-allowed font-medium"
+                    className="flex items-center justify-center px-6 py-3.5 bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-lg cursor-not-allowed font-medium"
                     disabled
                   >
                     Currently Unavailable
@@ -336,18 +336,18 @@ export default async function ProductDetailPage({
                 )}
                 <a
                   href={`mailto:sales@luxecurates.com?subject=Inquiry: ${product.name}&body=Hello,%0D%0A%0D%0AI'm interested in the ${product.name} ($${product.price}).%0D%0APlease provide more information about:%0D%0A- Availability%0D%0A- Shipping options%0D%0A- Bulk pricing (if applicable)%0D%0A%0D%0AThank you`}
-                  className="flex items-center justify-center px-6 py-3.5 border border-[color:var(--line)] text-[color:var(--ink)] rounded-lg hover:bg-slate-50 transition-colors font-medium text-center"
+                  className="flex items-center justify-center px-6 py-3.5 border border-[color:var(--line)] dark:border-slate-700 text-[color:var(--ink)] dark:text-slate-100 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-center"
                 >
                   Contact Sales
                 </a>
               </div>
 
-              <div className="mt-8 p-5 bg-slate-50 rounded-xl border border-[color:var(--line)]">
+              <div className="mt-8 p-5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-[color:var(--line)] dark:border-slate-800">
                 <div className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
                       <svg
-                        className="w-4 h-4 text-emerald-700"
+                        className="w-4 h-4 text-emerald-700 dark:text-emerald-300"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -362,10 +362,10 @@ export default async function ProductDetailPage({
                     </div>
                   </div>
                   <div className="ml-3">
-                    <h4 className="font-medium text-[color:var(--ink)] mb-1">
+                    <h4 className="font-medium text-[color:var(--ink)] dark:text-slate-100 mb-1">
                       Premium Purchase Protection
                     </h4>
-                    <ul className="text-sm text-[color:var(--muted)] space-y-1">
+                    <ul className="text-sm text-[color:var(--muted)] dark:text-slate-300 space-y-1">
                       <li className="flex items-start">
                         <span className="mr-2">•</span>
                         <span>30-day satisfaction guarantee</span>

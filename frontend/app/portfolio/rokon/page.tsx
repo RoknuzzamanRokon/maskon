@@ -64,10 +64,10 @@ export default function RokonPortfolio() {
       category: "Frontend Development",
       icon: Monitor,
       tone: {
-        chip: "bg-emerald-100 text-emerald-800",
-        icon: "text-emerald-700",
+        chip: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200",
+        icon: "text-emerald-700 dark:text-emerald-300",
         bar: "from-emerald-500 to-teal-500",
-        track: "bg-emerald-100/70",
+        track: "bg-emerald-100/70 dark:bg-emerald-900/20",
       },
       skills: [
         { name: "React.js", level: 95, experience: "4 years" },
@@ -82,10 +82,10 @@ export default function RokonPortfolio() {
       category: "Backend Development",
       icon: Code,
       tone: {
-        chip: "bg-amber-100 text-amber-800",
-        icon: "text-amber-700",
+        chip: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200",
+        icon: "text-amber-700 dark:text-amber-300",
         bar: "from-amber-500 to-orange-500",
-        track: "bg-amber-100/70",
+        track: "bg-amber-100/70 dark:bg-amber-900/20",
       },
       skills: [
         { name: "Python", level: 90, experience: "6 years" },
@@ -100,10 +100,10 @@ export default function RokonPortfolio() {
       category: "Design & Tools",
       icon: Palette,
       tone: {
-        chip: "bg-slate-200 text-slate-800",
-        icon: "text-slate-700",
+        chip: "bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
+        icon: "text-slate-700 dark:text-slate-300",
         bar: "from-slate-500 to-slate-700",
-        track: "bg-slate-200/70",
+        track: "bg-slate-200/70 dark:bg-slate-800/60",
       },
       skills: [
         { name: "Figma", level: 88, experience: "1 year" },
@@ -226,13 +226,13 @@ export default function RokonPortfolio() {
 
   return (
     <div
-      className={`${bodyFont.className} min-h-screen bg-[color:var(--sand)] text-[color:var(--ink)]`}
+      className={`${bodyFont.className} min-h-screen bg-[color:var(--sand)] text-[color:var(--ink)] dark:bg-slate-950 dark:text-slate-100`}
       style={themeVars}
     >
       <div className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute -top-40 right-0 h-72 w-72 rounded-full bg-[color:var(--mist)] blur-3xl" />
-          <div className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-emerald-100/60 blur-3xl" />
+          <div className="absolute -top-40 right-0 h-72 w-72 rounded-full bg-[color:var(--mist)] dark:bg-emerald-900/20 blur-3xl" />
+          <div className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-emerald-100/60 dark:bg-slate-800/40 blur-3xl" />
         </div>
 
         <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
@@ -243,31 +243,31 @@ export default function RokonPortfolio() {
             variants={stagger}
           >
             <motion.div variants={fadeInUp}>
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200">
                 Available for projects
               </div>
               <h1
-                className={`${headingFont.className} mt-6 text-4xl font-semibold leading-tight text-slate-900 md:text-5xl`}
+                className={`${headingFont.className} mt-6 text-4xl font-semibold leading-tight text-slate-900 dark:text-slate-100 md:text-5xl`}
               >
                 {rokonData.name}
               </h1>
               <p className="mt-3 text-lg font-semibold text-[color:var(--accent-strong)]">
                 {rokonData.title}
               </p>
-              <p className="mt-6 text-lg text-slate-600">
+              <p className="mt-6 text-lg text-slate-600 dark:text-slate-300">
                 {rokonData.tagline}
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-4 text-sm text-slate-600">
-                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
+              <div className="mt-8 flex flex-wrap gap-4 text-sm text-slate-600 dark:text-slate-300">
+                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                   <MapPin className="h-4 w-4" />
                   {rokonData.location}
                 </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
+                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                   <Mail className="h-4 w-4" />
                   {rokonData.email}
                 </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
+                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                   <Phone className="h-4 w-4" />
                   {rokonData.phone}
                 </span>
@@ -282,19 +282,19 @@ export default function RokonPortfolio() {
                   <Mail className="h-5 w-5" />
                   Start a Project
                 </motion.a>
-                <motion.a
-                  href="/resume-rokon.pdf"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-800 shadow-lg transition hover:border-slate-300"
-                  whileHover={{ y: -2 }}
-                >
-                  <ExternalLink className="h-5 w-5" />
-                  Download Resume
-                </motion.a>
+              <motion.a
+                href="/resume-rokon.pdf"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-800 shadow-lg transition hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100"
+                whileHover={{ y: -2 }}
+              >
+                <ExternalLink className="h-5 w-5" />
+                Download Resume
+              </motion.a>
               </div>
             </motion.div>
 
             <motion.div variants={fadeInUp}>
-              <div className="relative rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
+              <div className="relative rounded-3xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
                 <div className="flex items-center gap-6">
                   <div className="relative h-28 w-28 overflow-hidden rounded-2xl">
                     <Image
@@ -309,17 +309,17 @@ export default function RokonPortfolio() {
                     <h2 className={`${headingFont.className} text-2xl font-semibold`}>
                       {rokonData.name}
                     </h2>
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                       {rokonData.website}
                     </p>
-                    <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-200">
                       <CheckCircle className="h-3 w-3" />
                       Trusted by 30+ clients
                     </div>
                   </div>
                 </div>
 
-                <p className="mt-6 text-sm leading-relaxed text-slate-600">
+                <p className="mt-6 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                   {rokonData.bio}
                 </p>
 
@@ -340,12 +340,12 @@ export default function RokonPortfolio() {
                   ].map((stat) => (
                     <div
                       key={stat.label}
-                      className="rounded-2xl border border-slate-200 bg-[color:var(--mist)] px-4 py-4 text-center"
+                      className="rounded-2xl border border-slate-200 bg-[color:var(--mist)] px-4 py-4 text-center dark:border-slate-800 dark:bg-slate-800/60"
                     >
-                      <p className="text-lg font-semibold text-slate-900">
+                      <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                         {stat.value}
                       </p>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
                         {stat.label}
                       </p>
                     </div>
@@ -366,15 +366,15 @@ export default function RokonPortfolio() {
           variants={stagger}
         >
           <motion.div variants={fadeInUp}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
               Craft & Focus
             </div>
             <h2
-              className={`${headingFont.className} mt-6 text-3xl font-semibold text-slate-900 md:text-4xl`}
+              className={`${headingFont.className} mt-6 text-3xl font-semibold text-slate-900 dark:text-slate-100 md:text-4xl`}
             >
               Building experiences that feel effortless
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-slate-600">
+            <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
               I blend product strategy with engineering to ship reliable software
               systems. From architecture to UI polish, I focus on outcomes that
               help teams scale.
@@ -383,7 +383,7 @@ export default function RokonPortfolio() {
 
           <motion.div
             variants={fadeInUp}
-            className="grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg md:grid-cols-2"
+            className="grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg md:grid-cols-2 dark:border-slate-800 dark:bg-slate-900"
           >
             {[
               {
@@ -409,13 +409,13 @@ export default function RokonPortfolio() {
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl border border-slate-100 bg-[color:var(--mist)] p-4"
+                className="rounded-2xl border border-slate-100 bg-[color:var(--mist)] p-4 dark:border-slate-800 dark:bg-slate-800/60"
               >
                 <item.icon className="h-5 w-5 text-[color:var(--accent-strong)]" />
-                <h3 className="mt-3 text-sm font-semibold text-slate-900">
+                <h3 className="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">
                   {item.title}
                 </h3>
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
                   {item.description}
                 </p>
               </div>
@@ -424,7 +424,7 @@ export default function RokonPortfolio() {
         </motion.div>
       </section>
 
-      <section className="bg-white">
+      <section className="bg-white dark:bg-slate-950">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <motion.div
             className="mb-12 text-center"
@@ -434,11 +434,11 @@ export default function RokonPortfolio() {
             transition={{ duration: 0.7 }}
           >
             <h2
-              className={`${headingFont.className} text-3xl font-semibold text-slate-900 md:text-4xl`}
+              className={`${headingFont.className} text-3xl font-semibold text-slate-900 dark:text-slate-100 md:text-4xl`}
             >
               Technical Expertise
             </h2>
-            <p className="mt-3 text-base text-slate-600">
+            <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
               Balanced skills across product engineering, backend, and design.
             </p>
           </motion.div>
@@ -447,7 +447,7 @@ export default function RokonPortfolio() {
             {skillCategories.map((category, categoryIndex) => (
               <motion.div
                 key={category.category}
-                className="rounded-3xl border border-slate-200 bg-[color:var(--sand)] p-6 shadow-lg"
+                className="rounded-3xl border border-slate-200 bg-[color:var(--sand)] p-6 shadow-lg dark:border-slate-800 dark:bg-slate-900"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -459,7 +459,7 @@ export default function RokonPortfolio() {
                   >
                     <category.icon className={`h-5 w-5 ${category.tone.icon}`} />
                   </span>
-                  <h3 className="text-lg font-semibold text-slate-900">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                     {category.category}
                   </h3>
                 </div>
@@ -467,10 +467,10 @@ export default function RokonPortfolio() {
                   {category.skills.map((skill) => (
                     <div key={skill.name}>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium text-slate-800">
+                        <span className="font-medium text-slate-800 dark:text-slate-100">
                           {skill.name}
                         </span>
-                        <span className="text-slate-500">
+                        <span className="text-slate-500 dark:text-slate-400">
                           {skill.experience}
                         </span>
                       </div>
@@ -502,21 +502,21 @@ export default function RokonPortfolio() {
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          <h2
-            className={`${headingFont.className} text-3xl font-semibold text-slate-900 md:text-4xl`}
-          >
-            Featured Projects
-          </h2>
-          <p className="mt-3 text-base text-slate-600">
-            A selection of delivery-focused builds and product launches.
-          </p>
-        </motion.div>
+            <h2
+              className={`${headingFont.className} text-3xl font-semibold text-slate-900 dark:text-slate-100 md:text-4xl`}
+            >
+              Featured Projects
+            </h2>
+            <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
+              A selection of delivery-focused builds and product launches.
+            </p>
+          </motion.div>
 
         <div className="space-y-12">
           {featuredProjects.map((project, index) => (
             <motion.div
               key={project.id}
-              className="grid gap-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg lg:grid-cols-[1.2fr_1fr]"
+              className="grid gap-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg lg:grid-cols-[1.2fr_1fr] dark:border-slate-800 dark:bg-slate-900"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -531,7 +531,7 @@ export default function RokonPortfolio() {
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
-                <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-slate-700">
+                <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-900/80 dark:text-slate-200">
                   <Calendar className="h-3 w-3" />
                   {project.year}
                 </div>
@@ -539,33 +539,33 @@ export default function RokonPortfolio() {
 
               <div className="flex flex-col justify-between">
                 <div>
-                  <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                  <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
                     <span>{project.category}</span>
-                    <span className="h-1 w-1 rounded-full bg-slate-400" />
+                    <span className="h-1 w-1 rounded-full bg-slate-400 dark:bg-slate-500" />
                     <span>{project.status}</span>
                   </div>
                   <h3
-                    className={`${headingFont.className} mt-4 text-2xl font-semibold text-slate-900`}
+                    className={`${headingFont.className} mt-4 text-2xl font-semibold text-slate-900 dark:text-slate-100`}
                   >
                     {project.title}
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                     {project.description}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {project.technologies.map((tech) => (
                       <span
                         key={tech}
-                        className="rounded-full border border-slate-200 bg-[color:var(--mist)] px-3 py-1 text-xs font-medium text-slate-600"
+                        className="rounded-full border border-slate-200 bg-[color:var(--mist)] px-3 py-1 text-xs font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
-                  <ul className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+                  <ul className="mt-4 grid gap-2 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2">
                     {project.features.map((feature) => (
                       <li key={feature} className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-600" />
+                        <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
                         {feature}
                       </li>
                     ))}
@@ -586,7 +586,7 @@ export default function RokonPortfolio() {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-lg"
+                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-lg dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
                     whileHover={{ y: -2 }}
                   >
                     <Github className="h-4 w-4" />
@@ -599,7 +599,7 @@ export default function RokonPortfolio() {
         </div>
       </section>
 
-      <section className="bg-white">
+      <section className="bg-white dark:bg-slate-950">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <motion.div
             className="mb-12 text-center"
@@ -609,11 +609,11 @@ export default function RokonPortfolio() {
             transition={{ duration: 0.7 }}
           >
             <h2
-              className={`${headingFont.className} text-3xl font-semibold text-slate-900 md:text-4xl`}
+              className={`${headingFont.className} text-3xl font-semibold text-slate-900 dark:text-slate-100 md:text-4xl`}
             >
               Achievements & Certifications
             </h2>
-            <p className="mt-3 text-base text-slate-600">
+            <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
               Continuous learning with industry-recognized credentials.
             </p>
           </motion.div>
@@ -622,20 +622,20 @@ export default function RokonPortfolio() {
             {achievements.map((achievement) => (
               <motion.div
                 key={achievement.title}
-                className="rounded-2xl border border-slate-200 bg-[color:var(--sand)] p-6 shadow-lg"
+                className="rounded-2xl border border-slate-200 bg-[color:var(--sand)] p-6 shadow-lg dark:border-slate-800 dark:bg-slate-900"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
               >
                 <achievement.icon className="h-6 w-6 text-[color:var(--accent-strong)]" />
-                <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
                   {achievement.title}
                 </h3>
-                <p className="mt-2 text-sm text-slate-600">
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
                   {achievement.issuer}
                 </p>
-                <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-500">
+                <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-500 dark:bg-slate-900 dark:text-slate-300">
                   <Calendar className="h-3 w-3" />
                   {achievement.date}
                 </p>
@@ -647,22 +647,22 @@ export default function RokonPortfolio() {
 
       <section
         id="contact"
-        className="scroll-mt-24 bg-[color:var(--mist)]"
+        className="scroll-mt-24 bg-[color:var(--mist)] dark:bg-slate-900"
       >
         <div className="mx-auto max-w-5xl px-4 py-16">
           <motion.div
-            className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl md:p-12"
+            className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl md:p-12 dark:border-slate-800 dark:bg-slate-950"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
             <h2
-              className={`${headingFont.className} text-3xl font-semibold text-slate-900 md:text-4xl`}
+              className={`${headingFont.className} text-3xl font-semibold text-slate-900 dark:text-slate-100 md:text-4xl`}
             >
               Let’s build something exceptional
             </h2>
-            <p className="mt-4 text-base text-slate-600">
+            <p className="mt-4 text-base text-slate-600 dark:text-slate-300">
               Share your vision and I will help turn it into a high-performing
               product.
             </p>
@@ -679,7 +679,7 @@ export default function RokonPortfolio() {
                 href={rokonData.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-700 shadow-lg"
+                className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-700 shadow-lg dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
                 whileHover={{ y: -2 }}
               >
                 <Linkedin className="h-4 w-4" />
@@ -687,7 +687,7 @@ export default function RokonPortfolio() {
               </motion.a>
               <motion.a
                 href={`tel:${rokonData.phone}`}
-                className="inline-flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-4 text-sm font-semibold text-emerald-700 shadow-lg"
+                className="inline-flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-4 text-sm font-semibold text-emerald-700 shadow-lg dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200"
                 whileHover={{ y: -2 }}
               >
                 <Phone className="h-4 w-4" />
