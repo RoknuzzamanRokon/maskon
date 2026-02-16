@@ -198,6 +198,7 @@ async def update_product(
     cursor = connection.cursor()
 
     try:
+        connection.start_transaction()
         # Build dynamic update query
         update_fields = []
         update_values = []
@@ -223,7 +224,15 @@ async def update_product(
         if product.specifications is not None:
             update_fields.append("specifications = %s")
             update_values.append(product.specifications)
-        if product.image_url is not None:
+        if product.image_urls is not None:
+            if len(product.image_urls) == 0:
+                raise HTTPException(
+                    status_code=400,
+                    detail="At least one product image is required",
+                )
+            update_fields.append("image_url = %s")
+            update_values.append(product.image_urls[0])
+        elif product.image_url is not None:
             update_fields.append("image_url = %s")
             update_values.append(product.image_url)
         if product.is_active is not None:
@@ -242,8 +251,34 @@ async def update_product(
         if cursor.rowcount == 0:
             raise HTTPException(status_code=404, detail="Product not found")
 
+        if product.image_urls is not None:
+            cursor.execute(
+                "DELETE FROM product_images WHERE product_id = %s", (product_id,)
+            )
+
+            image_records = []
+            for i, url in enumerate(product.image_urls):
+                is_primary = i == 0
+                image_records.append((product_id, url, is_primary))
+
+            cursor.executemany(
+                """
+                INSERT INTO product_images (product_id, image_url, is_primary, created_at)
+                VALUES (%s, %s, %s, NOW())
+                """,
+                image_records,
+            )
+
         connection.commit()
         return {"message": "Product updated successfully"}
+    except HTTPException:
+        connection.rollback()
+        raise
+    except Exception as e:
+        connection.rollback()
+        raise HTTPException(
+            status_code=500, detail=f"Failed to update product: {str(e)}"
+        )
     finally:
         cursor.close()
         connection.close()

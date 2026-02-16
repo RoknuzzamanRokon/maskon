@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createProduct, getUserInfo, logout } from "../../../lib/api";
 import MultiMediaUpload from "../../../components/MultiMediaUpload";
 import ProtectedRoute from "../../../components/ProtectedRoute";
+import AdminLayout from "../../../components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -396,7 +397,9 @@ function CreateProductContent() {
 export default function CreateProductPage() {
   return (
     <ProtectedRoute requireAdmin={true}>
-      <CreateProductContent />
+      <AdminLayout>
+        <CreateProductContent />
+      </AdminLayout>
     </ProtectedRoute>
   );
 }

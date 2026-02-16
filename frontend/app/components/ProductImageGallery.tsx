@@ -22,12 +22,8 @@ export default function ProductImageGallery({
   // Combine all images from different sources
   const allImages = [];
 
-  // Priority 1: Use detailed images array if available (from backend)
-  if (product.images && product.images.length > 0) {
-    allImages.push(...product.images);
-  }
-  // Priority 2: Use image_urls array if available
-  else if (product.image_urls && product.image_urls.length > 0) {
+  // Priority 1: Use image_urls array if available
+  if (product.image_urls && product.image_urls.length > 0) {
     product.image_urls.forEach((url, index) => {
       allImages.push({
         id: index,
@@ -35,6 +31,10 @@ export default function ProductImageGallery({
         is_primary: index === 0, // First image is primary
       });
     });
+  }
+  // Priority 2: Use detailed images array if available (from backend)
+  else if (product.images && product.images.length > 0) {
+    allImages.push(...product.images);
   }
   // Priority 3: Fallback to single image_url for backward compatibility
   else if (product.image_url) {

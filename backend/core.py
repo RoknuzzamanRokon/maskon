@@ -280,6 +280,7 @@ class ProductUpdate(BaseModel):
     discount: Optional[float] = None
     specifications: Optional[str] = None
     image_url: Optional[str] = None
+    image_urls: Optional[List[str]] = None
     is_active: Optional[bool] = None
 
 

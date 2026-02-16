@@ -25,6 +25,14 @@ function getMainImageUrl(product: any): string | undefined {
   if (!product) return undefined;
 
   if (
+    product.image_urls &&
+    Array.isArray(product.image_urls) &&
+    product.image_urls.length > 0
+  ) {
+    return product.image_urls[0];
+  }
+
+  if (
     product.images &&
     Array.isArray(product.images) &&
     product.images.length > 0
@@ -33,14 +41,6 @@ function getMainImageUrl(product: any): string | undefined {
     if (primary && primary.image_url) return primary.image_url;
     if (product.images[0] && product.images[0].image_url)
       return product.images[0].image_url;
-  }
-
-  if (
-    product.image_urls &&
-    Array.isArray(product.image_urls) &&
-    product.image_urls.length > 0
-  ) {
-    return product.image_urls[0];
   }
 
   if (product.image_url) return product.image_url;

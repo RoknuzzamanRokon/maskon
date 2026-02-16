@@ -154,20 +154,23 @@ function ProductsManagementContent() {
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         {(() => {
-                          // Get primary image from images array, fallback to first image_url, then image_url
+                          // Prefer image_urls so edits show immediately, then images, then image_url
                           let imageUrl = null;
-                          if (product.images && product.images.length > 0) {
+                          if (
+                            product.image_urls &&
+                            product.image_urls.length > 0
+                          ) {
+                            imageUrl = product.image_urls[0];
+                          } else if (
+                            product.images &&
+                            product.images.length > 0
+                          ) {
                             const primary = product.images.find(
                               (img: any) => img.is_primary
                             );
                             imageUrl = primary
                               ? primary.image_url
                               : product.images[0].image_url;
-                          } else if (
-                            product.image_urls &&
-                            product.image_urls.length > 0
-                          ) {
-                            imageUrl = product.image_urls[0];
                           } else if (product.image_url) {
                             imageUrl = product.image_url;
                           }
