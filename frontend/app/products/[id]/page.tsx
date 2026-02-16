@@ -2,6 +2,19 @@ import Link from "next/link";
 import { getProduct } from "../../lib/api";
 import ProductImageGallery from "../../components/ProductImageGallery";
 import WhatsAppChat from "../../components/WhatsAppChat";
+import BackButton from "../../components/BackButton";
+import type { CSSProperties } from "react";
+import { Cormorant_Garamond, Manrope } from "next/font/google";
+
+const headingFont = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const bodyFont = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export default async function ProductDetailPage({
   params,
@@ -9,26 +22,39 @@ export default async function ProductDetailPage({
   params: { id: string };
 }) {
   const product = await getProduct(params.id);
+  const themeVars = {
+    "--paper": "#f6f4f0",
+    "--ink": "#0f172a",
+    "--muted": "#64748b",
+    "--accent": "#0f766e",
+    "--accent-strong": "#115e59",
+    "--line": "#e2e8f0",
+  } as CSSProperties;
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-850 flex items-center justify-center px-4">
+      <div
+        className={`${bodyFont.className} min-h-screen bg-[color:var(--paper)] text-[color:var(--ink)] flex items-center justify-center px-4`}
+        style={themeVars}
+      >
         <div className="text-center max-w-md">
           <div className="flex justify-center mb-6">
-            <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+            <div className="w-24 h-24 rounded-full bg-white border border-[color:var(--line)] flex items-center justify-center">
               <span className="text-4xl">🔍</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+          <h1
+            className={`${headingFont.className} text-3xl font-semibold mb-3`}
+          >
             Product Not Found
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-8">
+          <p className="text-[color:var(--muted)] mb-8">
             The item you're looking for is no longer available or has been
             moved.
           </p>
           <Link
             href="/products"
-            className="inline-flex items-center px-5 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center px-5 py-3 bg-[color:var(--ink)] text-white rounded-lg font-medium hover:bg-slate-800 transition-colors"
           >
             ← Browse Products
           </Link>
@@ -38,12 +64,18 @@ export default async function ProductDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-850 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <Link
-            href="/products"
-            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors font-medium"
+    <div
+      className={`${bodyFont.className} min-h-screen bg-[color:var(--paper)] text-[color:var(--ink)]`}
+      style={themeVars}
+    >
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-32 right-10 h-72 w-72 rounded-full bg-emerald-100/70 blur-3xl" />
+        <div className="absolute bottom-10 left-10 h-72 w-72 rounded-full bg-slate-200/70 blur-3xl" />
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
+        <div className="mb-10 flex flex-wrap items-center justify-between gap-4">
+          <BackButton
+            className="inline-flex items-center text-[color:var(--muted)] hover:text-[color:var(--ink)] transition-colors font-medium"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +90,10 @@ export default async function ProductDetailPage({
               />
             </svg>
             Back to Collection
-          </Link>
+          </BackButton>
+          <span className="text-xs uppercase tracking-[0.2em] text-[color:var(--muted)]">
+            Product Detail
+          </span>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
@@ -70,17 +105,17 @@ export default async function ProductDetailPage({
           {/* Product Details */}
           <div className="space-y-8">
             {/* Header Section */}
-            <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
+            <div className="border-b border-[color:var(--line)] pb-6">
               <div className="flex flex-wrap items-center gap-3 mb-5">
                 <span
-                  className={`px-3 py-1.5 text-xs font-medium rounded-full capitalize ${
+                  className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] rounded-full ${
                     product.category === "electronics"
-                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300"
+                      ? "bg-slate-900 text-white"
                       : product.category === "clothing"
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
+                      ? "bg-emerald-700 text-white"
                       : product.category === "books"
-                      ? "bg-violet-100 text-violet-800 dark:bg-violet-900/50 dark:text-violet-300"
-                      : "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300"
+                      ? "bg-amber-700 text-white"
+                      : "bg-slate-700 text-white"
                   }`}
                 >
                   {product.category}
@@ -93,8 +128,8 @@ export default async function ProductDetailPage({
                         key={i}
                         className={`w-4 h-4 ${
                           i < Math.floor(Number(product.rating) || 4)
-                            ? "text-amber-400"
-                            : "text-gray-300 dark:text-gray-600"
+                            ? "text-amber-500"
+                            : "text-slate-300"
                         }`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
@@ -103,13 +138,15 @@ export default async function ProductDetailPage({
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">
+                  <span className="text-sm text-[color:var(--muted)] ml-2">
                     {product.rating || "4.8"} (24 reviews)
                   </span>
                 </div>
               </div>
 
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+              <h1
+                className={`${headingFont.className} text-3xl md:text-4xl font-semibold tracking-tight mb-4`}
+              >
                 {product.name}
               </h1>
 
@@ -117,24 +154,24 @@ export default async function ProductDetailPage({
                 <div className="flex items-baseline gap-2">
                   {product.discount ? (
                     <>
-                      <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                      <span className="text-3xl font-semibold">
                         $
                         {(product.price * (1 - product.discount / 100)).toFixed(
                           2
                         )}
                       </span>
-                      <span className="text-lg text-gray-500 dark:text-gray-400 line-through">
+                      <span className="text-lg text-[color:var(--muted)] line-through">
                         ${product.price}
                       </span>
                     </>
                   ) : (
-                    <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                    <span className="text-3xl font-semibold">
                       ${product.price}
                     </span>
                   )}
                 </div>
                 {product.discount && (
-                  <span className="bg-red-600 text-white px-3 py-1 text-sm rounded-full font-medium">
+                  <span className="bg-rose-600 text-white px-3 py-1 text-sm rounded-full font-medium">
                     Save {product.discount}%
                   </span>
                 )}
@@ -144,19 +181,19 @@ export default async function ProductDetailPage({
                 <span
                   className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
                     product.stock > 10
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
+                      ? "bg-emerald-100 text-emerald-800"
                       : product.stock > 0
-                      ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300"
-                      : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-slate-200 text-slate-700"
                   }`}
                 >
                   <span
                     className={`w-2 h-2 rounded-full mr-2 ${
                       product.stock > 10
-                        ? "bg-green-500"
+                        ? "bg-emerald-500"
                         : product.stock > 0
-                        ? "bg-yellow-500"
-                        : "bg-gray-500"
+                        ? "bg-amber-500"
+                        : "bg-slate-500"
                     }`}
                   ></span>
                   {product.stock > 0
@@ -167,11 +204,13 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Description */}
-            <div className="pb-6 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="pb-6 border-b border-[color:var(--line)]">
+              <h3
+                className={`${headingFont.className} text-xl font-semibold mb-4`}
+              >
                 Product Details
               </h3>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+              <p className="text-[color:var(--muted)] leading-relaxed">
                 {product.description}
               </p>
             </div>
@@ -179,10 +218,12 @@ export default async function ProductDetailPage({
             {/* Specifications */}
             {product.specifications && (
               <div className="pb-6">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                <h3
+                  className={`${headingFont.className} text-xl font-semibold mb-4`}
+                >
                   Technical Specifications
                 </h3>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-5">
+                <div className="bg-white border border-[color:var(--line)] rounded-xl p-5">
                   {(() => {
                     // Check if specifications is a valid string
                     if (
@@ -190,7 +231,7 @@ export default async function ProductDetailPage({
                       typeof product.specifications !== "string"
                     ) {
                       return (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                        <p className="text-sm text-[color:var(--muted)] italic">
                           No specifications available
                         </p>
                       );
@@ -202,7 +243,7 @@ export default async function ProductDetailPage({
                     // Check if it's empty after trimming
                     if (!cleanSpecs) {
                       return (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                        <p className="text-sm text-[color:var(--muted)] italic">
                           No specifications available
                         </p>
                       );
@@ -221,12 +262,12 @@ export default async function ProductDetailPage({
                               ) => (
                                 <div
                                   key={index}
-                                  className="flex border-b border-gray-200 dark:border-gray-700 pb-3 last:border-0 last:pb-0"
+                                  className="flex border-b border-[color:var(--line)] pb-3 last:border-0 last:pb-0"
                                 >
-                                  <div className="w-1/3 text-gray-600 dark:text-gray-400 font-medium">
+                                  <div className="w-1/3 text-[color:var(--muted)] font-medium">
                                     {spec.key || "N/A"}
                                   </div>
-                                  <div className="w-2/3 text-gray-800 dark:text-gray-200">
+                                  <div className="w-2/3 text-[color:var(--ink)]">
                                     {spec.value || "N/A"}
                                   </div>
                                 </div>
@@ -246,7 +287,7 @@ export default async function ProductDetailPage({
                     // Check if it looks like invalid JSON (contains random characters)
                     if (cleanSpecs.length < 10 && !/^[\[\{]/.test(cleanSpecs)) {
                       return (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                        <p className="text-sm text-[color:var(--muted)] italic">
                           Specifications data is being updated
                         </p>
                       );
@@ -254,7 +295,7 @@ export default async function ProductDetailPage({
 
                     // Default display for non-JSON specs
                     return (
-                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                      <div className="text-sm text-[color:var(--muted)]">
                         <p className="whitespace-pre-wrap break-words">
                           {cleanSpecs}
                         </p>
@@ -266,11 +307,13 @@ export default async function ProductDetailPage({
             )}
 
             {/* Purchase Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-[color:var(--line)]">
+              <h3
+                className={`${headingFont.className} text-xl font-semibold mb-4`}
+              >
                 Purchase Options
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-[color:var(--muted)] mb-6">
                 For inquiries or to complete your purchase, contact our sales
                 team.
               </p>
@@ -279,13 +322,13 @@ export default async function ProductDetailPage({
                 {product.stock > 0 ? (
                   <Link
                     href={`/contact?product=${product.name}&price=${product.price}`}
-                    className="flex items-center justify-center px-6 py-3.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium text-center"
+                    className="flex items-center justify-center px-6 py-3.5 bg-[color:var(--ink)] text-white rounded-lg hover:bg-slate-800 transition-colors font-medium text-center"
                   >
                     Request Purchase
                   </Link>
                 ) : (
                   <button
-                    className="flex items-center justify-center px-6 py-3.5 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed font-medium"
+                    className="flex items-center justify-center px-6 py-3.5 bg-slate-200 text-slate-500 rounded-lg cursor-not-allowed font-medium"
                     disabled
                   >
                     Currently Unavailable
@@ -293,18 +336,18 @@ export default async function ProductDetailPage({
                 )}
                 <a
                   href={`mailto:sales@luxecurates.com?subject=Inquiry: ${product.name}&body=Hello,%0D%0A%0D%0AI'm interested in the ${product.name} ($${product.price}).%0D%0APlease provide more information about:%0D%0A- Availability%0D%0A- Shipping options%0D%0A- Bulk pricing (if applicable)%0D%0A%0D%0AThank you`}
-                  className="flex items-center justify-center px-6 py-3.5 border border-gray-300 text-gray-700 dark:text-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors font-medium text-center"
+                  className="flex items-center justify-center px-6 py-3.5 border border-[color:var(--line)] text-[color:var(--ink)] rounded-lg hover:bg-slate-50 transition-colors font-medium text-center"
                 >
                   Contact Sales
                 </a>
               </div>
 
-              <div className="mt-8 p-5 bg-gray-50 dark:bg-gray-700/30 rounded-xl">
+              <div className="mt-8 p-5 bg-slate-50 rounded-xl border border-[color:var(--line)]">
                 <div className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
                       <svg
-                        className="w-4 h-4 text-blue-600 dark:text-blue-400"
+                        className="w-4 h-4 text-emerald-700"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -319,10 +362,10 @@ export default async function ProductDetailPage({
                     </div>
                   </div>
                   <div className="ml-3">
-                    <h4 className="font-medium text-gray-900 dark:text-white mb-1">
+                    <h4 className="font-medium text-[color:var(--ink)] mb-1">
                       Premium Purchase Protection
                     </h4>
-                    <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                    <ul className="text-sm text-[color:var(--muted)] space-y-1">
                       <li className="flex items-start">
                         <span className="mr-2">•</span>
                         <span>30-day satisfaction guarantee</span>
