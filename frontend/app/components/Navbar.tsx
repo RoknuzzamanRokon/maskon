@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { isLoggedIn, getUserInfo, logout } from "../lib/api";
 import { useTheme } from "../contexts/ThemeContext";
 
@@ -14,8 +14,23 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
+  const pathname = usePathname();
   const blogDropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  const isActivePath = (href: string) =>
+    href === "/"
+      ? pathname === "/"
+      : pathname === href || pathname.startsWith(`${href}/`);
+  const isBlogActive = pathname === "/blog" || pathname.startsWith("/blog/");
+  const isPortfolioActive =
+    pathname === "/portfolio" || pathname.startsWith("/portfolio/");
+  const isProjectsActive =
+    pathname === "/projects" || pathname.startsWith("/projects/");
+  const isContactActive =
+    pathname === "/contact" || pathname.startsWith("/contact/");
+  const isProductsActive =
+    pathname === "/products" || pathname.startsWith("/products/");
 
   useEffect(() => {
     const checkAuth = () => {
@@ -107,7 +122,11 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center space-x-1">
             <Link
               href="/"
-              className="group relative px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300"
+              className={`group relative px-4 py-2.5 rounded-xl transition-all duration-300 ${
+                isActivePath("/")
+                  ? "text-blue-600 dark:text-blue-400 font-bold text-lg"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              }`}
             >
               <span className="relative z-10">Home</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/0 rounded-xl group-hover:from-blue-500/5 group-hover:to-violet-500/5 transition-all duration-300"></div>
@@ -117,7 +136,11 @@ export default function Navbar() {
             <div className="relative" ref={blogDropdownRef}>
               <button
                 onClick={() => setIsBlogOpen(!isBlogOpen)}
-                className="group relative px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center space-x-1 transition-all duration-300"
+                className={`group relative px-4 py-2.5 rounded-xl flex items-center space-x-1 transition-all duration-300 ${
+                  isBlogActive
+                    ? "text-blue-600 dark:text-blue-400 font-bold text-lg"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                }`}
               >
                 <span>Blog</span>
                 <svg
@@ -215,13 +238,21 @@ export default function Navbar() {
               )}
             </div>
 
-            {["Portfolio", "Projects", "Contact"].map((item) => (
+            {[
+              { href: "/portfolio", label: "Portfolio", active: isPortfolioActive },
+              { href: "/projects", label: "Projects", active: isProjectsActive },
+              { href: "/contact", label: "Contact", active: isContactActive },
+            ].map((item) => (
               <Link
-                key={item}
-                href={`/${item.toLowerCase()}`}
-                className="group relative px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300"
+                key={item.href}
+                href={item.href}
+                className={`group relative px-4 py-2.5 rounded-xl transition-all duration-300 ${
+                  item.active
+                    ? "text-blue-600 dark:text-blue-400 font-bold text-lg"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                }`}
               >
-                <span className="relative z-10">{item}</span>
+                <span className="relative z-10">{item.label}</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/0 rounded-xl group-hover:from-blue-500/5 group-hover:to-violet-500/5 transition-all duration-300"></div>
               </Link>
             ))}
@@ -229,7 +260,11 @@ export default function Navbar() {
             {/* Products with special styling */}
             <Link
               href="/products"
-              className="group relative px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300"
+              className={`group relative px-4 py-2.5 rounded-xl transition-all duration-300 ${
+                isProductsActive
+                  ? "text-blue-600 dark:text-blue-400 font-bold text-lg"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              }`}
             >
               <span className="relative z-10 flex items-center space-x-2">
                 <span>Products</span>
@@ -359,16 +394,20 @@ export default function Navbar() {
           <div className="space-y-2">
             {/* Main navigation links */}
             {[
-              { href: "/", label: "Home" },
-              { href: "/portfolio", label: "Portfolio" },
-              { href: "/projects", label: "Projects" },
-              { href: "/products", label: "Products", badge: "New" },
-              { href: "/contact", label: "Contact" },
+              { href: "/", label: "Home", active: isActivePath("/") },
+              { href: "/portfolio", label: "Portfolio", active: isPortfolioActive },
+              { href: "/projects", label: "Projects", active: isProjectsActive },
+              { href: "/products", label: "Products", badge: "New", active: isProductsActive },
+              { href: "/contact", label: "Contact", active: isContactActive },
             ].map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center justify-between p-4 rounded-xl bg-gray-50/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 group"
+                className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 group ${
+                  item.active
+                    ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-bold text-lg"
+                    : "bg-gray-50/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400"
+                }`}
                 onClick={() => setIsOpen(false)}
               >
                 <span className="font-medium">{item.label}</span>

@@ -4,6 +4,7 @@ import { getBlogPosts } from "../lib/api";
 import { motion, Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Calendar,
   Clock,
@@ -18,6 +19,7 @@ import {
 } from "lucide-react";
 
 export default function BlogPage() {
+  const router = useRouter();
   const [posts, setPosts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -238,8 +240,17 @@ export default function BlogPage() {
                   variants={fadeInUp}
                   whileHover={{ y: -8 }}
                   transition={{ type: "spring", stiffness: 300 }}
+                  role="link"
+                  tabIndex={0}
+                  onClick={() => router.push(`/blog/post/${post.id}`)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      router.push(`/blog/post/${post.id}`);
+                    }
+                  }}
                 >
-                  <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 dark:border-gray-700">
+                  <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 dark:border-gray-700 cursor-pointer">
                     {/* Article Image */}
                     {post.image_url && (
                       <div className="relative h-56 overflow-hidden">

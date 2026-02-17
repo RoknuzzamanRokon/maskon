@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // app-router friendly
 import type { CSSProperties } from "react";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { useTheme } from "../contexts/ThemeContext";
 
 import { getProducts } from "../lib/api";
 
@@ -80,17 +81,28 @@ function ProductImage({
 /** Main page */
 export default function ProductsPage() {
   const router = useRouter();
+  const { theme } = useTheme();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const themeVars = {
-    "--paper": "#f6f4f0",
-    "--ink": "#0f172a",
-    "--muted": "#64748b",
-    "--accent": "#0f766e",
-    "--accent-strong": "#115e59",
-    "--line": "#e2e8f0",
-  } as CSSProperties;
+  const themeVars =
+    theme === "dark"
+      ? ({
+          "--paper": "#0f172a",
+          "--ink": "#f8fafc",
+          "--muted": "#94a3b8",
+          "--accent": "#3b82f6",
+          "--accent-strong": "#1d4ed8",
+          "--line": "#334155",
+        } as CSSProperties)
+      : ({
+          "--paper": "#f6f4f0",
+          "--ink": "#0f172a",
+          "--muted": "#64748b",
+          "--accent": "#0f766e",
+          "--accent-strong": "#115e59",
+          "--line": "#e2e8f0",
+        } as CSSProperties);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -113,7 +125,7 @@ export default function ProductsPage() {
   if (loading) {
     return (
       <div
-        className={`${bodyFont.className} min-h-screen bg-[color:var(--paper)] text-[color:var(--ink)] py-16 flex items-center justify-center`}
+        className={`${bodyFont.className} min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-[color:var(--ink)] py-16 flex items-center justify-center`}
         style={themeVars}
       >
         <div className="text-center">
@@ -129,7 +141,7 @@ export default function ProductsPage() {
   if (error) {
     return (
       <div
-        className={`${bodyFont.className} min-h-screen bg-[color:var(--paper)] text-[color:var(--ink)] py-16 flex items-center justify-center`}
+        className={`${bodyFont.className} min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-[color:var(--ink)] py-16 flex items-center justify-center`}
         style={themeVars}
       >
         <div className="text-center">
@@ -147,17 +159,17 @@ export default function ProductsPage() {
 
   return (
     <div
-      className={`${bodyFont.className} min-h-screen bg-[color:var(--paper)] text-[color:var(--ink)]`}
+      className={`${bodyFont.className} min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-[color:var(--ink)]`}
       style={themeVars}
     >
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-32 right-10 h-72 w-72 rounded-full bg-emerald-100/70 blur-3xl" />
-        <div className="absolute bottom-10 left-10 h-72 w-72 rounded-full bg-slate-200/70 blur-3xl" />
+        <div className="absolute -top-32 right-10 h-72 w-72 rounded-full bg-emerald-100/70 blur-3xl dark:bg-emerald-900/30" />
+        <div className="absolute bottom-10 left-10 h-72 w-72 rounded-full bg-slate-200/70 blur-3xl dark:bg-slate-800/40" />
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white px-4 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--muted)]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white px-4 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--muted)] dark:bg-gray-800">
             Signature Collection
           </div>
           <h1
@@ -178,7 +190,7 @@ export default function ProductsPage() {
                   className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-[0.14em] transition-all duration-200 ${
                     category === "all"
                       ? "bg-[color:var(--accent)] text-white shadow-md"
-                      : "bg-white border border-[color:var(--line)] text-[color:var(--muted)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent-strong)]"
+                      : "bg-white border border-[color:var(--line)] text-[color:var(--muted)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent-strong)] dark:bg-gray-800 dark:text-slate-300"
                   }`}
                 >
                   {category}
@@ -207,13 +219,13 @@ export default function ProductsPage() {
                     router.push(productHref);
                   }
                 }}
-                className="relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[color:var(--line)] cursor-pointer group"
+                className="relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[color:var(--line)] cursor-pointer group dark:bg-gray-800 dark:border-gray-700"
               >
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-[color:var(--accent)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none" />
 
                 {/* Product Image */}
-                <div className="relative aspect-square overflow-hidden bg-slate-100">
+                <div className="relative aspect-square overflow-hidden bg-slate-100 dark:bg-gray-700">
                   <ProductImage
                     imageUrl={imageUrl}
                     alt={product.name || "Product"}
@@ -251,9 +263,9 @@ export default function ProductsPage() {
                     >
                       {product.name || "Unnamed Product"}
                     </h2>
-                    <div className="flex items-center bg-slate-100 px-2 py-1 rounded-full">
+                    <div className="flex items-center bg-slate-100 px-2 py-1 rounded-full dark:bg-gray-700">
                       <span className="text-amber-500 text-sm">★</span>
-                      <span className="text-xs text-slate-700 ml-1">
+                      <span className="text-xs text-slate-700 dark:text-slate-200 ml-1">
                         {product.rating || "4.8"}
                       </span>
                     </div>
@@ -293,7 +305,7 @@ export default function ProductsPage() {
                           : (product.stock || 0) > 0
                           ? "bg-amber-100 text-amber-800"
                           : "bg-rose-100 text-rose-800"
-                      }`}
+                      } dark:bg-slate-700 dark:text-slate-200`}
                     >
                       {(product.stock || 0) > 0
                         ? `${product.stock} available`
@@ -308,7 +320,7 @@ export default function ProductsPage() {
                       onClick={(e) => {
                         e.stopPropagation();
                       }}
-                      className="flex-1 text-center px-4 py-2.5 bg-[color:var(--ink)] text-white rounded-lg hover:bg-slate-800 transition-colors text-sm font-medium group-hover:bg-[color:var(--accent-strong)]"
+                      className="flex-1 text-center px-4 py-2.5 bg-[color:var(--ink)] text-white rounded-lg hover:bg-slate-800 transition-colors text-sm font-medium group-hover:bg-[color:var(--accent-strong)] dark:bg-slate-900 dark:hover:bg-slate-800"
                     >
                       View Details
                     </Link>
@@ -347,7 +359,7 @@ export default function ProductsPage() {
         {/* Empty state */}
         {products.length === 0 && (
           <div className="text-center py-16">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white border border-[color:var(--line)] rounded-full mb-6">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-white border border-[color:var(--line)] rounded-full mb-6 dark:bg-gray-800 dark:border-gray-700">
               <span className="text-3xl">🛒</span>
             </div>
             <h3
@@ -364,7 +376,7 @@ export default function ProductsPage() {
 
         {/* Load More */}
         <div className="mt-16 text-center">
-          <button className="px-8 py-3 bg-white border border-[color:var(--line)] text-[color:var(--ink)] font-medium rounded-lg hover:bg-slate-50 transition-colors inline-flex items-center shadow-sm hover:shadow-md">
+          <button className="px-8 py-3 bg-white border border-[color:var(--line)] text-[color:var(--ink)] font-medium rounded-lg hover:bg-slate-50 transition-colors inline-flex items-center shadow-sm hover:shadow-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
             View More Products
             <svg
               className="w-4 h-4 ml-2 mt-0.5"
@@ -386,7 +398,7 @@ export default function ProductsPage() {
 
       {/* Contact CTA */}
       <div className="max-w-7xl mx-auto mt-24 px-4 sm:px-6 lg:px-8">
-        <div className="bg-[color:var(--ink)] rounded-2xl p-10 md:p-12 shadow-xl">
+        <div className="bg-[color:var(--ink)] rounded-2xl p-10 md:p-12 shadow-xl dark:bg-gray-900">
           <div className="max-w-3xl mx-auto text-center">
             <h2
               className={`${headingFont.className} text-2xl md:text-3xl font-semibold text-white mb-4`}
