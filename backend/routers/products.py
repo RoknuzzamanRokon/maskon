@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile, BackgroundTasks
 
 from core import (
     Product,
@@ -12,6 +12,7 @@ from core import (
     get_db_connection,
 )
 from routers.uploads import upload_media
+from utils.email_notifications import queue_product_notification
 
 
 router = APIRouter()
@@ -108,7 +109,9 @@ async def get_product(product_id: int):
 
 @router.post("/api/products", response_model=dict)
 async def create_product(
-    product: ProductCreate, admin_id: int = Depends(get_current_admin)
+    product: ProductCreate,
+    background_tasks: BackgroundTasks,
+    admin_id: int = Depends(get_current_admin),
 ):
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -168,6 +171,11 @@ async def create_product(
 
         # Commit transaction
         connection.commit()
+
+        excerpt = (product.description or "").strip()
+        if len(excerpt) > 180:
+            excerpt = f"{excerpt[:177]}..."
+        queue_product_notification(background_tasks, product_id, product.name, excerpt)
 
         return {
             "message": "Product created successfully",

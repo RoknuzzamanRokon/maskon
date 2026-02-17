@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from pydantic import BaseModel
 
 from core import (
@@ -11,6 +11,7 @@ from core import (
     get_current_user,
     get_db_connection,
 )
+from utils.email_notifications import queue_post_notification
 
 
 router = APIRouter()
@@ -50,7 +51,11 @@ async def get_posts(category: Optional[str] = None, limit: int = 10):
 
 
 @router.post("/api/posts", response_model=dict)
-async def create_post(post: PostCreate, admin_id: int = Depends(get_current_admin)):
+async def create_post(
+    post: PostCreate,
+    background_tasks: BackgroundTasks,
+    admin_id: int = Depends(get_current_admin),
+):
     connection = get_db_connection()
     cursor = connection.cursor()
 
@@ -79,6 +84,11 @@ async def create_post(post: PostCreate, admin_id: int = Depends(get_current_admi
         )
         connection.commit()
         post_id = cursor.lastrowid
+
+        excerpt = (post.content or "").strip()
+        if len(excerpt) > 180:
+            excerpt = f"{excerpt[:177]}..."
+        queue_post_notification(background_tasks, post_id, post.title, excerpt)
 
         return {"message": "Post created successfully", "id": post_id}
     finally:

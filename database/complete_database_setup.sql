@@ -79,6 +79,19 @@ CREATE TABLE IF NOT EXISTS portfolio (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_created_at (created_at DESC)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+-- Subscribers table (Newsletter)
+CREATE TABLE IF NOT EXISTS subscribers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    source VARCHAR(100) DEFAULT 'homepage',
+    status ENUM('active', 'unsubscribed') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    unsubscribed_at TIMESTAMP NULL,
+    INDEX idx_status (status),
+    INDEX idx_created_at (created_at DESC)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 -- ============================================================
 -- INTERACTION TABLES (Registered Users)
 -- ============================================================

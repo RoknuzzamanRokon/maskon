@@ -440,6 +440,28 @@ export async function getProduct(id: string) {
   }
 }
 
+export async function createSubscriber(email: string, source: string = 'homepage') {
+  try {
+    const response = await fetch(`${API_BASE_URL}/subscribers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, source }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}))
+      throw new Error(error.detail || 'Failed to subscribe')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error creating subscriber:', error)
+    throw error
+  }
+}
+
 export async function createProduct(productData: any) {
   try {
     const response = await fetch(`${API_BASE_URL}/products`, {

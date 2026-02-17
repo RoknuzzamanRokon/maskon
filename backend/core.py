@@ -316,6 +316,37 @@ class ProductInquiry(BaseModel):
     inquiry_type: str = "purchase"
 
 
+class SubscriberCreate(BaseModel):
+    email: str
+    source: Optional[str] = "homepage"
+
+
+class Subscriber(BaseModel):
+    id: int
+    email: str
+    source: Optional[str] = None
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class SubscriberResponse(BaseModel):
+    id: int
+    email: str
+    source: Optional[str] = None
+    status: str
+    created_at: datetime
+    updated_at: datetime
+    already_subscribed: bool
+
+
+class SubscriberNotification(BaseModel):
+    subject: str
+    title: str
+    message: str
+    link: Optional[str] = None
+
+
 # Chat functionality models
 class ChatSessionCreate(BaseModel):
     product_id: int

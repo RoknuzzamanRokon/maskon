@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 
 from core import STATIC_DIR, chat_rate_limiter, connection_pool, logger
-from routers import admin, auth, health, portfolio, posts, products, uploads
+from routers import admin, auth, health, portfolio, posts, products, uploads, subscribers
 
 
 app = FastAPI(title="Blog & Portfolio API", version="1.0.0")
@@ -86,7 +86,10 @@ async def rate_limiting_middleware(request: Request, call_next):
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
@@ -115,6 +118,7 @@ app.include_router(posts.router)
 app.include_router(portfolio.router)
 app.include_router(products.router)
 app.include_router(admin.router)
+app.include_router(subscribers.router)
 
 
 if __name__ == "__main__":

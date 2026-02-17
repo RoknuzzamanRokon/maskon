@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { getBlogPosts } from "./lib/api";
+import { createSubscriber, getBlogPosts } from "./lib/api";
 import { motion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -35,6 +35,10 @@ export default function Home() {
   const [recentPosts, setRecentPosts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [subscriberEmail, setSubscriberEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeMessage, setSubscribeMessage] = useState<string | null>(null);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -886,21 +890,67 @@ export default function Home() {
                 delivered straight to your inbox. No spam, just quality content.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <form
+                className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+                onSubmit={async (event) => {
+                  event.preventDefault();
+                  setSubscribeMessage(null);
+                  setSubscribeError(null);
+
+                  if (!subscriberEmail.trim()) {
+                    setSubscribeError("Please enter a valid email address.");
+                    return;
+                  }
+
+                  try {
+                    setIsSubscribing(true);
+                    const result = await createSubscriber(
+                      subscriberEmail.trim(),
+                      "homepage"
+                    );
+                    if (result?.already_subscribed) {
+                      setSubscribeMessage("You're already subscribed. Thanks for staying with us!");
+                    } else {
+                      setSubscribeMessage("Thanks for subscribing! You'll hear from us soon.");
+                    }
+                    setSubscriberEmail("");
+                  } catch (error: any) {
+                    setSubscribeError(error?.message || "Subscription failed. Please try again.");
+                  } finally {
+                    setIsSubscribing(false);
+                  }
+                }}
+              >
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  value={subscriberEmail}
+                  onChange={(event) => setSubscriberEmail(event.target.value)}
                   className="flex-1 px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white"
                 />
                 <motion.button
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+                  whileHover={isSubscribing ? undefined : { scale: 1.05 }}
+                  whileTap={isSubscribing ? undefined : { scale: 0.95 }}
                 >
-                  <span>Subscribe</span>
+                  <span>{isSubscribing ? "Subscribing..." : "Subscribe"}</span>
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </motion.button>
-              </div>
+              </form>
+
+              {(subscribeMessage || subscribeError) && (
+                <p
+                  className={`mt-4 text-sm ${
+                    subscribeError
+                      ? "text-red-600 dark:text-red-400"
+                      : "text-emerald-600 dark:text-emerald-400"
+                  }`}
+                >
+                  {subscribeError || subscribeMessage}
+                </p>
+              )}
 
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
                 Join 50,000+ subscribers • Unsubscribe anytime
