@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
 import ProtectedRoute from "../../components/ProtectedRoute";
-import { getAdminNotifications } from "../../lib/api";
+import { getAdminNotifications, sendSubscriberNotification } from "../../lib/api";
 
 interface Notification {
   id: string;
@@ -24,6 +24,13 @@ function NotificationsContent() {
   const [typeFilter, setTypeFilter] = useState<
     "all" | "info" | "warning" | "error" | "success"
   >("all");
+  const [subject, setSubject] = useState("");
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
+  const [link, setLink] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [sendResult, setSendResult] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchNotifications();
@@ -279,6 +286,136 @@ function NotificationsContent() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Send Subscriber Update */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8">
+          <div className="flex items-start justify-between flex-wrap gap-4 mb-6">
+            <div>
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                Send Subscriber Update
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Broadcast a message to all active subscribers.
+              </p>
+            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              Only admins can send updates.
+            </div>
+          </div>
+
+          <form
+            className="grid grid-cols-1 gap-5"
+            onSubmit={async (event) => {
+              event.preventDefault();
+              setSendResult(null);
+              setSendError(null);
+
+              if (!subject.trim() || !title.trim() || !message.trim()) {
+                setSendError("Subject, title, and message are required.");
+                return;
+              }
+
+              try {
+                setIsSending(true);
+                const response = await sendSubscriberNotification({
+                  subject: subject.trim(),
+                  title: title.trim(),
+                  message: message.trim(),
+                  link: link.trim() ? link.trim() : undefined,
+                });
+                setSendResult(
+                  `Update queued for ${response?.recipients ?? 0} subscribers.`
+                );
+                setSubject("");
+                setTitle("");
+                setMessage("");
+                setLink("");
+              } catch (error: any) {
+                setSendError(
+                  error?.message ||
+                    "Failed to send update. Please try again."
+                );
+              } finally {
+                setIsSending(false);
+              }
+            }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Email Subject
+                </label>
+                <input
+                  type="text"
+                  value={subject}
+                  onChange={(event) => setSubject(event.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="New update from Mashkon Vibes"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Email Title
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Weekly Highlights"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Message
+              </label>
+              <textarea
+                value={message}
+                onChange={(event) => setMessage(event.target.value)}
+                rows={5}
+                className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Share the latest updates with your subscribers..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Optional Link
+              </label>
+              <input
+                type="url"
+                value={link}
+                onChange={(event) => setLink(event.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="https://mashkon.com/blog"
+              />
+            </div>
+
+            {(sendResult || sendError) && (
+              <p
+                className={`text-sm ${
+                  sendError
+                    ? "text-red-600 dark:text-red-400"
+                    : "text-emerald-600 dark:text-emerald-400"
+                }`}
+              >
+                {sendError || sendResult}
+              </p>
+            )}
+
+            <div className="flex items-center justify-end">
+              <button
+                type="submit"
+                disabled={isSending}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {isSending ? "Sending..." : "Send Update"}
+              </button>
+            </div>
+          </form>
         </div>
 
         {/* Notifications List */}

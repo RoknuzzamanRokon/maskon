@@ -462,6 +462,34 @@ export async function createSubscriber(email: string, source: string = 'homepage
   }
 }
 
+export async function sendSubscriberNotification(payload: {
+  subject: string
+  title: string
+  message: string
+  link?: string
+}) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/subscribers/notify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}))
+      throw new Error(error.detail || 'Failed to send subscriber update')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error sending subscriber notification:', error)
+    throw error
+  }
+}
+
 export async function createProduct(productData: any) {
   try {
     const response = await fetch(`${API_BASE_URL}/products`, {
