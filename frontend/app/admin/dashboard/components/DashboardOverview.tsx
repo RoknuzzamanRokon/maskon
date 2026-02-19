@@ -95,7 +95,7 @@ export default function DashboardOverview() {
           getProducts(100).catch(() => []),
           getAdminNotifications().catch(() => ({
             notifications: [],
-            unread_count: 0,
+            unreadCount: 0,
           })),
           getAdminSettings().catch(() => ({
             system_stats: { total_users: 0 },
@@ -157,7 +157,7 @@ export default function DashboardOverview() {
         totalPortfolio: portfolio.length,
         totalProducts: products.length,
         totalUsers: settings.system_stats?.total_users || 1,
-        unreadNotifications: notifications.unread_count || 0,
+        unreadNotifications: notifications.unreadCount || 0,
         recentActivity,
         systemHealth: {
           status: Math.random() > 0.8 ? "warning" : "healthy",

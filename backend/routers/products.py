@@ -13,6 +13,7 @@ from core import (
 )
 from routers.uploads import upload_media
 from utils.email_notifications import queue_product_notification
+from utils.notifications import create_admin_notification
 
 
 router = APIRouter()
@@ -325,8 +326,9 @@ async def create_product_inquiry(
 
     try:
         # Check if product exists
-        cursor.execute("SELECT id FROM products WHERE id = %s", (product_id,))
-        if not cursor.fetchone():
+        cursor.execute("SELECT id, name FROM products WHERE id = %s", (product_id,))
+        product_row = cursor.fetchone()
+        if not product_row:
             raise HTTPException(status_code=404, detail="Product not found")
 
         query = """
@@ -345,8 +347,26 @@ async def create_product_inquiry(
             ),
         )
         connection.commit()
+        inquiry_id = cursor.lastrowid
 
-        return {"message": "Inquiry submitted successfully", "id": cursor.lastrowid}
+        create_admin_notification(
+            notification_type="info",
+            title="New Product Inquiry",
+            message=f"{inquiry.customer_name} submitted a product inquiry for {product_row['name']}.",
+            category="user",
+            priority="medium",
+            action_url="/admin/inquiries",
+            action_label="View Inquiries",
+            source="Product Inquiry",
+            metadata={
+                "product_id": product_id,
+                "inquiry_id": inquiry_id,
+                "customer_email": inquiry.customer_email,
+                "customer_name": inquiry.customer_name,
+            },
+        )
+
+        return {"message": "Inquiry submitted successfully", "id": inquiry_id}
     finally:
         cursor.close()
         connection.close()

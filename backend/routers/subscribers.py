@@ -14,6 +14,7 @@ from utils.email_notifications import (
     get_active_subscriber_count,
     send_subscriber_notification,
 )
+from utils.notifications import create_admin_notification
 
 
 router = APIRouter(prefix="/api/subscribers", tags=["subscribers"])
@@ -39,6 +40,9 @@ def create_subscriber(payload: SubscriberCreate):
         if existing and existing["status"] == "active":
             return SubscriberResponse(**existing, already_subscribed=True)
 
+        created_new = False
+        reactivated = False
+
         if existing:
             cursor.execute(
                 """
@@ -48,6 +52,7 @@ def create_subscriber(payload: SubscriberCreate):
                 """,
                 (payload.source, email),
             )
+            reactivated = True
         else:
             cursor.execute(
                 """
@@ -56,6 +61,7 @@ def create_subscriber(payload: SubscriberCreate):
                 """,
                 (email, payload.source),
             )
+            created_new = True
 
         cursor.execute(
             "SELECT id, email, source, status, created_at, updated_at FROM subscribers WHERE email = %s",
@@ -64,6 +70,20 @@ def create_subscriber(payload: SubscriberCreate):
         row = cursor.fetchone()
         if not row:
             raise HTTPException(status_code=500, detail="Failed to create subscriber")
+
+        if created_new or reactivated:
+            action_label = "View Subscribers"
+            create_admin_notification(
+                notification_type="success",
+                title="New Subscriber",
+                message=f"{email} subscribed to your updates.",
+                category="user",
+                priority="low",
+                action_url="/admin/subscribers",
+                action_label=action_label,
+                source="Subscribers",
+                metadata={"subscriber_id": row["id"], "source": row["source"]},
+            )
 
         return SubscriberResponse(**row, already_subscribed=False)
     except Error as exc:
@@ -116,6 +136,17 @@ def notify_subscribers(
         payload.title,
         payload.message,
         payload.link,
+    )
+    create_admin_notification(
+        notification_type="success",
+        title="Subscriber Update Sent",
+        message=f"Subscriber update queued for {recipients} recipients.",
+        category="content",
+        priority="low",
+        action_url="/admin/notifications",
+        action_label="View Notifications",
+        source="Subscribers",
+        metadata={"recipients": recipients, "subject": payload.subject},
     )
     return {
         "message": "Notification queued",

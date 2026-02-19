@@ -282,6 +282,15 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     await fetchNotifications();
   }, [fetchNotifications]);
 
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(() => {
+      fetchNotifications();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [fetchNotifications]);
+
   // Request notification permission on mount
   useEffect(() => {
     try {

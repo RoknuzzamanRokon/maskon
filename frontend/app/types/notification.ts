@@ -9,6 +9,7 @@ export interface Notification {
     actionLabel?: string;
     category?: "system" | "user" | "content" | "security";
     priority?: "low" | "medium" | "high" | "critical";
+    source?: string;
     metadata?: {
         [key: string]: any;
     };

@@ -14,7 +14,7 @@
 
 -- Create database
 CREATE DATABASE IF NOT EXISTS blog_portfolio;
-USE blog_portfolio;
+USE mashkon_db;
 
 -- ============================================================
 -- CORE TABLES
@@ -75,6 +75,31 @@ CREATE TABLE IF NOT EXISTS subscribers (
     unsubscribed_at TIMESTAMP NULL,
     INDEX idx_status (status),
     INDEX idx_created_at (created_at DESC)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Admin notifications
+CREATE TABLE IF NOT EXISTS admin_notifications (
+    id VARCHAR(64) PRIMARY KEY,
+    admin_id INT NOT NULL,
+    type ENUM('info', 'warning', 'error', 'success') NOT NULL DEFAULT 'info',
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    category ENUM('system', 'user', 'content', 'security') DEFAULT 'system',
+    priority ENUM('low', 'medium', 'high', 'critical') DEFAULT 'low',
+    action_url VARCHAR(500),
+    action_label VARCHAR(100),
+    source VARCHAR(255),
+    metadata JSON DEFAULT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    read_at TIMESTAMP NULL,
+    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_admin_read (admin_id, is_read),
+    INDEX idx_created_at (created_at DESC),
+    INDEX idx_type (type),
+    INDEX idx_category (category),
+    INDEX idx_priority (priority)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================

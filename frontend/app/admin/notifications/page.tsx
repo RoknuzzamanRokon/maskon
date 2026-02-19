@@ -3,23 +3,18 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
 import ProtectedRoute from "../../components/ProtectedRoute";
-import { getAdminNotifications, sendSubscriberNotification } from "../../lib/api";
-
-interface Notification {
-  id: string;
-  type: "info" | "warning" | "error" | "success";
-  title: string;
-  message: string;
-  timestamp: string;
-  isRead: boolean;
-  actionUrl?: string;
-  actionLabel?: string;
-  source: string;
-}
+import { sendSubscriberNotification } from "../../lib/api";
+import { useNotifications } from "../../contexts/NotificationContext";
 
 function NotificationsContent() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    state,
+    markAsRead,
+    markAllAsRead,
+    removeNotification,
+    refreshNotifications,
+  } = useNotifications();
+  const { notifications } = state;
   const [filter, setFilter] = useState<"all" | "unread" | "read">("all");
   const [typeFilter, setTypeFilter] = useState<
     "all" | "info" | "warning" | "error" | "success"
@@ -33,112 +28,8 @@ function NotificationsContent() {
   const [sendError, setSendError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
-
-  const fetchNotifications = async () => {
-    try {
-      // Try to fetch from API, fallback to mock data
-      try {
-        const data = await getAdminNotifications();
-        if (data.notifications) {
-          setNotifications(
-            data.notifications.map((n: any) => ({
-              ...n,
-              timestamp: n.timestamp || new Date().toISOString(),
-              source: n.source || "System",
-            }))
-          );
-        }
-      } catch (apiError) {
-        // Fallback to mock data
-        const mockNotifications: Notification[] = [
-          {
-            id: "1",
-            type: "warning",
-            title: "High Memory Usage",
-            message:
-              "System memory usage has exceeded 85%. Consider optimizing or upgrading.",
-            timestamp: new Date().toISOString(),
-            isRead: false,
-            source: "System Monitor",
-            actionUrl: "/admin/system",
-            actionLabel: "View System",
-          },
-          {
-            id: "2",
-            type: "success",
-            title: "Backup Completed",
-            message: "Daily system backup completed successfully at 2:00 AM.",
-            timestamp: new Date(Date.now() - 3600000).toISOString(),
-            isRead: false,
-            source: "Backup Service",
-          },
-          {
-            id: "3",
-            type: "info",
-            title: "New User Registration",
-            message:
-              'A new user "john.doe@example.com" has registered and is pending approval.',
-            timestamp: new Date(Date.now() - 7200000).toISOString(),
-            isRead: true,
-            source: "User Management",
-            actionUrl: "/admin/users",
-            actionLabel: "Manage Users",
-          },
-          {
-            id: "4",
-            type: "error",
-            title: "Database Connection Failed",
-            message:
-              "Failed to connect to the backup database. Please check connection settings.",
-            timestamp: new Date(Date.now() - 10800000).toISOString(),
-            isRead: false,
-            source: "Database",
-          },
-          {
-            id: "5",
-            type: "info",
-            title: "System Update Available",
-            message:
-              "A new system update (v2.1.3) is available for installation.",
-            timestamp: new Date(Date.now() - 14400000).toISOString(),
-            isRead: true,
-            source: "Update Manager",
-          },
-          {
-            id: "6",
-            type: "warning",
-            title: "SSL Certificate Expiring",
-            message:
-              "Your SSL certificate will expire in 30 days. Please renew it soon.",
-            timestamp: new Date(Date.now() - 18000000).toISOString(),
-            isRead: false,
-            source: "Security",
-          },
-        ];
-        setNotifications(mockNotifications);
-      }
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const markAsRead = (id: string) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    );
-  };
-
-  const markAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
-  };
-
-  const deleteNotification = (id: string) => {
-    setNotifications(notifications.filter((n) => n.id !== id));
-  };
+    refreshNotifications();
+  }, [refreshNotifications]);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -179,7 +70,7 @@ function NotificationsContent() {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  if (isLoading) {
+  if (state.loading) {
     return (
       <AdminLayout>
         <div className="max-w-6xl mx-auto">
@@ -420,7 +311,17 @@ function NotificationsContent() {
 
         {/* Notifications List */}
         <div className="space-y-4">
-          {filteredNotifications.length === 0 ? (
+          {state.error ? (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-12 text-center">
+              <span className="text-6xl mb-4 block">⚠️</span>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                Failed to load notifications
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400">
+                {state.error}
+              </p>
+            </div>
+          ) : filteredNotifications.length === 0 ? (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-12 text-center">
               <span className="text-6xl mb-4 block">📭</span>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
@@ -462,7 +363,13 @@ function NotificationsContent() {
                         {notification.message}
                       </p>
                       <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                        <span>📍 {notification.source}</span>
+                        <span>
+                          📍{" "}
+                          {notification.source ||
+                            notification.metadata?.source ||
+                            notification.category ||
+                            "System"}
+                        </span>
                         <span>
                           🕒 {new Date(notification.timestamp).toLocaleString()}
                         </span>
@@ -489,10 +396,10 @@ function NotificationsContent() {
                         ✓
                       </button>
                     )}
-                    <button
-                      onClick={() => deleteNotification(notification.id)}
-                      className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                      title="Delete notification"
+                      <button
+                        onClick={() => removeNotification(notification.id)}
+                        className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                        title="Delete notification"
                     >
                       🗑️
                     </button>

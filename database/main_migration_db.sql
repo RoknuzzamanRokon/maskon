@@ -1,26 +1,38 @@
 -- ============================================================
--- COMPLETE DATABASE SETUP FOR BLOG & PORTFOLIO WEBSITE
+-- COMPLETE DATABASE MIGRATION SCRIPT
+-- Blog & Portfolio Website with E-commerce and Chat System
 -- ============================================================
--- This file creates all tables and initial data for the project
--- Run this file to set up the complete database from scratch
--- 
--- Features included:
--- - Blog posts (tech, food, activity categories)
--- - Portfolio projects showcase
--- - User authentication & admin system
--- - Post interactions (likes, dislikes, comments)
--- - Anonymous interactions for public visitors
--- - Products catalog with e-commerce features
--- - Real-time chat system for product inquiries
--- - Multiple media support for posts
--- - WhatsApp integration support
+-- This script creates all tables, indexes, triggers, views, and stored procedures
+-- Run this script to set up the complete database schema
 -- ============================================================
--- Create and use database
-CREATE DATABASE IF NOT EXISTS blog_portfolio;
-USE blog_portfolio;
--- Set character set and collation
+-- Use the database (change if needed)
+USE mashkon_db;
+-- Set character encoding
 SET NAMES utf8mb4;
 SET CHARACTER SET utf8mb4;
+-- ============================================================
+-- DROP EXISTING TABLES (if needed for clean migration)
+-- ============================================================
+-- Uncomment the following section if you want to drop all tables first
+/*
+ DROP TABLE IF EXISTS product_chat_metadata;
+ DROP TABLE IF EXISTS product_chat_messages;
+ DROP TABLE IF EXISTS product_chat_sessions;
+ DROP TABLE IF EXISTS product_inquiries;
+ DROP TABLE IF EXISTS product_images;
+ DROP TABLE IF EXISTS products;
+ DROP TABLE IF EXISTS product_categories;
+ DROP TABLE IF EXISTS admin_notifications;
+ DROP TABLE IF EXISTS anonymous_comments;
+ DROP TABLE IF EXISTS anonymous_interactions;
+ DROP TABLE IF EXISTS comments;
+ DROP TABLE IF EXISTS post_interactions;
+ DROP TABLE IF EXISTS post_media;
+ DROP TABLE IF EXISTS subscribers;
+ DROP TABLE IF EXISTS portfolio;
+ DROP TABLE IF EXISTS posts;
+ DROP TABLE IF EXISTS users;
+ */
 -- ============================================================
 -- CORE TABLES
 -- ============================================================
@@ -36,7 +48,7 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_email (email),
     INDEX idx_is_admin (is_admin)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
--- Posts table (Blog content)
+-- Posts table (Blog content with media support)
 CREATE TABLE IF NOT EXISTS posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -55,7 +67,7 @@ CREATE TABLE IF NOT EXISTS posts (
     INDEX idx_tags (tags),
     FULLTEXT idx_title_content (title, content)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
--- Post media table (Multiple images/videos per post)
+-- Post media table (Multiple media files per post)
 CREATE TABLE IF NOT EXISTS post_media (
     id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT NOT NULL,
@@ -79,7 +91,6 @@ CREATE TABLE IF NOT EXISTS portfolio (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_created_at (created_at DESC)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
-
 -- Subscribers table (Newsletter)
 CREATE TABLE IF NOT EXISTS subscribers (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -92,8 +103,32 @@ CREATE TABLE IF NOT EXISTS subscribers (
     INDEX idx_status (status),
     INDEX idx_created_at (created_at DESC)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+-- Admin notifications
+CREATE TABLE IF NOT EXISTS admin_notifications (
+    id VARCHAR(64) PRIMARY KEY,
+    admin_id INT NOT NULL,
+    type ENUM('info', 'warning', 'error', 'success') NOT NULL DEFAULT 'info',
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    category ENUM('system', 'user', 'content', 'security') DEFAULT 'system',
+    priority ENUM('low', 'medium', 'high', 'critical') DEFAULT 'low',
+    action_url VARCHAR(500),
+    action_label VARCHAR(100),
+    source VARCHAR(255),
+    metadata JSON DEFAULT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    read_at TIMESTAMP NULL,
+    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_admin_read (admin_id, is_read),
+    INDEX idx_created_at (created_at DESC),
+    INDEX idx_type (type),
+    INDEX idx_category (category),
+    INDEX idx_priority (priority)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 -- ============================================================
--- INTERACTION TABLES (Registered Users)
+-- INTERACTION TABLES
 -- ============================================================
 -- Post interactions (Registered users)
 CREATE TABLE IF NOT EXISTS post_interactions (
@@ -121,9 +156,6 @@ CREATE TABLE IF NOT EXISTS comments (
     INDEX idx_user_id (user_id),
     INDEX idx_created_at (created_at DESC)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
--- ============================================================
--- ANONYMOUS INTERACTION TABLES (Public Visitors)
--- ============================================================
 -- Anonymous interactions (Public visitors)
 CREATE TABLE IF NOT EXISTS anonymous_interactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -276,8 +308,11 @@ CREATE TABLE IF NOT EXISTS product_chat_metadata (
 -- ============================================================
 -- TRIGGERS
 -- ============================================================
+-- Drop triggers if they exist
+DROP TRIGGER IF EXISTS update_session_last_message;
+DROP TRIGGER IF EXISTS update_session_status_on_admin_response;
 -- Trigger: Update last_message_at when new message is added
-DELIMITER // CREATE TRIGGER IF NOT EXISTS update_session_last_message
+DELIMITER // CREATE TRIGGER update_session_last_message
 AFTER
 INSERT ON product_chat_messages FOR EACH ROW BEGIN
 UPDATE product_chat_sessions
@@ -286,7 +321,7 @@ SET last_message_at = NEW.created_at,
 WHERE id = NEW.session_id;
 END // DELIMITER;
 -- Trigger: Update session status when admin responds
-DELIMITER // CREATE TRIGGER IF NOT EXISTS update_session_status_on_admin_response
+DELIMITER // CREATE TRIGGER update_session_status_on_admin_response
 AFTER
 INSERT ON product_chat_messages FOR EACH ROW BEGIN IF NEW.sender_type = 'admin' THEN
 UPDATE product_chat_sessions
@@ -301,8 +336,11 @@ END // DELIMITER;
 -- ============================================================
 -- VIEWS
 -- ============================================================
+-- Drop views if they exist
+DROP VIEW IF EXISTS chat_sessions_overview;
+DROP VIEW IF EXISTS recent_chat_messages;
 -- View: Chat sessions overview
-CREATE OR REPLACE VIEW chat_sessions_overview AS
+CREATE VIEW chat_sessions_overview AS
 SELECT cs.id as session_id,
     cs.session_id as session_key,
     cs.product_id,
@@ -347,7 +385,7 @@ GROUP BY cs.id,
     cs.assigned_admin_id,
     u.username;
 -- View: Recent chat messages
-CREATE OR REPLACE VIEW recent_chat_messages AS
+CREATE VIEW recent_chat_messages AS
 SELECT cm.id,
     cm.session_id,
     cs.session_id as session_key,
@@ -368,8 +406,11 @@ ORDER BY cm.created_at DESC;
 -- ============================================================
 -- STORED PROCEDURES
 -- ============================================================
+-- Drop procedures if they exist
+DROP PROCEDURE IF EXISTS CreateChatSession;
+DROP PROCEDURE IF EXISTS SendChatMessage;
 -- Procedure: Create a new chat session
-DELIMITER // CREATE PROCEDURE IF NOT EXISTS CreateChatSession(
+DELIMITER // CREATE PROCEDURE CreateChatSession(
     IN p_product_id INT,
     IN p_session_id VARCHAR(255),
     IN p_customer_email VARCHAR(255),
@@ -421,7 +462,7 @@ COMMIT;
 SELECT session_pk as session_id;
 END // DELIMITER;
 -- Procedure: Send a chat message
-DELIMITER // CREATE PROCEDURE IF NOT EXISTS SendChatMessage(
+DELIMITER // CREATE PROCEDURE SendChatMessage(
     IN p_session_key VARCHAR(255),
     IN p_sender_type ENUM('customer', 'admin', 'system'),
     IN p_sender_id INT,
@@ -462,7 +503,7 @@ COMMIT;
 SELECT LAST_INSERT_ID() as message_id;
 END // DELIMITER;
 -- ============================================================
--- INITIAL DATA
+-- INSERT DEFAULT DATA
 -- ============================================================
 -- Insert default admin user
 -- Username: maskon123, Password: maskon123maskon
@@ -481,103 +522,6 @@ VALUES (
         NOW()
     ) ON DUPLICATE KEY
 UPDATE username = username;
--- Insert test user
--- Username: testuser, Password: user123
-INSERT INTO users (username, email, password_hash, is_admin)
-VALUES (
-        'testuser',
-        'user@example.com',
-        '$2b$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-        FALSE
-    ) ON DUPLICATE KEY
-UPDATE username = username;
--- Insert sample blog posts
-INSERT INTO posts (title, content, category, tags, image_url)
-VALUES (
-        'Getting Started with FastAPI',
-        'FastAPI is a modern, fast web framework for building APIs with Python 3.7+ based on standard Python type hints. It offers automatic API documentation, data validation, and high performance.',
-        'tech',
-        'python,fastapi,api,backend',
-        'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800'
-    ),
-    (
-        'Best Practices for React Development',
-        'Learn about the best practices for building scalable React applications including component structure, state management, and performance optimization.',
-        'tech',
-        'react,javascript,frontend,webdev',
-        'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800'
-    ),
-    (
-        'My Favorite Pasta Recipe',
-        'Today I want to share my favorite pasta recipe that I learned from my grandmother. This authentic Italian carbonara is creamy, delicious, and surprisingly simple to make.',
-        'food',
-        'pasta,italian,cooking,recipe',
-        'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800'
-    ),
-    (
-        'Healthy Breakfast Ideas',
-        'Start your day right with these nutritious and delicious breakfast options that are quick to prepare and full of energy.',
-        'food',
-        'breakfast,healthy,nutrition,meal-prep',
-        'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=800'
-    ),
-    (
-        'Morning Workout Routine',
-        'Started my day with a 30-minute workout session. Here is my complete routine including warm-up, exercises, and cool-down stretches.',
-        'activity',
-        'fitness,morning,workout,health',
-        'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800'
-    ),
-    (
-        'Weekend Hiking Adventure',
-        'Explored a beautiful mountain trail this weekend. The views were breathtaking and the fresh air was invigorating!',
-        'activity',
-        'hiking,outdoor,adventure,nature',
-        'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800'
-    ) ON DUPLICATE KEY
-UPDATE title = title;
--- Insert sample portfolio projects
-INSERT INTO portfolio (
-        title,
-        description,
-        technologies,
-        project_url,
-        github_url,
-        image_url
-    )
-VALUES (
-        'E-commerce Website',
-        'A full-stack e-commerce platform with payment integration, user authentication, shopping cart, and order management system.',
-        'React, Node.js, MongoDB, Stripe, Redux',
-        'https://myecommerce.com',
-        'https://github.com/user/ecommerce',
-        'https://images.unsplash.com/photo-1557821552-17105176677c?w=800'
-    ),
-    (
-        'Task Management App',
-        'A collaborative task management application with real-time updates, team collaboration features, and deadline tracking.',
-        'Vue.js, Express.js, Socket.io, PostgreSQL',
-        'https://mytasks.com',
-        'https://github.com/user/taskapp',
-        'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800'
-    ),
-    (
-        'Weather Dashboard',
-        'A responsive weather dashboard with location-based forecasts, interactive maps, and weather alerts.',
-        'React, OpenWeather API, Chart.js, Tailwind CSS',
-        'https://myweather.com',
-        'https://github.com/user/weather',
-        'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=800'
-    ),
-    (
-        'Blog Platform',
-        'A modern blogging platform with markdown support, comment system, and social media integration.',
-        'Next.js, FastAPI, MySQL, TailwindCSS',
-        'https://myblog.com',
-        'https://github.com/user/blog',
-        'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800'
-    ) ON DUPLICATE KEY
-UPDATE title = title;
 -- Insert product categories
 INSERT INTO product_categories (name, description, is_active)
 VALUES (
@@ -594,105 +538,19 @@ VALUES (
     ),
     ('home', 'Home and living products', TRUE) ON DUPLICATE KEY
 UPDATE name = name;
--- Insert sample products
-INSERT INTO products (
-        name,
-        description,
-        category,
-        price,
-        stock,
-        discount,
-        specifications,
-        image_url,
-        is_active,
-        created_by
-    )
-VALUES (
-        'Premium Wireless Headphones',
-        'High-quality wireless headphones with noise cancellation and premium sound quality. Perfect for music lovers and professionals.',
-        'electronics',
-        299.99,
-        25,
-        15.0,
-        'Bluetooth 5.0, Battery Life: 30 hours, Noise Cancellation: Active, Weight: 250g, Frequency Response: 20Hz - 20kHz, Charging Time: 2 hours',
-        'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
-        TRUE,
-        1
-    ),
-    (
-        'Organic Cotton T-Shirt',
-        'Comfortable and sustainable organic cotton t-shirt. Available in multiple colors and sizes.',
-        'clothing',
-        29.99,
-        50,
-        NULL,
-        'Material: 100% Organic Cotton, Sizes: XS, S, M, L, XL, XXL, Colors: White, Black, Navy, Gray, Care: Machine washable, Origin: Ethically sourced',
-        'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500',
-        TRUE,
-        1
-    ),
-    (
-        'JavaScript: The Complete Guide',
-        'Comprehensive guide to modern JavaScript development. Perfect for beginners and experienced developers.',
-        'books',
-        49.99,
-        30,
-        20.0,
-        'Pages: 850, Publisher: Tech Books Inc., Edition: 2024, Language: English, Format: Paperback & Digital, ISBN: 978-1234567890',
-        'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500',
-        TRUE,
-        1
-    ),
-    (
-        'Leather Laptop Bag',
-        'Premium leather laptop bag with multiple compartments. Perfect for professionals and students.',
-        'accessories',
-        89.99,
-        15,
-        10.0,
-        'Material: Genuine Leather, Laptop Size: Up to 15.6 inches, Dimensions: 16" x 12" x 4", Weight: 2.5 lbs, Color: Brown, Black, Warranty: 2 years',
-        'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500',
-        TRUE,
-        1
-    ),
-    (
-        'Smart Fitness Watch',
-        'Advanced fitness tracking watch with heart rate monitoring, GPS, and smartphone connectivity.',
-        'electronics',
-        199.99,
-        40,
-        25.0,
-        'Display: 1.4" AMOLED, Battery: 7 days, Water Resistance: 5ATM, GPS: Built-in, Health Monitoring: Heart rate, Sleep, Steps, Compatibility: iOS & Android',
-        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500',
-        TRUE,
-        1
-    ),
-    (
-        'Modern Desk Lamp',
-        'LED desk lamp with adjustable brightness and color temperature. Energy efficient and eye-friendly.',
-        'home',
-        45.99,
-        35,
-        NULL,
-        'LED Type: SMD, Power: 10W, Brightness Levels: 5, Color Temperature: 3000K-6500K, USB Charging Port: Yes, Material: Aluminum alloy',
-        'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500',
-        TRUE,
-        1
-    ) ON DUPLICATE KEY
-UPDATE name = name;
 -- ============================================================
--- DATABASE SETUP COMPLETE
+-- DISPLAY TABLE INFORMATION
 -- ============================================================
--- Display table information
 SELECT TABLE_NAME,
     TABLE_ROWS,
     ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024, 2) AS 'Size (MB)'
 FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_SCHEMA = 'blog_portfolio'
+WHERE TABLE_SCHEMA = DATABASE()
 ORDER BY TABLE_NAME;
--- Success message
-SELECT 'Database setup completed successfully!' AS Status,
-    'Database: blog_portfolio' AS Database_Name,
-    'Total Tables Created' AS Info,
+-- ============================================================
+-- SUCCESS MESSAGE
+-- ============================================================
+SELECT 'Database migration completed successfully!' AS Status,
+    DATABASE() AS Database_Name,
     'Default Admin: maskon123 / maskon123maskon' AS Admin_Credentials,
-    'Test User: testuser / user123' AS Test_User_Credentials;
+    NOW() AS Migration_Timestamp;

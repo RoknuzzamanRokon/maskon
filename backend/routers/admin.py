@@ -1,6 +1,8 @@
 from datetime import datetime
+import json
+from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from core import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -12,8 +14,6 @@ from core import (
     logger,
     websocket_manager,
 )
-
-
 router = APIRouter()
 
 
@@ -125,103 +125,186 @@ async def update_inquiry_status(
         connection.close()
 
 
+def _serialize_notification_row(row: dict) -> dict:
+    metadata = None
+    if row.get("metadata"):
+        try:
+            metadata = json.loads(row["metadata"])
+        except (TypeError, ValueError):
+            metadata = None
+
+    return {
+        "id": row["id"],
+        "type": row["type"],
+        "title": row["title"],
+        "message": row["message"],
+        "timestamp": row["created_at"].isoformat() if row.get("created_at") else None,
+        "isRead": bool(row.get("is_read")),
+        "actionUrl": row.get("action_url"),
+        "actionLabel": row.get("action_label"),
+        "category": row.get("category"),
+        "priority": row.get("priority"),
+        "metadata": metadata,
+        "source": row.get("source"),
+    }
+
+
 # Admin Notifications endpoint
 @router.get("/api/admin/notifications")
-async def get_admin_notifications(admin_id: int = Depends(get_current_admin)):
-    """Get admin notifications including unread messages, system alerts, and activity summaries"""
+async def get_admin_notifications(
+    limit: int = 50,
+    offset: int = 0,
+    type: Optional[str] = None,
+    category: Optional[str] = None,
+    priority: Optional[str] = None,
+    is_read: Optional[bool] = Query(None, alias="isRead"),
+    admin_id: int = Depends(get_current_admin),
+):
+    """Get admin notifications with filtering and pagination"""
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
     try:
-        notifications = []
+        where_clauses = ["admin_id = %s"]
+        params = [admin_id]
 
-        # Get unread chat messages count
+        if type:
+            where_clauses.append("type = %s")
+            params.append(type)
+        if category:
+            where_clauses.append("category = %s")
+            params.append(category)
+        if priority:
+            where_clauses.append("priority = %s")
+            params.append(priority)
+        if is_read is not None:
+            where_clauses.append("is_read = %s")
+            params.append(is_read)
+
+        where_sql = " AND ".join(where_clauses)
+
         cursor.execute(
-            """
-            SELECT COUNT(*) as unread_count 
-            FROM product_chat_messages cm
-            JOIN product_chat_sessions cs ON cm.session_id = cs.id
-            WHERE cm.sender_type = 'customer' AND cm.is_read = FALSE
-        """
+            f"""
+            SELECT id, type, title, message, category, priority, action_url, action_label,
+                   source, metadata, is_read, created_at
+            FROM admin_notifications
+            WHERE {where_sql}
+            ORDER BY created_at DESC
+            LIMIT %s OFFSET %s
+            """,
+            params + [limit, offset],
         )
-        unread_messages = cursor.fetchone()
+        rows = cursor.fetchall() or []
 
-        if unread_messages and unread_messages["unread_count"] > 0:
-            notifications.append(
-                {
-                    "id": "unread_messages",
-                    "type": "chat",
-                    "title": "Unread Messages",
-                    "message": f"You have {unread_messages['unread_count']} unread customer messages",
-                    "count": unread_messages["unread_count"],
-                    "priority": (
-                        "high" if unread_messages["unread_count"] > 10 else "medium"
-                    ),
-                    "created_at": datetime.utcnow(),
-                    "action_url": "/admin/chat",
-                }
-            )
-
-        # Get pending product inquiries
         cursor.execute(
-            """
-            SELECT COUNT(*) as pending_count 
-            FROM product_inquiries 
-            WHERE status = 'pending'
-        """
+            f"SELECT COUNT(*) as total_count FROM admin_notifications WHERE {where_sql}",
+            params,
         )
-        pending_inquiries = cursor.fetchone()
+        total_count = cursor.fetchone()["total_count"]
 
-        if pending_inquiries and pending_inquiries["pending_count"] > 0:
-            notifications.append(
-                {
-                    "id": "pending_inquiries",
-                    "type": "inquiry",
-                    "title": "Pending Inquiries",
-                    "message": f"{pending_inquiries['pending_count']} product inquiries need attention",
-                    "count": pending_inquiries["pending_count"],
-                    "priority": "medium",
-                    "created_at": datetime.utcnow(),
-                    "action_url": "/admin/inquiries",
-                }
-            )
-
-        # Get recent system activity (last 24 hours)
         cursor.execute(
-            """
-            SELECT COUNT(*) as new_sessions 
-            FROM product_chat_sessions 
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
-        """
+            "SELECT COUNT(*) as unread_count FROM admin_notifications WHERE admin_id = %s AND is_read = FALSE",
+            (admin_id,),
         )
-        new_sessions = cursor.fetchone()
-
-        if new_sessions and new_sessions["new_sessions"] > 0:
-            notifications.append(
-                {
-                    "id": "new_sessions",
-                    "type": "activity",
-                    "title": "New Chat Sessions",
-                    "message": f"{new_sessions['new_sessions']} new chat sessions started today",
-                    "count": new_sessions["new_sessions"],
-                    "priority": "low",
-                    "created_at": datetime.utcnow(),
-                    "action_url": "/admin/chat",
-                }
-            )
+        unread_count = cursor.fetchone()["unread_count"]
 
         return {
-            "notifications": notifications,
-            "total_count": len(notifications),
-            "unread_count": sum(
-                1 for n in notifications if n["priority"] in ["high", "medium"]
-            ),
-            "last_updated": datetime.utcnow(),
+            "notifications": [_serialize_notification_row(row) for row in rows],
+            "totalCount": total_count,
+            "unreadCount": unread_count,
         }
-
     except Exception as e:
         logger.error(f"Error fetching admin notifications: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch notifications")
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@router.put("/api/admin/notifications/{notification_id}/read")
+async def mark_notification_read(
+    notification_id: str, admin_id: int = Depends(get_current_admin)
+):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            UPDATE admin_notifications
+            SET is_read = TRUE, read_at = NOW(), updated_at = NOW()
+            WHERE id = %s AND admin_id = %s
+            """,
+            (notification_id, admin_id),
+        )
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Notification not found")
+
+        connection.commit()
+        return {"message": "Notification marked as read"}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@router.put("/api/admin/notifications/read-all")
+async def mark_all_notifications_read(admin_id: int = Depends(get_current_admin)):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            UPDATE admin_notifications
+            SET is_read = TRUE, read_at = NOW(), updated_at = NOW()
+            WHERE admin_id = %s AND is_read = FALSE
+            """,
+            (admin_id,),
+        )
+        affected = cursor.rowcount
+        connection.commit()
+        return {"message": "All notifications marked as read", "updated": affected}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@router.delete("/api/admin/notifications/{notification_id}")
+async def delete_admin_notification(
+    notification_id: str, admin_id: int = Depends(get_current_admin)
+):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            "DELETE FROM admin_notifications WHERE id = %s AND admin_id = %s",
+            (notification_id, admin_id),
+        )
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Notification not found")
+
+        connection.commit()
+        return {"message": "Notification deleted"}
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@router.delete("/api/admin/notifications/clear-all")
+async def clear_admin_notifications(admin_id: int = Depends(get_current_admin)):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            "DELETE FROM admin_notifications WHERE admin_id = %s", (admin_id,)
+        )
+        affected = cursor.rowcount
+        connection.commit()
+        return {"message": "All notifications cleared", "deleted": affected}
     finally:
         cursor.close()
         connection.close()

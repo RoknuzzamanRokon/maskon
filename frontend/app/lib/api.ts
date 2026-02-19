@@ -1018,6 +1018,7 @@ export interface NotificationResponse {
     actionLabel?: string;
     category?: "system" | "user" | "content" | "security";
     priority?: "low" | "medium" | "high" | "critical";
+    source?: string;
     metadata?: { [key: string]: any };
   }>;
   unreadCount: number;
@@ -1058,7 +1059,18 @@ export async function getNotifications(
       return getMockNotifications();
     }
 
-    return await response.json();
+    const data = await response.json();
+    const notifications = Array.isArray(data.notifications) ? data.notifications : [];
+
+    return {
+      notifications: notifications.map((notification: any) => ({
+        ...notification,
+        timestamp: notification.timestamp || notification.created_at || new Date().toISOString(),
+        isRead: typeof notification.isRead === 'boolean' ? notification.isRead : !!notification.is_read,
+      })),
+      unreadCount: data.unreadCount ?? data.unread_count ?? 0,
+      totalCount: data.totalCount ?? data.total_count ?? notifications.length,
+    };
   } catch (error) {
     console.error('Error fetching notifications:', error);
     // Return mock data for development - don't throw
@@ -1429,24 +1441,8 @@ class DashboardCache {
 export const dashboardCache = new DashboardCache();
 
 // Admin Notifications API
-export async function getAdminNotifications(): Promise<any> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/admin/notifications`, {
-      headers: {
-        ...getAuthHeaders(),
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch notifications: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching admin notifications:', error);
-    throw error;
-  }
+export async function getAdminNotifications(): Promise<NotificationResponse> {
+  return getNotifications();
 }
 
 // Admin Settings API
