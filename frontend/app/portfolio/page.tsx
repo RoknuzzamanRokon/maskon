@@ -174,7 +174,7 @@ export default function PortfolioPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 overflow-hidden">
       {/* Hero Section - Modern & Professional */}
-      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900/20 dark:to-indigo-900/20">
+      <section className="relative min-h-screen flex items-center justify-center pt-24 sm:pt-28 md:pt-32 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900/20 dark:to-indigo-900/20">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>

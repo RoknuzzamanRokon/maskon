@@ -1,10 +1,19 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { Fraunces, Manrope } from "next/font/google";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { NavigationProvider } from "./contexts/NavigationContext";
 import ConditionalLayout from "./components/ConditionalLayout";
 
-const inter = Inter({ subsets: ["latin"] });
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const metadata = {
   title: "Mashkon Vibes",
@@ -17,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -25,17 +34,15 @@ export default function RootLayout({
               (function() {
                 try {
                   var theme = localStorage.getItem('theme');
-                  if (!theme) {
-                    localStorage.setItem('theme', 'dark');
-                    theme = 'dark';
-                  }
-                  if (theme === 'dark') {
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var resolvedTheme = theme ? theme : (prefersDark ? 'dark' : 'light');
+                  if (resolvedTheme === 'dark') {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
                   }
                 } catch (e) {
-                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('dark');
                 }
               })();
             `,
@@ -43,7 +50,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.className} bg-white dark:bg-gray-900 transition-colors duration-300`}
+        className={`${manrope.variable} ${fraunces.variable} bg-[color:var(--color-sand)] dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300`}
       >
         <ThemeProvider>
           <NavigationProvider>

@@ -13,6 +13,13 @@
   --space-8: 2rem;        /* 32px */
   --space-12: 3rem;       /* 48px */
   --space-16: 4rem;       /* 64px */
+
+  /* Brand Colors */
+  --color-ink: #0f172a;
+  --color-sand: #f6f1e8;
+  --color-sage: #0f766e;
+  --color-sun: #f97316;
+  --color-mist: #e2e8f0;
   
   /* Typography Scale */
   --text-xs: 0.75rem;     /* 12px */
@@ -48,8 +55,22 @@
   --transition-slow: 500ms ease-in-out;
 }
 
-body {
-  font-family: 'Inter', sans-serif;
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-sand);
+    color: var(--color-ink);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
 }
 
 /* .blog-content {
@@ -225,7 +246,7 @@ body {
 .typing-gradient {
   font-weight: 600;
   font-size: 18px;
-  background: linear-gradient(90deg, #8b5cf6, #ec4899, #3b82f6);
+  background: linear-gradient(90deg, #0f766e, #f97316, #0ea5e9);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

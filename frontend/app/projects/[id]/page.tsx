@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   ExternalLink,
@@ -13,6 +13,11 @@ import {
   Share2,
   Clock,
   Tag,
+  Twitter,
+  Facebook,
+  Linkedin,
+  Copy,
+  CheckCircle,
 } from "lucide-react";
 import { getPortfolio } from "../../lib/api";
 import { PortfolioItem } from "../../types/portfolio";
@@ -26,6 +31,8 @@ export default function ProjectDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
+  const [shareMenuOpen, setShareMenuOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     fetchProject();
@@ -66,28 +73,42 @@ export default function ProjectDetailPage() {
     }
   };
 
-  const handleShare = async () => {
-    if (navigator.share && project) {
-      try {
-        await navigator.share({
-          title: project.title,
-          text: project.description,
-          url: window.location.href,
-        });
-      } catch (err) {
-        // Fallback to copying URL
-        copyToClipboard();
-      }
-    } else {
-      copyToClipboard();
-    }
-  };
+  const handleShare = async (platform: string) => {
+    const url = window.location.href;
+    const title = project?.title || "Check out this project";
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      // You could add a toast notification here
-      console.log("URL copied to clipboard");
-    });
+    switch (platform) {
+      case "twitter":
+        window.open(
+          `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+            title
+          )}&url=${encodeURIComponent(url)}`,
+          "_blank"
+        );
+        break;
+      case "facebook":
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            url
+          )}`,
+          "_blank"
+        );
+        break;
+      case "linkedin":
+        window.open(
+          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+            url
+          )}`,
+          "_blank"
+        );
+        break;
+      case "copy":
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+        break;
+    }
+    setShareMenuOpen(false);
   };
 
   const technologies = project?.technologies
@@ -165,6 +186,74 @@ export default function ProjectDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Floating Action Buttons */}
+      <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-40 space-y-3">
+        <div className="relative">
+          <motion.button
+            onClick={() => setShareMenuOpen(!shareMenuOpen)}
+            className="w-12 h-12 bg-white dark:bg-slate-900 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 border border-slate-200/70 dark:border-slate-800"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Share2 className="w-5 h-5" />
+          </motion.button>
+
+          <AnimatePresence>
+            {shareMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 20, scale: 0.8 }}
+                className="absolute right-16 top-0 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/70 dark:border-slate-800 p-2 min-w-[200px]"
+              >
+                <div className="space-y-1">
+                  <button
+                    onClick={() => handleShare("twitter")}
+                    className="w-full flex items-center px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                  >
+                    <Twitter className="w-4 h-4 mr-3 text-blue-400" />
+                    <span className="text-slate-700 dark:text-slate-200">
+                      Share on Twitter
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => handleShare("facebook")}
+                    className="w-full flex items-center px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                  >
+                    <Facebook className="w-4 h-4 mr-3 text-blue-600" />
+                    <span className="text-slate-700 dark:text-slate-200">
+                      Share on Facebook
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => handleShare("linkedin")}
+                    className="w-full flex items-center px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                  >
+                    <Linkedin className="w-4 h-4 mr-3 text-blue-700" />
+                    <span className="text-slate-700 dark:text-slate-200">
+                      Share on LinkedIn
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => handleShare("copy")}
+                    className="w-full flex items-center px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                  >
+                    {copied ? (
+                      <CheckCircle className="w-4 h-4 mr-3 text-green-500" />
+                    ) : (
+                      <Copy className="w-4 h-4 mr-3 text-gray-500" />
+                    )}
+                    <span className="text-slate-700 dark:text-slate-200">
+                      {copied ? "Copied!" : "Copy Link"}
+                    </span>
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
       {/* Navigation */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4 pt-24 pb-4">
@@ -172,11 +261,13 @@ export default function ProjectDetailPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <button
-                  onClick={() => router.push("/projects")}
-                  className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mr-4"
+                  onClick={() => router.back()}
+                  className="inline-flex items-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium group transition-all duration-300 mr-4"
                 >
                   <ArrowLeft className="w-5 h-5 mr-2" />
-                  Back to Projects
+                  <span className="text-sm uppercase tracking-[0.2em]">
+                    Back to Projects
+                  </span>
                 </button>
                 <nav className="text-sm text-gray-500 dark:text-gray-400">
                   <span>Portfolio</span>
@@ -193,14 +284,6 @@ export default function ProjectDetailPage() {
                   </span>
                 </nav>
               </div>
-
-              <button
-                onClick={handleShare}
-                className="flex items-center px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </button>
             </div>
           </div>
         </div>

@@ -125,7 +125,7 @@ export default function ProductsPage() {
   if (loading) {
     return (
       <div
-        className={`${bodyFont.className} min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-[color:var(--ink)] py-16 flex items-center justify-center`}
+        className={`${bodyFont.className} min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-[color:var(--ink)] pt-16 pb-16 sm:pt-20 md:pt-24 flex items-center justify-center`}
         style={themeVars}
       >
         <div className="text-center">
@@ -141,7 +141,7 @@ export default function ProductsPage() {
   if (error) {
     return (
       <div
-        className={`${bodyFont.className} min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-[color:var(--ink)] py-16 flex items-center justify-center`}
+        className={`${bodyFont.className} min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-[color:var(--ink)] pt-16 pb-16 sm:pt-20 md:pt-24 flex items-center justify-center`}
         style={themeVars}
       >
         <div className="text-center">
@@ -166,7 +166,7 @@ export default function ProductsPage() {
         <div className="absolute -top-32 right-10 h-72 w-72 rounded-full bg-emerald-100/70 blur-3xl dark:bg-emerald-900/30" />
         <div className="absolute bottom-10 left-10 h-72 w-72 rounded-full bg-slate-200/70 blur-3xl dark:bg-slate-800/40" />
       </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16 sm:pt-20 md:pt-24">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white px-4 py-2 text-xs uppercase tracking-[0.2em] text-[color:var(--muted)] dark:bg-gray-800">
@@ -397,7 +397,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Contact CTA */}
-      <div className="max-w-7xl mx-auto mt-24 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto mt-24 px-4 sm:px-6 lg:px-8 pb-16">
         <div className="bg-[color:var(--ink)] rounded-2xl p-10 md:p-12 shadow-xl dark:bg-gray-900">
           <div className="max-w-3xl mx-auto text-center">
             <h2

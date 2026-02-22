@@ -236,7 +236,7 @@ export default function RokonPortfolio() {
           <div className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-emerald-100/60 dark:bg-slate-800/40 blur-3xl" />
         </div>
 
-        <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+        <section className="mx-auto max-w-6xl px-4 pt-24 pb-16 sm:pt-28 md:pt-32 md:pb-24">
           <div className="mb-8">
             <BackButton className="inline-flex items-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium group transition-all duration-300">
               <ArrowLeft className="w-4 h-4 mr-2" />

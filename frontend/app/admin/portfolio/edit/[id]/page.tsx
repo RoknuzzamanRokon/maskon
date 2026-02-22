@@ -10,6 +10,7 @@ import {
   logout,
 } from "../../../../lib/api";
 import ProtectedRoute from "../../../../components/ProtectedRoute";
+import AdminLayout from "../../../../components/admin/AdminLayout";
 
 interface PortfolioFormData {
   title: string;
@@ -205,300 +206,304 @@ function EditPortfolioContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8">
-              <div className="animate-pulse">
-                <div className="h-8 bg-gray-200 dark:bg-gray-600 rounded mb-4"></div>
-                <div className="space-y-4">
-                  <div className="h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                  <div className="h-32 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                  <div className="grid grid-cols-2 gap-4">
+      <AdminLayout>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8">
+                <div className="animate-pulse">
+                  <div className="h-8 bg-gray-200 dark:bg-gray-600 rounded mb-4"></div>
+                  <div className="space-y-4">
                     <div className="h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                    <div className="h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                    <div className="h-32 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                      <div className="h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-4">
-                  <span className="text-2xl">✏️</span>
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    Edit Project
-                  </h1>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Update your project details
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => router.push("/admin/portfolio")}
-                  className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                >
-                  ⬅️ Back to Portfolio
-                </button>
-                <button
-                  onClick={() => {
-                    logout();
-                    router.push("/login");
-                  }}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                >
-                  🚪 Logout
-                </button>
-              </div>
-            </div>
-
-            {message && (
-              <div
-                className={`p-4 rounded-lg mb-6 border ${
-                  message.includes("Error")
-                    ? "bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700"
-                    : "bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700"
-                }`}
-              >
-                {message}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    htmlFor="title"
-                    className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
-                  >
-                    Project Title *
-                  </label>
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                      errors.title
-                        ? "border-red-500 dark:border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    }`}
-                    placeholder="Enter project title"
-                  />
-                  {errors.title && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                      {errors.title}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="technologies"
-                    className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
-                  >
-                    Technologies *
-                  </label>
-                  <input
-                    type="text"
-                    id="technologies"
-                    name="technologies"
-                    value={formData.technologies}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                      errors.technologies
-                        ? "border-red-500 dark:border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    }`}
-                    placeholder="e.g., React, Node.js, MongoDB"
-                  />
-                  {errors.technologies && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                      {errors.technologies}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="description"
-                  className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
-                >
-                  Project Description *
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  rows={6}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                    errors.description
-                      ? "border-red-500 dark:border-red-500"
-                      : "border-gray-300 dark:border-gray-600"
-                  }`}
-                  placeholder="Describe your project, its features, and what makes it special..."
-                />
-                {errors.description && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                    {errors.description}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    htmlFor="project_url"
-                    className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
-                  >
-                    🔗 Project URL (optional)
-                  </label>
-                  <input
-                    type="url"
-                    id="project_url"
-                    name="project_url"
-                    value={formData.project_url}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                      errors.project_url
-                        ? "border-red-500 dark:border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    }`}
-                    placeholder="https://your-project.com"
-                  />
-                  {errors.project_url && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                      {errors.project_url}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="github_url"
-                    className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
-                  >
-                    🐙 GitHub URL (optional)
-                  </label>
-                  <input
-                    type="url"
-                    id="github_url"
-                    name="github_url"
-                    value={formData.github_url}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                      errors.github_url
-                        ? "border-red-500 dark:border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    }`}
-                    placeholder="https://github.com/username/project"
-                  />
-                  {errors.github_url && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                      {errors.github_url}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2">
-                  🖼️ Project Image
-                </label>
-                <div className="space-y-4">
+    <AdminLayout>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-4">
+                    <span className="text-2xl">✏️</span>
+                  </div>
                   <div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      disabled={imageUploading}
-                      className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300"
-                    />
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      Upload an image (max 10MB) or enter a URL below
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                      Edit Project
+                    </h1>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Update your project details
                     </p>
                   </div>
-
-                  <div className="text-center text-gray-500 dark:text-gray-400">
-                    or
-                  </div>
-
-                  <input
-                    type="url"
-                    name="image_url"
-                    value={formData.image_url}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                      errors.image_url
-                        ? "border-red-500 dark:border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    }`}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                  {errors.image_url && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                      {errors.image_url}
-                    </p>
-                  )}
-
-                  {formData.image_url && (
-                    <div className="mt-4">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                        Image Preview:
-                      </p>
-                      <img
-                        src={formData.image_url}
-                        alt="Preview"
-                        className="w-full max-w-md h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
-                      />
-                    </div>
-                  )}
+                </div>
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => router.push("/admin/portfolio")}
+                    className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  >
+                    ⬅️ Back to Portfolio
+                  </button>
+                  <button
+                    onClick={() => {
+                      logout();
+                      router.push("/login");
+                    }}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    🚪 Logout
+                  </button>
                 </div>
               </div>
 
-              <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-600">
-                <button
-                  type="submit"
-                  disabled={isSubmitting || imageUploading}
-                  className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              {message && (
+                <div
+                  className={`p-4 rounded-lg mb-6 border ${
+                    message.includes("Error")
+                      ? "bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700"
+                      : "bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700"
+                  }`}
                 >
-                  <span className="mr-2">💾</span>
-                  {isSubmitting ? "Updating Project..." : "Update Project"}
-                </button>
+                  {message}
+                </div>
+              )}
 
-                <button
-                  type="button"
-                  onClick={() => router.push("/admin/portfolio")}
-                  className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
-                >
-                  <span className="mr-2">❌</span>
-                  Cancel
-                </button>
-              </div>
-            </form>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label
+                      htmlFor="title"
+                      className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
+                    >
+                      Project Title *
+                    </label>
+                    <input
+                      type="text"
+                      id="title"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                        errors.title
+                          ? "border-red-500 dark:border-red-500"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                      placeholder="Enter project title"
+                    />
+                    {errors.title && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors.title}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="technologies"
+                      className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
+                    >
+                      Technologies *
+                    </label>
+                    <input
+                      type="text"
+                      id="technologies"
+                      name="technologies"
+                      value={formData.technologies}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                        errors.technologies
+                          ? "border-red-500 dark:border-red-500"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                      placeholder="e.g., React, Node.js, MongoDB"
+                    />
+                    {errors.technologies && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors.technologies}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="description"
+                    className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
+                  >
+                    Project Description *
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    rows={6}
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                      errors.description
+                        ? "border-red-500 dark:border-red-500"
+                        : "border-gray-300 dark:border-gray-600"
+                    }`}
+                    placeholder="Describe your project, its features, and what makes it special..."
+                  />
+                  {errors.description && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.description}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label
+                      htmlFor="project_url"
+                      className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
+                    >
+                      🔗 Project URL (optional)
+                    </label>
+                    <input
+                      type="url"
+                      id="project_url"
+                      name="project_url"
+                      value={formData.project_url}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                        errors.project_url
+                          ? "border-red-500 dark:border-red-500"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                      placeholder="https://your-project.com"
+                    />
+                    {errors.project_url && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors.project_url}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="github_url"
+                      className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2"
+                    >
+                      🐙 GitHub URL (optional)
+                    </label>
+                    <input
+                      type="url"
+                      id="github_url"
+                      name="github_url"
+                      value={formData.github_url}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                        errors.github_url
+                          ? "border-red-500 dark:border-red-500"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                      placeholder="https://github.com/username/project"
+                    />
+                    {errors.github_url && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors.github_url}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2">
+                    🖼️ Project Image
+                  </label>
+                  <div className="space-y-4">
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={imageUploading}
+                        className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300"
+                      />
+                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        Upload an image (max 10MB) or enter a URL below
+                      </p>
+                    </div>
+
+                    <div className="text-center text-gray-500 dark:text-gray-400">
+                      or
+                    </div>
+
+                    <input
+                      type="url"
+                      name="image_url"
+                      value={formData.image_url}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                        errors.image_url
+                          ? "border-red-500 dark:border-red-500"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    {errors.image_url && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors.image_url}
+                      </p>
+                    )}
+
+                    {formData.image_url && (
+                      <div className="mt-4">
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                          Image Preview:
+                        </p>
+                        <img
+                          src={formData.image_url}
+                          alt="Preview"
+                          className="w-full max-w-md h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-600">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || imageUploading}
+                    className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <span className="mr-2">💾</span>
+                    {isSubmitting ? "Updating Project..." : "Update Project"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => router.push("/admin/portfolio")}
+                    className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+                  >
+                    <span className="mr-2">❌</span>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 }
 

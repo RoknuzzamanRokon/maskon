@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { getBlogPosts } from "../lib/api";
+import { createSubscriber, getBlogPosts } from "../lib/api";
 import { motion, Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -24,6 +24,10 @@ export default function BlogPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [subscriberEmail, setSubscriberEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeMessage, setSubscribeMessage] = useState<string | null>(null);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -491,22 +495,71 @@ export default function BlogPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <div className="flex flex-col sm:flex-row gap-4">
+              <form
+                className="flex flex-col sm:flex-row gap-4"
+                onSubmit={async (event) => {
+                  event.preventDefault();
+                  setSubscribeMessage(null);
+                  setSubscribeError(null);
+
+                  if (!subscriberEmail.trim()) {
+                    setSubscribeError("Please enter a valid email address.");
+                    return;
+                  }
+
+                  try {
+                    setIsSubscribing(true);
+                    const result = await createSubscriber(
+                      subscriberEmail.trim(),
+                      "blog"
+                    );
+                    if (result?.already_subscribed) {
+                      setSubscribeMessage(
+                        "You're already subscribed. Thanks for staying with us!"
+                      );
+                    } else {
+                      setSubscribeMessage(
+                        "Thanks for subscribing! You'll hear from us soon."
+                      );
+                    }
+                    setSubscriberEmail("");
+                  } catch (error: any) {
+                    setSubscribeError(
+                      error?.message || "Subscription failed. Please try again."
+                    );
+                  } finally {
+                    setIsSubscribing(false);
+                  }
+                }}
+              >
                 <div className="flex-1">
                   <input
                     type="email"
                     placeholder="Enter your email address"
+                    value={subscriberEmail}
+                    onChange={(event) => setSubscriberEmail(event.target.value)}
                     className="w-full px-6 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 font-medium"
                   />
                 </div>
                 <motion.button
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+                  whileHover={isSubscribing ? undefined : { scale: 1.05 }}
+                  whileTap={isSubscribing ? undefined : { scale: 0.95 }}
                 >
-                  Subscribe Now
+                  {isSubscribing ? "Subscribing..." : "Subscribe Now"}
                 </motion.button>
-              </div>
+              </form>
+              {(subscribeMessage || subscribeError) && (
+                <p
+                  className={`text-sm mt-4 text-center ${
+                    subscribeError ? "text-rose-200" : "text-emerald-200"
+                  }`}
+                >
+                  {subscribeError || subscribeMessage}
+                </p>
+              )}
               <p className="text-blue-200 text-sm mt-4 text-center">
                 Join 5,000+ readers. Unsubscribe anytime with one click.
               </p>

@@ -211,7 +211,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
           ></div>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16 sm:pt-20 md:pt-24">
           <div className="animate-pulse space-y-8">
             {/* Back button skeleton */}
             <div className="h-10 bg-white dark:bg-slate-800 rounded-xl w-32"></div>
@@ -390,7 +390,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16 sm:pt-20 md:pt-24">
         {/* Back Navigation */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -17,6 +17,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const blogDropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
 
   const isActivePath = (href: string) =>
     href === "/"
@@ -49,6 +50,12 @@ export default function Navbar() {
     };
 
     const handleClickOutside = (event: MouseEvent) => {
+      if (
+        mobileToggleRef.current &&
+        mobileToggleRef.current.contains(event.target as Node)
+      ) {
+        return;
+      }
       if (
         blogDropdownRef.current &&
         !blogDropdownRef.current.contains(event.target as Node)
@@ -83,7 +90,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+      className={`sticky top-0 lg:fixed w-full z-50 transition-all duration-500 ${
         isScrolled
           ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-lg"
           : "bg-transparent"
@@ -349,6 +356,7 @@ export default function Navbar() {
           <button
             className="lg:hidden p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
             onClick={() => setIsOpen(!isOpen)}
+            ref={mobileToggleRef}
           >
             {isOpen ? (
               <svg
