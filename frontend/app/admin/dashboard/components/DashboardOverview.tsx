@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getBlogPosts,
   getPortfolio,
@@ -79,6 +79,9 @@ export default function DashboardOverview() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d">("7d");
+  const [notificationBlink, setNotificationBlink] = useState(false);
+  const lastUnreadRef = useRef<number | null>(null);
+  const blinkTimerRef = useRef<number | null>(null);
 
   const fetchDashboardData = async (showLoading = true) => {
     try {
@@ -273,6 +276,37 @@ export default function DashboardOverview() {
 
   useEffect(() => {
     fetchDashboardData();
+  }, []);
+
+  useEffect(() => {
+    if (!stats) {
+      return;
+    }
+
+    if (lastUnreadRef.current === null) {
+      lastUnreadRef.current = stats.unreadNotifications;
+      return;
+    }
+
+    if (stats.unreadNotifications > lastUnreadRef.current) {
+      setNotificationBlink(true);
+      if (blinkTimerRef.current) {
+        window.clearTimeout(blinkTimerRef.current);
+      }
+      blinkTimerRef.current = window.setTimeout(() => {
+        setNotificationBlink(false);
+      }, 2000);
+    }
+
+    lastUnreadRef.current = stats.unreadNotifications;
+  }, [stats]);
+
+  useEffect(() => {
+    return () => {
+      if (blinkTimerRef.current) {
+        window.clearTimeout(blinkTimerRef.current);
+      }
+    };
   }, []);
 
   // Auto-refresh every 5 minutes
@@ -821,7 +855,11 @@ export default function DashboardOverview() {
                 Real-time Analytics
               </h3>
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <div
+                  className={`w-2 h-2 bg-green-500 rounded-full ${
+                    notificationBlink ? "animate-pulse" : ""
+                  }`}
+                ></div>
                 <span className="text-sm text-green-600 dark:text-green-400 font-medium">
                   Live
                 </span>
@@ -1008,7 +1046,11 @@ export default function DashboardOverview() {
             </h3>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <div
+                  className={`w-2 h-2 bg-green-500 rounded-full ${
+                    notificationBlink ? "animate-pulse" : ""
+                  }`}
+                ></div>
                 <span className="text-sm text-green-600 dark:text-green-400">
                   Real-time
                 </span>
@@ -1447,7 +1489,11 @@ export default function DashboardOverview() {
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   This week
                 </span>
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <div
+                  className={`w-2 h-2 bg-green-500 rounded-full ${
+                    notificationBlink ? "animate-pulse" : ""
+                  }`}
+                ></div>
               </div>
             </div>
 
@@ -1496,7 +1542,11 @@ export default function DashboardOverview() {
                 Real-time Monitoring
               </h3>
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <div
+                  className={`w-2 h-2 bg-green-500 rounded-full ${
+                    notificationBlink ? "animate-pulse" : ""
+                  }`}
+                ></div>
                 <span className="text-sm text-green-600 dark:text-green-400 font-medium">
                   Live
                 </span>

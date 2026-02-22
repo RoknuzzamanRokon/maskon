@@ -38,7 +38,11 @@ export default function NotificationCenter({
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<NotificationFilters>({});
   const [showFilters, setShowFilters] = useState(false);
+  const [shouldBlink, setShouldBlink] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const seenNotificationIds = useRef<Set<string>>(new Set());
+  const hasInitialized = useRef(false);
+  const blinkTimerRef = useRef<number | null>(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -54,6 +58,46 @@ export default function NotificationCenter({
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (!hasInitialized.current) {
+      state.notifications.forEach((notification) => {
+        seenNotificationIds.current.add(notification.id);
+      });
+      hasInitialized.current = true;
+      return;
+    }
+
+    const newUnread = state.notifications.filter(
+      (notification) =>
+        !notification.isRead &&
+        !seenNotificationIds.current.has(notification.id)
+    );
+
+    if (newUnread.length === 0) {
+      return;
+    }
+
+    newUnread.forEach((notification) => {
+      seenNotificationIds.current.add(notification.id);
+    });
+
+    setShouldBlink(true);
+    if (blinkTimerRef.current) {
+      window.clearTimeout(blinkTimerRef.current);
+    }
+    blinkTimerRef.current = window.setTimeout(() => {
+      setShouldBlink(false);
+    }, 2000);
+  }, [state.notifications]);
+
+  useEffect(() => {
+    return () => {
+      if (blinkTimerRef.current) {
+        window.clearTimeout(blinkTimerRef.current);
+      }
+    };
   }, []);
 
   // Filter notifications based on current filters
@@ -132,6 +176,11 @@ export default function NotificationCenter({
         aria-label="Notifications"
       >
         <Bell className="w-6 h-6" />
+        {shouldBlink && (
+          <span className="absolute -top-1 -right-1 inline-flex h-5 w-5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+          </span>
+        )}
         {state.unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
             {state.unreadCount > 99 ? "99+" : state.unreadCount}

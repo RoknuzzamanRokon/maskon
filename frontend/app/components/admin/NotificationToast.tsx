@@ -173,15 +173,15 @@ export default function NotificationToastContainer() {
     setToasts((prev) => prev.filter((toast) => toast.id !== notificationId));
   };
 
-  return (
-    <div className="fixed top-4 right-4 z-50 space-y-2">
-      {toasts.map((notification) => (
-        <NotificationToast
-          key={notification.id}
-          notification={notification}
-          onClose={() => removeToast(notification.id)}
-        />
-      ))}
-    </div>
-  );
+  // return (
+  //   <div className="fixed top-4 right-4 z-50 space-y-2">
+  //     {toasts.map((notification) => (
+  //       <NotificationToast
+  //         key={notification.id}
+  //         notification={notification}
+  //         onClose={() => removeToast(notification.id)}
+  //       />
+  //     ))}
+  //   </div>
+  // );
 }
